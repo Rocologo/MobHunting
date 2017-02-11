@@ -5,6 +5,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import uk.antiperson.stackmob.StackMob;
 import uk.antiperson.stackmob.api.StackMobAPI;
@@ -41,24 +42,29 @@ public class StackMobCompat implements Listener {
 		return supported;
 	}
 
-	public static boolean isDisabledInConfig() {
+	private static boolean isDisabledInConfig() {
 		return MobHunting.getConfigManager().disableIntegrationStackMob;
 	}
 
-	public static boolean isEnabledInConfig() {
+	@SuppressWarnings("unused")
+	private static boolean isEnabledInConfig() {
 		return !MobHunting.getConfigManager().disableIntegrationStackMob;
 	}
 
 	public static boolean isStackedMob(Entity entity) {
-		return getStackMobAPI().getEntityManager().isStackedEntity(entity);
+		if (isSupported()) {
+			//return ((StackMob) Bukkit.getPluginManager().getPlugin("StackMob")).amountMap.containsKey(entity.getUniqueId());
+			return getStackMobAPI().getEntityManager().isStackedEntity(entity);
+		}
+		return false;
 	}
 
-	public static int getStackSize(Entity deadEntity) {
-		return getStackMobAPI().getEntityManager().getStackedEntity(deadEntity).getStackAmount();
+	public static int getStackSize(Entity entity) {
+		return getStackMobAPI().getEntityManager().getStackedEntity(entity).getStackAmount();
 	}
 
 	public static boolean killHoleStackOnDeath(Entity entity) {
-		return mPlugin.getConfig().getBoolean("creature.killall");
+		return mPlugin.getConfig().getBoolean("creature.kill-all.enabled");
 	}
 
 	public static boolean isGrindingStackedMobsAllowed() {

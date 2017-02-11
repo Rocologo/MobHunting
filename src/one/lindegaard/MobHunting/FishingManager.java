@@ -17,7 +17,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerFishEvent.State;
-import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.events.MobHuntFishingEvent;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
@@ -29,7 +28,6 @@ import one.lindegaard.MobHunting.modifier.RankBonus;
 public class FishingManager implements Listener {
 
 	private Set<IModifier> mFishingModifiers = new HashSet<IModifier>();
-	private HashMap<Player, ItemStack> playerTreasures = new HashMap<Player, ItemStack>();
 
 	public FishingManager() {
 		if (!MobHunting.getConfigManager().disableFishingRewards) {
@@ -44,39 +42,27 @@ public class FishingManager implements Listener {
 		mFishingModifiers.add(new RankBonus());
 	}
 
-	public Set<IModifier> getFishingModifiers() {
-		return mFishingModifiers;
-	}
-
-		@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
-	// @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
 	public void Fish(PlayerFishEvent event) {
-		if (MobHunting.getConfigManager().disableFishingRewards)
-			return;
 
-		if (event.isCancelled())
+		if (event.isCancelled()) {
+			Messages.debug("FishingEvent: event was cancelled");
 			return;
+		}
 
 		Player player = event.getPlayer();
-		if (player == null)
+		if (player == null) {
+			Messages.debug("FishingEvent: player was null");
 			return;
-
-		Entity fish = event.getCaught();
-		if (fish == null || !(fish instanceof Item) || ((Item) fish).getItemStack().getType() != Material.RAW_FISH)
-			return;
+		}
 
 		State state = event.getState();
-		if (fish != null)
-			Messages.debug("FishingEvent:%s caught a %s (State=%s) ", player.getName(),
-					((Item) fish).getItemStack().getData(), state);
-
-		// if (playerTreasures.containsKey(player)) {
-		// Messages.debug("McMMO changed the fish to a %s, canceling the
-		// MobHunting reward",
-		// playerTreasures.get(player).getType());
-		// playerTreasures.remove(player);
-		// return;
-		// }
+		Entity fish = event.getCaught();
+		if (fish == null)
+			Messages.debug("FishingEvent: State=%s", state);
+		else
+			Messages.debug("FishingEvent: State=%s, %s caught a %s", state, player.getName(),
+					((Item) fish).getItemStack().getData());
 
 		switch (state) {
 		case CAUGHT_FISH:
@@ -91,6 +77,12 @@ public class FishingManager implements Listener {
 				return;
 			}
 
+			if (fish == null || !(fish instanceof Item)
+					|| ((Item) fish).getItemStack().getType() != Material.RAW_FISH) {
+				Messages.debug("FishingBlocked: %s only get rewards for fish", player.getName());
+				return;
+			}
+
 			// Calculate basic the reward
 			ExtendedMob eMob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(fish);
 			if (eMob.getMob_id() == 0) {
@@ -100,14 +92,15 @@ public class FishingManager implements Listener {
 			}
 			double cash = MobHunting.getConfigManager().getBaseKillPrize(fish);
 
-			Messages.debug("Basic Prize=%s for catching a %s", cash, eMob.getName());
+			Messages.debug("Basic Prize=%s for catching a %s", MobHunting.getRewardManager().format(cash),
+					eMob.getName());
 
 			// Pay the reward to player and assister
 			if ((cash >= MobHunting.getConfigManager().minimumReward)
 					|| (cash <= -MobHunting.getConfigManager().minimumReward)) {
 
 				// Apply the modifiers to Basic reward
-				double multiplier = 1.0;
+				double multipliers = 1.0;
 				HashMap<String, Double> multiplierList = new HashMap<String, Double>();
 				ArrayList<String> modifiers = new ArrayList<String>();
 				for (IModifier mod : mFishingModifiers) {
@@ -117,7 +110,7 @@ public class FishingManager implements Listener {
 							Messages.debug("Multiplier: %s = %s", mod.getName(), amt);
 							modifiers.add(mod.getName());
 							multiplierList.put(mod.getName(), amt);
-							multiplier *= amt;
+							multipliers *= amt;
 						}
 					}
 				}
@@ -126,28 +119,30 @@ public class FishingManager implements Listener {
 				MobHuntFishingEvent event2 = new MobHuntFishingEvent(player, fish, cash, multiplierList);
 				Bukkit.getPluginManager().callEvent(event2);
 				if (event2.isCancelled()) {
-					Messages.debug("FishingBlocked %s: MobHuntFishingEvent was cancelled", player.getName());
+					Messages.debug("FishingBlocked %s: MobHuntFishingEvent was cancelled by another plugin", player.getName());
 					return;
 				}
 
 				String extraString = "";
 
 				// Only display the multiplier if its not 1
-				if (Math.abs(multiplier - 1) > 0.05)
-					extraString += String.format("x%.1f", multiplier);
+				if (Math.abs(multipliers - 1) > 0.05)
+					extraString += String.format("x%.1f", multipliers);
 
 				// Add on modifiers
 				for (String modifier : modifiers)
 					extraString += ChatColor.WHITE + " * " + modifier;
 
-				cash *= multiplier;
+				cash *= multipliers;
 
 				if (cash >= MobHunting.getConfigManager().minimumReward) {
 					MobHunting.getRewardManager().depositPlayer(player, cash);
-					Messages.debug("%s got a reward (%s)", player.getName(), MobHunting.getRewardManager().format(cash));
+					Messages.debug("%s got a reward (%s)", player.getName(),
+							MobHunting.getRewardManager().format(cash));
 				} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
 					MobHunting.getRewardManager().withdrawPlayer(player, -cash);
-					Messages.debug("%s got a penalty (%s)", player.getName(), MobHunting.getRewardManager().format(cash));
+					Messages.debug("%s got a penalty (%s)", player.getName(),
+							MobHunting.getRewardManager().format(cash));
 				}
 
 				// Record the kill in the Database
@@ -181,15 +176,15 @@ public class FishingManager implements Listener {
 
 					} else {
 						if (cash >= MobHunting.getConfigManager().minimumReward) {
-							Messages.playerActionBarMessage(player,
-									ChatColor.GREEN + "" + ChatColor.ITALIC
-											+ Messages.getString("mobhunting.fishcaught.reward", "prize",
-													MobHunting.getRewardManager().format(cash)));
+							Messages.playerActionBarMessage(player, ChatColor.GREEN + "" + ChatColor.ITALIC
+									+ Messages.getString("mobhunting.fishcaught.reward.bonuses", "prize",
+											MobHunting.getRewardManager().format(cash), "bonuses", extraString.trim(),
+											"multipliers", MobHunting.getRewardManager().format(multipliers)));
 						} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
-							Messages.playerActionBarMessage(player,
-									ChatColor.RED + "" + ChatColor.ITALIC
-											+ Messages.getString("mobhunting.fishcaught.penalty", "prize",
-													MobHunting.getRewardManager().format(cash)));
+							Messages.playerActionBarMessage(player, ChatColor.RED + "" + ChatColor.ITALIC
+									+ Messages.getString("mobhunting.fishcaught.penalty.bonuses", "prize",
+											MobHunting.getRewardManager().format(cash), "bonuses", extraString.trim(),
+											"multipliers", MobHunting.getRewardManager().format(multipliers)));
 						} else
 							Messages.debug("FishingBlocked %s: Reward was less than %s", player.getName(),
 									MobHunting.getConfigManager().minimumReward);
@@ -220,12 +215,11 @@ public class FishingManager implements Listener {
 
 					// send a message to the player
 					if (!MobHunting.getConfigManager().getKillRewardDescription(fish).equals("") && !fisherman_muted) {
-						String message = ChatColor.GREEN + "" + ChatColor.ITALIC
-								+ MobHunting.getConfigManager().getKillRewardDescription(fish)
-										.replaceAll("\\{player\\}", player.getName())
-										.replaceAll("\\{killer\\}", player.getName())
-										.replace("\\{prize\\}", MobHunting.getRewardManager().format(cash))
-										.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", fishermanPos);
+						String message = ChatColor.GREEN + "" + ChatColor.ITALIC + MobHunting.getConfigManager()
+								.getKillRewardDescription(fish).replaceAll("\\{player\\}", player.getName())
+								.replaceAll("\\{killer\\}", player.getName())
+								.replace("\\{prize\\}", MobHunting.getRewardManager().format(cash))
+								.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", fishermanPos);
 
 						Messages.debug("Description to be send:" + message);
 						player.sendMessage(message);
@@ -251,6 +245,7 @@ public class FishingManager implements Listener {
 		// break;
 
 		}
+
 	}
 
 }

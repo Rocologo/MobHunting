@@ -22,8 +22,6 @@ import one.lindegaard.MobHunting.MobHunting;
 
 public class McMMOCompat implements Listener {
 
-	// https://www.spigotmc.org/resources/conquesita-mobs.21307/
-
 	private static boolean supported = false;
 	private static Plugin mPlugin;
 	public static final String MH_MCMMO = "MH:MCMMO";
@@ -37,7 +35,7 @@ public class McMMOCompat implements Listener {
 			if (mPlugin.getDescription().getVersion().compareTo("1.5.00") >= 0) {
 				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with McMMO ("
-						+ getCustomMobs().getDescription().getVersion() + ")");
+						+ getMcMmoAPI().getDescription().getVersion() + ")");
 				supported = true;
 			} else {
 				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
@@ -52,7 +50,7 @@ public class McMMOCompat implements Listener {
 	// **************************************************************************
 	// OTHER FUNCTIONS
 	// **************************************************************************
-	public static Plugin getCustomMobs() {
+	public static Plugin getMcMmoAPI() {
 		return mPlugin;
 	}
 
@@ -78,41 +76,31 @@ public class McMMOCompat implements Listener {
 	// EVENTS
 	// **************************************************************************
 
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
 	public void Fish2(McMMOPlayerFishingTreasureEvent event) {
 		Player p = event.getPlayer();
 		ItemStack s = event.getTreasure();
-		Messages.debug("FISH2: %s caught a %s", p.getName(), s.getType());
-		// if (s.getType() != Material.RAW_FISH)
-		// playerTreasures.put(p, s);
-		// if (event.isCancelled()) {
-		// Messages.debug("McMMOPlayerFishingTreasureEvent is cancelled");
-		// return;
-		// }
+		Messages.debug("McMMO-FishingEvent1: %s caught a %s", p.getName(), s.getType());
 	}
 
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
 	public void Fish3(McMMOPlayerFishingEvent event) {
 		Player p = event.getPlayer();
-		Messages.debug("FISH3: %s is fishing", p.getName());
-		// if (event.isCancelled()) {
-		// Messages.debug("McMMOPlayerFishingEvent is cancelled");
-		// return;
-		// }
+		Messages.debug("McMMO-FishingEvent2: %s is fishing", p.getName());
 	}
 
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
 	public void Fish4(McMMOPlayerMagicHunterEvent event) {
 		Player p = event.getPlayer();
 		ItemStack is = event.getTreasure();
-		Messages.debug("FISH4: %s, Treasure = %s", p.getName(), is.getType());
+		Messages.debug("McMMO-FishingEvent3: %s, Treasure = %s", p.getName(), is.getType());
 	}
 
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
 	public void Fish5(McMMOPlayerShakeEvent event) {
 		Player p = event.getPlayer();
 		ItemStack is = event.getDrop();
-		Messages.debug("FISH5: %s, Drop = %s", p.getName(), is.getType());
+		Messages.debug("McMMO-FishingEvent4: %s, Drop = %s", p.getName(), is.getType());
 	}
 
 

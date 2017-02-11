@@ -1,7 +1,6 @@
 package one.lindegaard.MobHunting.events;
 
 import java.util.HashMap;
-import java.util.List;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

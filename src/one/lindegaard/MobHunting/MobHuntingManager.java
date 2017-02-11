@@ -676,7 +676,7 @@ public class MobHuntingManager implements Listener {
 	}
 
 	@SuppressWarnings("deprecation")
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	private void onMobDeath(EntityDeathEvent event) {
 
 		boolean cancelNaturalDrops = false;
@@ -1125,14 +1125,6 @@ public class MobHuntingManager implements Listener {
 		}
 
 		// Calculate basic the reward
-		// ExtendedMob mob =
-		// MobHunting.getExtendedMobManager().getExtendedMobFromEntity(killed);
-		// if (mob.getMob_id() == 0) {
-		// Bukkit.getLogger().warning("Unknown Mob:" + mob.getName() + " from
-		// plugin " + mob.getMobPlugin());
-		// Bukkit.getLogger().warning("Please report this to developer!");
-		// return;
-		// }
 		double cash = MobHunting.getConfigManager().getBaseKillPrize(killed);
 		double basic_prize = cash;
 

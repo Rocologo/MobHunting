@@ -19,15 +19,15 @@ public class StackedMobBonus implements IModifier {
 	}
 
 	@Override
-	public double getMultiplier(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
+	public double getMultiplier(Entity entity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		if (MobStackerCompat.isSupported() && MobStackerCompat.killHoleStackOnDeath(deadEntity)
+		if (MobStackerCompat.isSupported() && MobStackerCompat.killHoleStackOnDeath(entity)
 				&& MobStackerCompat.multiplyLoot()) {
-			Messages.debug("StackedMobBonus: Pay reward for no %s mob", MobStackerCompat.getStackSize(deadEntity));
-			return MobStackerCompat.getStackSize(deadEntity);
-		} else if (StackMobCompat.isSupported() && StackMobCompat.killHoleStackOnDeath(deadEntity)) {
-			Messages.debug("StackedMobBonus: Pay reward for no %s mob", StackMobCompat.getStackSize(deadEntity));
-			return StackMobCompat.getStackSize(deadEntity);
+			Messages.debug("StackedMobBonus: Pay reward for no %s mob", MobStackerCompat.getStackSize(entity));
+			return MobStackerCompat.getStackSize(entity);
+		} else if (StackMobCompat.isSupported() && StackMobCompat.killHoleStackOnDeath(entity)) {
+			Messages.debug("StackedMobBonus: Pay reward for no %s mob", StackMobCompat.getStackSize(entity));
+			return StackMobCompat.getStackSize(entity);
 		} else {
 			Messages.debug("StackedMobBonus: Pay reward for one mob");
 			return 1;
@@ -35,8 +35,9 @@ public class StackedMobBonus implements IModifier {
 	}
 
 	@Override
-	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
+	public boolean doesApply(Entity entity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		return MobStackerCompat.isStackedMob(deadEntity) || StackMobCompat.isStackedMob(deadEntity);
+		Messages.debug("StackMobCompat.isStackedMob=%s", StackMobCompat.isStackedMob(entity));
+		return MobStackerCompat.isStackedMob(entity) || StackMobCompat.isStackedMob(entity);
 	}
 }

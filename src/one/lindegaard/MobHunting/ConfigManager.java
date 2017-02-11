@@ -73,7 +73,6 @@ import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.Vindicator;
 import org.bukkit.metadata.MetadataValue;
 
-import de.Keyle.MyPet.api.entity.MyPetBukkitEntity;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;

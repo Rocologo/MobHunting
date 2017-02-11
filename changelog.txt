@@ -1,7 +1,9 @@
 V4.4.4
+* Support for McMMO added. If McMMO changes a caught fish to TNT, Record, Spade or something else the player will not get a reward. 
 * Fixed Start/stop events for MiniGamesLib - games.
 * Fixed Start/stop events for BattleArena.
 * Fixed Start/stop events for PvPArena.
+* Added bonuses to the Fishing Event.
 V4.4.3
 * Fixed: https://www.spigotmc.org/threads/mobhunting.46937/page-102#post-2226536
 * Trying to fix: https://www.spigotmc.org/threads/mobhunting.46937/page-102#post-2226535
@@ -26,7 +28,7 @@ V4.3.9
 * Created MobHuntFishingEvent for the API
 * Added silent parameter to /mobhunt head give {player} {mobname} {displayname} {amount} {silent} - to give the head to the player silent
 * Added to new text messages to the lang file.
-* Fix bug where fisging runCmdDescription was printed although the runCmd was not run. 
+* Fix bug where fishing runCmdDescription was printed although the runCmd was not run. 
 * Added ability to disable fishing features.
 V4.3.8
 * Fixed bug where you got a reward no matter what you catches (Needs more testing)
