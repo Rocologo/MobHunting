@@ -17,8 +17,6 @@ import net.theprogrammersworld.herobrine.nms.entity.EntityManager;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
-import one.lindegaard.MobHunting.mobs.MobPlugin;
-import one.lindegaard.MobHunting.rewards.RewardData;
 
 public class HerobrineCompat implements Listener {
 
@@ -78,7 +76,6 @@ public class HerobrineCompat implements Listener {
 
 	public static boolean isHerobrineMob(Entity entity) {
 		if (isSupported()) {
-			// api.getNPCCore().getHumanNPC(0).
 			return entity.hasMetadata(MH_HEROBRINEMOBS) ||
 					entityManager.isCustomMob(entity.getEntityId())
 					|| entity.getEntityId()== Herobrine.herobrineNPC.getBukkitEntity().getEntityId()
@@ -148,8 +145,7 @@ public class HerobrineCompat implements Listener {
 				// Messages.injectMissingMobNamesToLangFiles();
 				// }
 				event.getEntity().setMetadata(MH_HEROBRINEMOBS, new FixedMetadataValue(mPlugin, true));
-			} //else 
-			//	Messages.debug("A %s was spawned", entity.getType());
+			} 
 		}
 	}
 

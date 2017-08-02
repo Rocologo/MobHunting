@@ -1201,36 +1201,19 @@ public class MobHuntingManager implements Listener {
 				}
 			}
 
-		HuntData data = new HuntData(killer);
-		if (killer != null) {
-			if (cash != 0 && (!MobHunting.getGrindingManager().isGrindingArea(killer.getLocation())
-					|| MobHunting.getGrindingManager().isWhitelisted(killer.getLocation()))) {
+		HuntData data = new HuntData(getPlayer(killer, killed));
+		if (getPlayer(killer, killed) != null) {
+			if (cash != 0 && (!MobHunting.getGrindingManager().isGrindingArea(getPlayer(killer, killed).getLocation())
+					|| MobHunting.getGrindingManager().isWhitelisted(getPlayer(killer, killed).getLocation()))) {
 				// Killstreak
-				data.handleKillstreak(killer);
+				data.handleKillstreak(getPlayer(killer, killed));
 			} else {
 				// Killstreak ended. Players started to kill 4 chicken and the
 				// one mob to gain 4 x prize
 				if (data.getKillstreakLevel() != 0 && data.getKillstreakMultiplier() != 1)
 					Messages.playerActionBarMessage(getPlayer(killer, killed),
 							ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
-				data.resetKillStreak(killer);
-			}
-		} else if (MyPetCompat.isKilledByMyPet(killed)) {
-			Player player = MyPetCompat.getMyPet(killed).getOwner().getPlayer();
-			data.getHuntDataFromPlayer(player);
-			if (cash != 0 && (!MobHunting.getGrindingManager()
-					.isGrindingArea(MyPetCompat.getMyPet(killed).getOwner().getPlayer().getLocation())
-					|| MobHunting.getGrindingManager()
-							.isWhitelisted(MyPetCompat.getMyPet(killed).getOwner().getPlayer().getLocation())))
-				// Killstreak
-				data.handleKillstreak(MyPetCompat.getMyPet(killed).getOwner().getPlayer());
-			else {
-				// Killstreak ended. Players started to kill 4 chicken and the
-				// one mob to gain 4 x prize
-				if (data.getKillstreakLevel() != 0 && data.getKillstreakMultiplier() != 1)
-					Messages.playerActionBarMessage(MyPetCompat.getMyPet(killed).getOwner().getPlayer(),
-							ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
-				data.resetKillStreak(player);
+				data.resetKillStreak(getPlayer(killer, killed));
 			}
 		} else {
 			Messages.debug("======================= kill ended (31)=====================");
