@@ -39,7 +39,7 @@ public class RecordHungry implements Achievement, Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onDeath(MobHuntKillEvent event) {
+	public void onDeath(MobHuntKillEvent event) {
 		if (!(event.getKilledEntity() instanceof Creeper)
 				|| !MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getKilledEntity().getWorld())
 				|| (MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) <= 0))

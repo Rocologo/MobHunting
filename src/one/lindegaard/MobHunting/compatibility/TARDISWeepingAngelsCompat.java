@@ -151,9 +151,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 			mob.setMobType(key);
 			mMobRewardData.put(key, mob);
 			MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(key);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
+		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
 	}

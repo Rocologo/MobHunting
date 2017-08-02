@@ -4,11 +4,11 @@ import one.lindegaard.MobHunting.mobs.ExtendedMob;
 
 public interface ProgressAchievement extends Achievement
 {
-	public int getNextLevel();
+	int getNextLevel();
 	
-	public String inheritFrom();
+	String inheritFrom();
 	
-	public String nextLevelId();
+	String nextLevelId();
 	
-	public ExtendedMob getExtendedMob();
+	ExtendedMob getExtendedMob();
 }

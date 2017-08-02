@@ -25,7 +25,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class BagOfGoldSign implements Listener {
 
-	public BagOfGoldSign() {
+	private RewardManager rewardManager;
+
+	public BagOfGoldSign(RewardManager rewardManager) {
+		this.rewardManager = rewardManager;
 		Bukkit.getServer().getPluginManager().registerEvents(this, MobHunting.getInstance());
 	}
 
@@ -72,7 +75,7 @@ public class BagOfGoldSign implements Listener {
 								return;
 							}
 						}
-						RewardManager.getEconomy().depositPlayer(player, money);
+						rewardManager.getEconomy().depositPlayer(player, money);
 						if (moneyInHand <= moneyOnSign) {
 							event.getItem().setAmount(0);
 							event.getItem().setType(Material.AIR);
@@ -90,9 +93,9 @@ public class BagOfGoldSign implements Listener {
 							event.getItem().setItemMeta(im);
 						}
 						Messages.debug("%s sold his bag of gold for %s", player.getName(),
-								RewardManager.getEconomy().format(money));
+								rewardManager.getEconomy().format(money));
 						player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.sold", "money",
-								RewardManager.getEconomy().format(money), "rewardname",
+								rewardManager.getEconomy().format(money), "rewardname",
 								ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 										+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName));
 					} else {
@@ -113,7 +116,7 @@ public class BagOfGoldSign implements Listener {
 								Messages.getString("mobhunting.bagofgoldsign.line3.everything")));
 						return;
 					}
-					if (RewardManager.getEconomy().getBalance(player) >= moneyOnSign) {
+					if (rewardManager.getEconomy().getBalance(player) >= moneyOnSign) {
 
 						boolean found = false;
 						for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
@@ -151,7 +154,7 @@ public class BagOfGoldSign implements Listener {
 						if (!found) {
 
 							if (player.getInventory().firstEmpty() == -1)
-								RewardManager.dropMoneyOnGround(player, null, player.getLocation(),
+								rewardManager.dropMoneyOnGround(player, null, player.getLocation(),
 										Misc.ceil(moneyOnSign));
 							else {
 								ItemStack is = CustomItems.getCustomtexture(
@@ -168,9 +171,9 @@ public class BagOfGoldSign implements Listener {
 
 						// IF okay the withdraw money
 						if (found) {
-							RewardManager.getEconomy().withdrawPlayer(player, moneyOnSign);
+							rewardManager.getEconomy().withdrawPlayer(player, moneyOnSign);
 							player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.bought", "money",
-									RewardManager.getEconomy().format(moneyOnSign), "rewardname",
+									rewardManager.getEconomy().format(moneyOnSign), "rewardname",
 									ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 											+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName));
 						}

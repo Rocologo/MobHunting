@@ -57,8 +57,11 @@ public class MetricsManager {
 
 	private org.bstats.Metrics bStatsMetrics;
 
-	public MetricsManager(MobHunting instance) {
+	private ProtocolLibCompat protocolLibCompat;
+
+	public MetricsManager(MobHunting instance, ProtocolLibCompat protocolLibCompat) {
 		this.instance = instance;
+		this.protocolLibCompat = protocolLibCompat;
 	}
 
 	public void startBStatsMetrics() {
@@ -135,7 +138,7 @@ public class MetricsManager {
 				valueMap.put("Gringotts", GringottsCompat.isSupported() ? 1 : 0);
 				valueMap.put("MyPet", MyPetCompat.isSupported() ? 1 : 0);
 				valueMap.put("WorldEdit", WorldEditCompat.isSupported() ? 1 : 0);
-				valueMap.put("ProtocolLib", ProtocolLibCompat.isSupported() ? 1 : 0);
+				valueMap.put("ProtocolLib", protocolLibCompat.isSupported() ? 1 : 0);
 				valueMap.put("ExtraHardMode", ExtraHardModeCompat.isSupported() ? 1 : 0);
 				valueMap.put("CrackShot", CrackShotCompat.isSupported() ? 1 : 0);
 				return valueMap;
@@ -263,7 +266,7 @@ public class MetricsManager {
 		integrationsGraph.addPlotter(new Metrics.Plotter("ProtocolLib") {
 			@Override
 			public int getValue() {
-				return ProtocolLibCompat.isSupported() ? 1 : 0;
+				return protocolLibCompat.isSupported() ? 1 : 0;
 			}
 		});
 		integrationsGraph.addPlotter(new Metrics.Plotter("ExtraHardMode") {

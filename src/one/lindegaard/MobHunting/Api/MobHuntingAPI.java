@@ -57,27 +57,19 @@ public class MobHuntingAPI {
 	}
 
 	public static boolean isBagOfGoldReward(ItemStack itemStack) {
-		if (Reward.isReward(itemStack))
-			return Reward.getReward(itemStack).isBagOfGoldReward();
-		return false;
+		return Reward.isReward(itemStack) && Reward.getReward(itemStack).isBagOfGoldReward();
 	}
 
 	public static boolean isKilledHeadReward(ItemStack itemStack) {
-		if (Reward.isReward(itemStack))
-			return Reward.getReward(itemStack).isKilledHeadReward();
-		return false;
+		return Reward.isReward(itemStack) && Reward.getReward(itemStack).isKilledHeadReward();
 	}
 
 	public static boolean isKillerHeadReward(ItemStack itemStack) {
-		if (Reward.isReward(itemStack))
-			return Reward.getReward(itemStack).isKillerHeadReward();
-		return false;
+		return Reward.isReward(itemStack) && Reward.getReward(itemStack).isKillerHeadReward();
 	}
 
 	public static boolean isItemReward(ItemStack itemStack) {
-		if (Reward.isReward(itemStack))
-			return Reward.getReward(itemStack).isItemReward();
-		return false;
+		return Reward.isReward(itemStack) && Reward.getReward(itemStack).isItemReward();
 	}
 
 }

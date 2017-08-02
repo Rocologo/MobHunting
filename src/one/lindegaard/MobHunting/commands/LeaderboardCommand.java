@@ -302,12 +302,7 @@ public class LeaderboardCommand implements ICommand, Listener {
 		if (!args[args.length - 1].trim().isEmpty()) {
 			String match = args[args.length - 1].trim().toLowerCase();
 
-			Iterator<String> it = items.iterator();
-			while (it.hasNext()) {
-				String name = it.next();
-				if (!name.toLowerCase().startsWith(match))
-					it.remove();
-			}
+			items.removeIf(name -> !name.toLowerCase().startsWith(match));
 		}
 		return items;
 	}
@@ -387,13 +382,13 @@ public class LeaderboardCommand implements ICommand, Listener {
 	}
 
 	private static class BoardState {
-		public Integer width;
-		public Integer height;
-		public Boolean horizontal;
+		Integer width;
+		Integer height;
+		Boolean horizontal;
 		public StatType[] type;
 		public TimePeriod[] period;
-		public StatType[] addType;
-		public TimePeriod[] addPeriod;
+		StatType[] addType;
+		TimePeriod[] addPeriod;
 		public boolean create;
 	}
 }

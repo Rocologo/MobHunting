@@ -3,6 +3,7 @@ package one.lindegaard.MobHunting.bounty;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,8 +28,8 @@ public class WorldGroup {
 	public WorldGroup() {
 		if (worldGroups.isEmpty()) {
 			worldGroups.put("DefaultGroup", Arrays.asList("world", "world_nether", "world_the_end"));
-			worldGroups.put("CreativeGroup", Arrays.asList("creative"));
-			worldGroups.put("SurvivalGroup", Arrays.asList("survival"));
+			worldGroups.put("CreativeGroup", Collections.singletonList("creative"));
+			worldGroups.put("SurvivalGroup", Collections.singletonList("survival"));
 		}
 	}
 

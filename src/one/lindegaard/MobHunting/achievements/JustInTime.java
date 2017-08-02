@@ -33,7 +33,7 @@ public class JustInTime implements Achievement, Listener {
 	}
 
 	@EventHandler
-	private void onKill(MobHuntKillEvent event) {
+	public void onKill(MobHuntKillEvent event) {
 		// getTime() return world time in ticks. 0 ticks = 6:00 500=6:30
 		// Zombies begin burning about 5:30 = 23500
 		// player get a reward if he kills between 5:30 and 6:00.

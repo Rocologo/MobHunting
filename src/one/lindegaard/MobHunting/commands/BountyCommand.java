@@ -256,12 +256,7 @@ public class BountyCommand implements ICommand {
 		
 		if (!args[args.length - 1].trim().isEmpty()) {
 			String match = args[args.length - 1].trim().toLowerCase();
-			Iterator<String> it = items.iterator();
-			while (it.hasNext()) {
-				String name = it.next();
-				if (!name.toLowerCase().startsWith(match))
-					it.remove();
-			}
+			items.removeIf(name -> !name.toLowerCase().startsWith(match));
 		}
 		return items;
 	}

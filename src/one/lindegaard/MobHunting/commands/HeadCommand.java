@@ -137,29 +137,27 @@ public class HeadCommand implements ICommand, Listener {
 						|| args[5].equalsIgnoreCase("1"))) {
 					silent = true;
 				}
-				if (mob != null) {
-					if (Misc.isMC18OrNewer()) {
-						// Use GameProfile
-						ItemStack head = mob.getCustomHead(displayName, amount, mob.getHeadPrize());
-						// ItemStack head = mob.getHead(displayName, 1,
-						// mob.getHeadPrize());
-						((Player) toPlayer).getWorld().dropItem(((Player) toPlayer).getLocation(), head);
+				if (Misc.isMC18OrNewer()) {
+                    // Use GameProfile
+                    ItemStack head = mob.getCustomHead(displayName, amount, mob.getHeadPrize());
+                    // ItemStack head = mob.getHead(displayName, 1,
+                    // mob.getHeadPrize());
+                    ((Player) toPlayer).getWorld().dropItem(((Player) toPlayer).getLocation(), head);
 
-					} else {
-						String cmdString = mob.getCommandString().replace("{player}", toPlayer.getName())
-								.replace("{displayname}", displayName).replace("{lore}", MH_REWARD)
-								.replace("{playerid}", mob.getPlayerUUID())
-								.replace("{texturevalue}", mob.getTextureValue())
-								.replace("{amount}", String.valueOf(amount)).replace("{playername}",
-										offlinePlayer != null ? offlinePlayer.getName() : mob.getPlayerProfile());
-						Messages.debug("%s Cmd=%s", mob.getFriendlyName(), cmdString);
-						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), cmdString);
-					}
-					if (toPlayer.isOnline() && !silent)
-						Messages.playerSendMessage((Player) toPlayer,
-								Messages.getString("mobhunting.commands.head.you_got_a_head", "mobname", displayName));
+                } else {
+                    String cmdString = mob.getCommandString().replace("{player}", toPlayer.getName())
+                            .replace("{displayname}", displayName).replace("{lore}", MH_REWARD)
+                            .replace("{playerid}", mob.getPlayerUUID())
+                            .replace("{texturevalue}", mob.getTextureValue())
+                            .replace("{amount}", String.valueOf(amount)).replace("{playername}",
+                                    offlinePlayer != null ? offlinePlayer.getName() : mob.getPlayerProfile());
+                    Messages.debug("%s Cmd=%s", mob.getFriendlyName(), cmdString);
+                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), cmdString);
+                }
+				if (toPlayer.isOnline() && !silent)
+                    Messages.playerSendMessage((Player) toPlayer,
+                            Messages.getString("mobhunting.commands.head.you_got_a_head", "mobname", displayName));
 
-				}
 			}
 
 			return true;
@@ -294,12 +292,7 @@ public class HeadCommand implements ICommand, Listener {
 		
 		if (!args[args.length - 1].trim().isEmpty()) {
 			String match = args[args.length - 1].trim().toLowerCase();
-			Iterator<String> it = items.iterator();
-			while (it.hasNext()) {
-				String name = it.next();
-				if (!name.toLowerCase().startsWith(match))
-					it.remove();
-			}
+			items.removeIf(name -> !name.toLowerCase().startsWith(match));
 		}
 		return items;
 	}

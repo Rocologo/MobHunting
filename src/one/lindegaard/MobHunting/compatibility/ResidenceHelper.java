@@ -22,7 +22,7 @@ public class ResidenceHelper {
 				if (res.containsLoc(player.getLocation())) {
 					Map<String, Boolean> flags = res.getPermissions().getFlags();
 					for (String flag: flags.keySet()){
-						if (flag.equalsIgnoreCase("damage") && flags.get(flag).booleanValue()==false)
+						if (flag.equalsIgnoreCase("damage") && !flags.get(flag))
 							return true;
 					}
 

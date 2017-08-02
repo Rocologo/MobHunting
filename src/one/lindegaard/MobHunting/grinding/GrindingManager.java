@@ -32,9 +32,9 @@ import one.lindegaard.MobHunting.util.Misc;
 
 public class GrindingManager implements Listener {
 
-	private static HashMap<UUID, LinkedList<Area>> mKnownGrindingAreas = new HashMap<UUID, LinkedList<Area>>();
-	private static HashMap<UUID, LinkedList<Area>> mWhitelistedAreas = new HashMap<UUID, LinkedList<Area>>();
-	private static HashMap<Integer, GrindingInformation> killed_mobs = new HashMap<Integer, GrindingInformation>();
+	private static HashMap<UUID, LinkedList<Area>> mKnownGrindingAreas = new HashMap<>();
+	private static HashMap<UUID, LinkedList<Area>> mWhitelistedAreas = new HashMap<>();
+	private static HashMap<Integer, GrindingInformation> killed_mobs = new HashMap<>();
 
 	public GrindingManager(MobHunting instance) {
 		if (!loadWhitelist(instance))
@@ -252,10 +252,7 @@ public class GrindingManager implements Listener {
 
 		try {
 			blacklist.load(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		} catch (InvalidConfigurationException e) {
+		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 			return false;
 		}

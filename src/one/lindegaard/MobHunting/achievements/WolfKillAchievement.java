@@ -56,7 +56,7 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onWolfKillMob(MobHuntKillEvent event) {
+	public void onWolfKillMob(MobHuntKillEvent event) {
 		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getKilledEntity().getWorld())
 				|| !(event.getKilledEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)
 				|| (MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) <= 0))

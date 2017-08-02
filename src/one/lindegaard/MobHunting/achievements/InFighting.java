@@ -38,7 +38,7 @@ public class InFighting implements Achievement, Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onKill(MobHuntKillEvent event) {
+	public void onKill(MobHuntKillEvent event) {
 		if (!(event.getKilledEntity() instanceof Skeleton)
 				|| !MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getKilledEntity().getWorld())
 				|| MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) <= 0)

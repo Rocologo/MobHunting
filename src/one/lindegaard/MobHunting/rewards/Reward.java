@@ -107,8 +107,8 @@ public class Reward {
 	}
 
 	/**
-	 * @param description
-	 *            the description to set
+	 * @param displayName
+	 *            the displayName to set
 	 */
 	public void setDescription(String displayName) {
 		this.description = displayName.startsWith("Hidden:") ? displayName.substring(7) : displayName;

@@ -84,14 +84,14 @@ public class EighthHuntAchievement implements ProgressAchievement, Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	private void onKillCompleted(MobHuntKillEvent event) {
+	public void onKillCompleted(MobHuntKillEvent event) {
 		if (mExtendedMob.matches(event.getKilledEntity()))
 			MobHunting.getAchievementManager().awardAchievementProgress(this, event.getPlayer(),
 					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()), 1);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	private void onFishingCompleted(MobHuntFishingEvent event) {
+	public void onFishingCompleted(MobHuntFishingEvent event) {
 		if (mExtendedMob.matches(event.getFish())) {
 			MobHunting.getAchievementManager().awardAchievementProgress(this, event.getPlayer(),
 					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getFish()), 1);

@@ -32,7 +32,7 @@ public class ByTheBook implements Achievement, Listener {
 	}
 
 	@EventHandler
-	private void onKill(MobHuntKillEvent event) {
+	public void onKill(MobHuntKillEvent event) {
 		if ((event.getDamageInfo().getWeapon().getType() == Material.BOOK
 				|| event.getDamageInfo().getWeapon().getType() == Material.WRITTEN_BOOK
 				|| event.getDamageInfo().getWeapon().getType() == Material.BOOK_AND_QUILL)

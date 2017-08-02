@@ -127,7 +127,7 @@ public class AchievementsCommand implements ICommand {
 
 		String partial = args[0].toLowerCase();
 
-		ArrayList<String> names = new ArrayList<String>();
+		ArrayList<String> names = new ArrayList<>();
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			if (player.getName().toLowerCase().startsWith(partial))
 				names.add(player.getName());

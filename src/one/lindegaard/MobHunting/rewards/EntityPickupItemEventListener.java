@@ -1,127 +1,48 @@
 package one.lindegaard.MobHunting.rewards;
 
-import java.util.HashMap;
-
-import org.bukkit.ChatColor;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
 
 import one.lindegaard.MobHunting.Messages;
-import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
-import one.lindegaard.MobHunting.compatibility.ProtocolLibHelper;
 
 public class EntityPickupItemEventListener implements Listener {
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
-	public void onEntityPickupItemEvent(EntityPickupItemEvent event) {
-		// OBS: EntityPickupItemEvent does only exist in MC1.12 and newer
+    private PickupRewards pickupRewards;
 
-		// This event is NOT called when the inventory is full.
-		if (event.isCancelled())
-			return;
+    public EntityPickupItemEventListener(PickupRewards pickupRewards) {
+        this.pickupRewards = pickupRewards;
+    }
 
-		Item item = event.getItem();
-		if (Reward.isReward(item)) {
-			Reward reward = Reward.getReward(item);
-			LivingEntity entity = event.getEntity();
-			if (entity instanceof Player) {
-				Player player = (Player) entity;
-				// If not Gringotts
-				if (reward.getMoney() != 0)
-					if (!MobHunting.getConfigManager().dropMoneyOnGroundUseAsCurrency) {
-						MobHunting.getRewardManager().depositPlayer(player, reward.getMoney());
-						if (ProtocolLibCompat.isSupported())
-							ProtocolLibHelper.pickupMoney(player, item);
-						item.remove();
-						event.setCancelled(true);
-						Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup", "money",
-								MobHunting.getRewardManager().format(reward.getMoney())));
-					} else {
-						boolean found = false;
-						HashMap<Integer, ? extends ItemStack> slots = player.getInventory()
-								.all(item.getItemStack().getType());
-						for (int slot : slots.keySet()) {
-							ItemStack is = player.getInventory().getItem(slot);
-							if (Reward.isReward(is)) {
-								Reward rewardInSlot = Reward.getReward(is);
-								if ((reward.isBagOfGoldReward() || reward.isItemReward())
-										&& rewardInSlot.getRewardUUID().equals(reward.getRewardUUID())) {
-									ItemMeta im = is.getItemMeta();
-									Reward newReward = Reward.getReward(is);
-									newReward.setMoney(newReward.getMoney() + reward.getMoney());
-									im.setLore(newReward.getHiddenLore());
-									String displayName = MobHunting.getConfigManager().dropMoneyOnGroundItemtype
-											.equalsIgnoreCase("ITEM")
-													? MobHunting.getRewardManager().format(newReward.getMoney())
-													: newReward.getDisplayname() + " ("
-															+ MobHunting.getRewardManager().format(newReward.getMoney())
-															+ ")";
-									im.setDisplayName(
-											ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-													+ displayName);
-									is.setItemMeta(im);
-									is.setAmount(1);
-									event.setCancelled(true);
-									if (ProtocolLibCompat.isSupported())
-										ProtocolLibHelper.pickupMoney(player, item);
-									item.remove();
-									Messages.debug("Added %s to item in slot %s, new value is %s",
-											MobHunting.getRewardManager().format(reward.getMoney()), slot,
-											MobHunting.getRewardManager().format(newReward.getMoney()));
-									found = true;
-									break;
-								}
-							}
-						}
 
-						if (!found) {
-							ItemStack is = item.getItemStack();
-							ItemMeta im = is.getItemMeta();
-							String displayName = MobHunting.getConfigManager().dropMoneyOnGroundItemtype
-									.equalsIgnoreCase("ITEM") ? MobHunting.getRewardManager().format(reward.getMoney())
-											: reward.getDisplayname() + " ("
-													+ MobHunting.getRewardManager().format(reward.getMoney()) + ")";
-							im.setDisplayName(
-									ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-											+ displayName);
-							im.setLore(reward.getHiddenLore());
-							is.setItemMeta(im);
-							item.setItemStack(is);
-							item.setMetadata(RewardManager.MH_REWARD_DATA,
-									new FixedMetadataValue(MobHunting.getInstance(), new Reward(reward)));
-						}
-					}
-				if (RewardManager.getDroppedMoney().containsKey(item.getEntityId()))
-					RewardManager.getDroppedMoney().remove(item.getEntityId());
-				if (reward.getMoney() == 0)
-					Messages.debug("%s picked up a %s (# of rewards left=%s)", player.getName(),
-							reward.getDisplayname(), RewardManager.getDroppedMoney().size());
-				else
-					Messages.debug("%s picked up a %s with a value:%s (# of rewards left=%s)", player.getName(),
-							reward.getDisplayname(), MobHunting.getRewardManager().format(reward.getMoney()),
-							RewardManager.getDroppedMoney().size());
-			} else {
-				// Entity is not a Player
-				Messages.debug("A reward was picked up by a %s", entity.getType());
-				if (entity.getType().equals(EntityType.ZOMBIE) || entity.getType().equals(EntityType.SKELETON)
-						|| entity.getType().equals(EntityType.PIG_ZOMBIE)
-						|| entity.getType().equals(EntityType.WITHER_SKELETON)) {
-					Messages.debug("The pickup event was cancelled");
-					event.setCancelled(true);
-				}
-			}
-		}
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
+    public void onEntityPickupItemEvent(EntityPickupItemEvent event) {
+        // OBS: EntityPickupItemEvent does only exist in MC1.12 and newer
 
-	}
+        // This event is NOT called when the inventory is full.
+        if (event.isCancelled())
+            return;
+
+
+        Entity entity = event.getEntity();
+
+        if (event.getEntity().getType() != EntityType.PLAYER) {
+            // Entity is not a Player
+            Messages.debug("A reward was picked up by a %s", entity.getType());
+            if (entity.getType().equals(EntityType.ZOMBIE) || entity.getType().equals(EntityType.SKELETON)
+                    || entity.getType().equals(EntityType.PIG_ZOMBIE)
+                    || entity.getType().equals(EntityType.WITHER_SKELETON)) {
+                Messages.debug("The pickup event was cancelled");
+                event.setCancelled(true);
+            }
+
+            pickupRewards.rewardPlayer((Player) entity, event.getItem(), event::setCancelled);
+
+
+        }
+
+    }
 
 }

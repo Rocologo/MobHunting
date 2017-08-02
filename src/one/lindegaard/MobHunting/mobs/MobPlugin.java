@@ -30,7 +30,7 @@ public enum MobPlugin {
 	}
 
 	public boolean equalsName(String otherName) {
-		return (otherName == null) ? false : name.equals(otherName);
+		return (otherName != null) && name.equals(otherName);
 	}
 
 	public String toString() {

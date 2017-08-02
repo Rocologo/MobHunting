@@ -165,9 +165,7 @@ public class MasterMobHunterManager implements Listener {
 			Messages.debug("The file citizens-MasterMobHunter.yml is not used anymore and can be deleted.");
 			if (n > 0)
 				Messages.debug("Loaded %s MasterMobHunter Traits's from file.", n);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
+		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
 	}
@@ -221,7 +219,7 @@ public class MasterMobHunterManager implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onKilledTarget(EntityDeathEvent event) {
 		if (isMasterMobHunter(event.getEntity().getKiller()) && event.getEntity() instanceof Player) {
-			NPC npc = (NPC) CitizensCompat.getNPC(event.getEntity().getKiller());
+			NPC npc = CitizensCompat.getNPC(event.getEntity().getKiller());
 			final Player player = (Player) event.getEntity();
 			final NPC npc1 = npc;
 			Bukkit.getScheduler().runTaskLaterAsynchronously(MobHunting.getInstance(), new Runnable() {
@@ -289,7 +287,7 @@ public class MasterMobHunterManager implements Listener {
 	private void onPlayerJoin(PlayerJoinEvent event) {
 		Iterator<NPC> itr = CitizensAPI.getNPCRegistry().iterator();
 		while (itr.hasNext()) {
-			NPC npc = (NPC) itr.next();
+			NPC npc = itr.next();
 			if (event.getPlayer().getName().equals(npc.getName()) && isMasterMobHunter(npc))
 				update(npc);
 		}

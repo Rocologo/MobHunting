@@ -4,15 +4,15 @@ import org.bukkit.inventory.ItemStack;
 
 public interface Achievement
 {
-	public String getName();
-	public String getID();
+	String getName();
+	String getID();
 	
-	public String getDescription();
+	String getDescription();
 	
-	public double getPrize();
+	double getPrize();
 	
-	public String getPrizeCmd();
-	public String getPrizeCmdDescription();
+	String getPrizeCmd();
+	String getPrizeCmdDescription();
 	
-	public ItemStack getSymbol();
+	ItemStack getSymbol();
 }

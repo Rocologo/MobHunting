@@ -30,7 +30,7 @@ public class PlayerSettings {
 	}
 
 	/**
-	 * @param set
+	 * @param learning_mode
 	 *            learning mode for player (0:false, 1: true (in learning mode))
 	 */
 	public void setLearningMode(boolean learning_mode) {
@@ -45,8 +45,8 @@ public class PlayerSettings {
 	}
 
 	/**
-	 * @param type
-	 *            the type to set (0:false (unmuted), 1: true (muted))
+	 * @param mute
+	 *            the mute to set (0:false (unmuted), 1: true (muted))
 	 */
 	public void setMuteMode(boolean mute) {
 		this.mute = mute;

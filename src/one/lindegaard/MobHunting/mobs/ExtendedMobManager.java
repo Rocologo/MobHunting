@@ -185,7 +185,7 @@ public class ExtendedMobManager {
 	// This is only used to get a "random" mob_id stored when an Achievement is
 	// stored in mh_Daily
 	public ExtendedMob getFirstMob() {
-		int mob_id = mobs.keySet().iterator().next().intValue();
+		int mob_id = mobs.keySet().iterator().next();
 		return mobs.get(mob_id);
 	}
 

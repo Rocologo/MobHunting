@@ -37,7 +37,19 @@ import one.lindegaard.MobHunting.util.Misc;
 
 public class RewardListeners implements Listener {
 
-	@EventHandler(priority = EventPriority.NORMAL)
+	private RewardManager rewardManager;
+	private ProtocolLibCompat protocolLibCompat;
+	private ProtocolLibHelper protocolLibHelper;
+	private CustomItems customItems;
+
+    public RewardListeners(RewardManager rewardManager, ProtocolLibCompat protocolLibCompat, ProtocolLibHelper protocolLibHelper, CustomItems customItems) {
+        this.rewardManager = rewardManager;
+        this.protocolLibCompat = protocolLibCompat;
+        this.protocolLibHelper = protocolLibHelper;
+        this.customItems = customItems;
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerDropReward(PlayerDropItemEvent event) {
 		if (event.isCancelled())
 			return;
@@ -51,18 +63,18 @@ public class RewardListeners implements Listener {
 				item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 						+ reward.getDisplayname());
 				Messages.debug("%s dropped a %s (# of rewards left=%s)", player.getName(), reward.getDisplayname(),
-						RewardManager.getDroppedMoney().size());
+						rewardManager.getDroppedMoney().size());
 			} else {
 				String displayName = MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
 						? MobHunting.getRewardManager().format(money)
 						: reward.getDisplayname() + " (" + MobHunting.getRewardManager().format(money) + ")";
 				item.setCustomName(
 						ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
-				RewardManager.getDroppedMoney().put(item.getEntityId(), money);
+				rewardManager.getDroppedMoney().put(item.getEntityId(), money);
 				if (!MobHunting.getConfigManager().dropMoneyOnGroundUseAsCurrency)
-					RewardManager.getEconomy().withdrawPlayer(player, money);
+					rewardManager.getEconomy().withdrawPlayer(player, money);
 				Messages.debug("%s dropped %s money. (# of rewards left=%s)", player.getName(),
-						MobHunting.getRewardManager().format(money), RewardManager.getDroppedMoney().size());
+						MobHunting.getRewardManager().format(money), rewardManager.getDroppedMoney().size());
 				Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneydrop", "money",
 						MobHunting.getRewardManager().format(money)));
 			}
@@ -76,10 +88,10 @@ public class RewardListeners implements Listener {
 			return;
 
 		if (Reward.isReward(event.getEntity())) {
-			if (RewardManager.getDroppedMoney().containsKey(event.getEntity().getEntityId())) {
-				RewardManager.getDroppedMoney().remove(event.getEntity().getEntityId());
+			if (rewardManager.getDroppedMoney().containsKey(event.getEntity().getEntityId())) {
+				rewardManager.getDroppedMoney().remove(event.getEntity().getEntityId());
 				Messages.debug("The reward was lost - despawned (# of rewards left=%s)",
-						RewardManager.getDroppedMoney().size());
+						rewardManager.getDroppedMoney().size());
 			}
 		}
 	}
@@ -102,8 +114,8 @@ public class RewardListeners implements Listener {
 		} else {
 			// Messages.debug("The reward was picked up by %s",
 			// event.getInventory().getType());
-			if (RewardManager.getDroppedMoney().containsKey(item.getEntityId()))
-				RewardManager.getDroppedMoney().remove(item.getEntityId());
+			if (rewardManager.getDroppedMoney().containsKey(item.getEntityId()))
+                rewardManager.getDroppedMoney().remove(item.getEntityId());
 		}
 	}
 
@@ -122,21 +134,21 @@ public class RewardListeners implements Listener {
 					continue;
 				Item item = (Item) entity;
 				ItemStack isOnground = item.getItemStack();
-				if (Reward.isReward(isOnground) && RewardManager.getDroppedMoney().containsKey(entity.getEntityId())) {
+				if (Reward.isReward(isOnground) && rewardManager.getDroppedMoney().containsKey(entity.getEntityId())) {
 					Reward rewardOnGround = Reward.getReward(isOnground);
 					double moneyOnGround = rewardOnGround.getMoney();
 					// If not Gringotts
 					if (rewardOnGround.getMoney() != 0) {
-						if (ProtocolLibCompat.isSupported())
-							ProtocolLibHelper.pickupMoney(player, entity);
-						if (RewardManager.getDroppedMoney().containsKey(entity.getEntityId()))
-							RewardManager.getDroppedMoney().remove(entity.getEntityId());
+						if (protocolLibCompat.isSupported())
+                            protocolLibHelper.pickupMoney(player, entity);
+						if (rewardManager.getDroppedMoney().containsKey(entity.getEntityId()))
+                            rewardManager.getDroppedMoney().remove(entity.getEntityId());
 						if (!MobHunting.getConfigManager().dropMoneyOnGroundUseAsCurrency) {
 							MobHunting.getRewardManager().depositPlayer(player, moneyOnGround);
 							entity.remove();
 							Messages.debug("%s picked up the %s money. (# of rewards left=%s)", player.getName(),
 									MobHunting.getRewardManager().format(rewardOnGround.getMoney()),
-									RewardManager.getDroppedMoney().size());
+                                    rewardManager.getDroppedMoney().size());
 							Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup",
 									"money", MobHunting.getRewardManager().format(rewardOnGround.getMoney())));
 						} else {
@@ -165,8 +177,8 @@ public class RewardListeners implements Listener {
 										is.setItemMeta(im);
 										is.setAmount(1);
 										event.setCancelled(true);
-										if (ProtocolLibCompat.isSupported())
-											ProtocolLibHelper.pickupMoney(player, item);
+										if (protocolLibCompat.isSupported())
+                                            protocolLibHelper.pickupMoney(player, item);
 										item.remove();
 										Messages.debug("ItemStack in slot %s added value %s, new value %s", slot,
 												MobHunting.getRewardManager().format(rewardOnGround.getMoney()),
@@ -210,11 +222,11 @@ public class RewardListeners implements Listener {
 		while (nearby.hasNext()) {
 			targetEntity = nearby.next();
 			if (Reward.isReward(targetEntity)) {
-				if (RewardManager.getDroppedMoney().containsKey(targetEntity.getEntityId()))
-					RewardManager.getDroppedMoney().remove(targetEntity.getEntityId());
+				if (rewardManager.getDroppedMoney().containsKey(targetEntity.getEntityId()))
+                    rewardManager.getDroppedMoney().remove(targetEntity.getEntityId());
 				targetEntity.remove();
 				Messages.debug("The reward was hit by %s and removed. (# of rewards left=%s)", projectile.getType(),
-						RewardManager.getDroppedMoney().size());
+                        rewardManager.getDroppedMoney().size());
 			}
 		}
 	}
@@ -236,9 +248,9 @@ public class RewardListeners implements Listener {
 				reward.setUniqueId(UUID.randomUUID());
 			Messages.debug("Placed Reward Block:%s", reward.toString());
 			block.setMetadata(RewardManager.MH_REWARD_DATA, new FixedMetadataValue(MobHunting.getInstance(), reward));
-			RewardManager.getLocations().put(reward.getUniqueUUID(), reward);
-			RewardManager.getReward().put(reward.getUniqueUUID(), block.getLocation());
-			RewardManager.saveReward(reward.getUniqueUUID());
+            rewardManager.getLocations().put(reward.getUniqueUUID(), reward);
+            rewardManager.getReward().put(reward.getUniqueUUID(), block.getLocation());
+            rewardManager.saveReward(reward.getUniqueUUID());
 		}
 	}
 
@@ -255,7 +267,7 @@ public class RewardListeners implements Listener {
 			block.removeMetadata(RewardManager.MH_REWARD_DATA, MobHunting.getInstance());
 			ItemStack is;
 			if (reward.isBagOfGoldReward()) {
-				is = CustomItems.getCustomtexture(reward.getRewardUUID(), reward.getDisplayname(),
+				is = customItems.getCustomtexture(reward.getRewardUUID(), reward.getDisplayname(),
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, reward.getMoney(),
 						reward.getUniqueUUID());
@@ -272,7 +284,7 @@ public class RewardListeners implements Listener {
 				else if (reward.getDisplayname().equalsIgnoreCase(MinecraftMob.EnderDragon.getFriendlyName())) {
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
 				} else
-					is = CustomItems.getCustomtexture(reward.getRewardUUID(), reward.getDisplayname(),
+					is = customItems.getCustomtexture(reward.getRewardUUID(), reward.getDisplayname(),
 							MinecraftMob.getTexture(reward.getDisplayname()),
 							MinecraftMob.getSignature(reward.getDisplayname()), reward.getMoney(),
 							reward.getUniqueUUID());
@@ -295,10 +307,10 @@ public class RewardListeners implements Listener {
 			item.setCustomNameVisible(true);
 			item.setMetadata(RewardManager.MH_REWARD_DATA,
 					new FixedMetadataValue(MobHunting.getInstance(), new Reward(reward.getHiddenLore())));
-			if (RewardManager.getLocations().containsKey(reward.getUniqueUUID()))
-				RewardManager.getLocations().remove(reward.getUniqueUUID());
-			if (RewardManager.getReward().containsKey(reward.getUniqueUUID()))
-				RewardManager.getReward().remove(reward.getUniqueUUID());
+			if (rewardManager.getLocations().containsKey(reward.getUniqueUUID()))
+                rewardManager.getLocations().remove(reward.getUniqueUUID());
+			if (rewardManager.getReward().containsKey(reward.getUniqueUUID()))
+                rewardManager.getReward().remove(reward.getUniqueUUID());
 		}
 
 	}
@@ -354,7 +366,7 @@ public class RewardListeners implements Listener {
 							isCurrentSlot = RewardManager.setDisplayNameAndHiddenLores(isCurrentSlot.clone(),
 									reward.getDisplayname(), Misc.ceil(money), reward.getRewardUUID());
 						} else {
-							isCurrentSlot = CustomItems.getCustomtexture(reward.getRewardUUID(),
+							isCurrentSlot = customItems.getCustomtexture(reward.getRewardUUID(),
 									reward.getDisplayname(),
 									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
@@ -367,7 +379,7 @@ public class RewardListeners implements Listener {
 							isCursor = RewardManager.setDisplayNameAndHiddenLores(isCurrentSlot.clone(),
 									reward.getDisplayname(), Misc.floor(money), reward.getRewardUUID());
 						} else {
-							isCursor = CustomItems.getCustomtexture(reward.getRewardUUID(), reward.getDisplayname(),
+							isCursor = customItems.getCustomtexture(reward.getRewardUUID(), reward.getDisplayname(),
 									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
 									Misc.floor(money), UUID.randomUUID());

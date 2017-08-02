@@ -33,7 +33,7 @@ public class MasterSniper implements Achievement, Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	private void onKillCompleted(MobHuntKillEvent event) {
+	public void onKillCompleted(MobHuntKillEvent event) {
 		if (event.getPlayer().isInsideVehicle() && event.getDamageInfo().getWeapon().getType() == Material.BOW
 				&& !event.getDamageInfo().isMeleWeapenUsed()
 				&& event.getPlayer().getVehicle().getVelocity().length() > 0.2

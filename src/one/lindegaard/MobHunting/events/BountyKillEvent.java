@@ -43,7 +43,7 @@ public class BountyKillEvent extends Event implements Cancellable {
 	}
 
 	/**
-	 * @param WorldGroupName
+	 * @param worldGroupName
 	 *            the WorldGroupName to set
 	 */
 	public void setWorldGroupName(String worldGroupName) {
@@ -58,8 +58,7 @@ public class BountyKillEvent extends Event implements Cancellable {
 	}
 
 	/**
-	 * @param Killer
-	 *            the Killer to set
+	 * @param killer the Killer to set
 	 */
 	public void setKiller(Entity killer) {
 		this.mKiller = killer;
@@ -88,7 +87,7 @@ public class BountyKillEvent extends Event implements Cancellable {
 	}
 
 	/**
-	 * @param mBounties
+	 * @param bounties
 	 *            the mBounties to set
 	 */
 	public void setBounties(Set<Bounty> bounties) {

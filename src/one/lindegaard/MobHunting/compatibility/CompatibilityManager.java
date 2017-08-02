@@ -11,7 +11,7 @@ public class CompatibilityManager {
 	/**
 	 * Registers the compatability handler if the plugin specified is loaded
 	 * 
-	 * @param compatabilityHandler
+	 * @param compatibilityHandler
 	 *            The class that will be created
 	 * @param pluginName
 	 *            The name of the plugin to check

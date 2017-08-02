@@ -63,15 +63,6 @@ public abstract class AutoConfig {
 				}
 			}
 		}
-		for (Entry<String, String> e : mCategoryComments.entrySet()) {
-			String key = e.getKey();
-			if (key.equals(category)) {
-				String value = e.getValue();
-				if (value.equals(node)) {
-					mCategoryComments.remove(value);
-				}
-			}
-		}
 	}
 
 	protected void onPostLoad() throws InvalidConfigurationException {
@@ -88,7 +79,7 @@ public abstract class AutoConfig {
 				mFile.getParentFile().mkdirs();
 				mFile.createNewFile();
 			}
-			
+
 			InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(mFile), StandardCharsets.UTF_8);
 
 			// Parse the config
@@ -197,16 +188,7 @@ public abstract class AutoConfig {
 			onPostLoad();
 
 			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		} catch (InvalidConfigurationException e) {
-			e.printStackTrace();
-			return false;
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			return false;
-		} catch (IllegalAccessException e) {
+		} catch (IOException | InvalidConfigurationException | IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 			return false;
 		}

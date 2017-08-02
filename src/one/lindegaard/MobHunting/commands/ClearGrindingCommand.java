@@ -1,5 +1,6 @@
 package one.lindegaard.MobHunting.commands;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -69,7 +70,7 @@ public class ClearGrindingCommand implements ICommand {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
-		return null;
+		return Collections.emptyList();
 	}
 
 }

@@ -97,7 +97,7 @@ public class LeaderboardManager implements Listener {
 	// *******************************************************************
 	public void createLeaderboard(Location location, BlockFace facing, StatType[] type, TimePeriod[] period,
 			boolean horizontal, int width, int height) throws IllegalArgumentException {
-		WorldLeaderboard board = new WorldLeaderboard(location, facing, width, height, horizontal, type, period);
+		WorldLeaderboard board = new WorldLeaderboard(location, facing, width, height, horizontal, type, period, rewardManager);
 		if (!board.isSpaceAvailable())
 			throw new IllegalArgumentException("There is not enough room for the signs.");
 
@@ -210,7 +210,7 @@ public class LeaderboardManager implements Listener {
 		while (keys.hasNext()) {
 			String key = keys.next();
 			ConfigurationSection section = config.getConfigurationSection(key);
-			WorldLeaderboard board = new WorldLeaderboard();
+			WorldLeaderboard board = new WorldLeaderboard(rewardManager);
 			try {
 				board.read(section);
 				board.update();

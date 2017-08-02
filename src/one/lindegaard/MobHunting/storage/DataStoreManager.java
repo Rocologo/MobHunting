@@ -30,7 +30,7 @@ import one.lindegaard.MobHunting.storage.asynch.BountyRetrieverTask;
 
 public class DataStoreManager {
 	// Accessed on multiple threads
-	private HashSet<Object> mWaiting = new HashSet<Object>();
+	private final HashSet<Object> mWaiting = new HashSet<Object>();
 
 	// Accessed only from these threads
 	private IDataStore mStore;

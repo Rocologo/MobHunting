@@ -515,7 +515,6 @@ public enum MinecraftMob {
 	/**
 	 * Return the reward money for a given mob
 	 * 
-	 * @param mob
 	 * @return value
 	 */
 	public double getHeadPrize() {

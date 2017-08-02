@@ -222,8 +222,8 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 	public void read(ConfigurationSection section) throws InvalidConfigurationException, IllegalStateException {
 		setStatType(StatType.fromColumnName(section.getString("stattype")));
 		setPeriod(TimePeriod.fromColumnName(section.getString("period")));
-		setNumberOfKills(Integer.valueOf(section.getInt("kills")));
-		setRank(Integer.valueOf(section.getInt("rank")));
+		setNumberOfKills(section.getInt("kills"));
+		setRank(section.getInt("rank"));
 		if (section.contains("signs")) {
 			List<Location> signLocations = new ArrayList<Location>();
 			signLocations = (List<Location>) section.get("signs", signLocations);

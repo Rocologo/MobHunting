@@ -17,14 +17,14 @@ public interface IDataStore {
 	 * 
 	 * @throws DataStoreException
 	 */
-	public void initialize() throws DataStoreException;
+	void initialize() throws DataStoreException;
 
 	/**
 	 * Closing all connections to the Database
 	 * 
 	 * @throws DataStoreException
 	 */
-	public void shutdown() throws DataStoreException;
+	void shutdown() throws DataStoreException;
 
 	/**
 	 * loadPlayerStats - Loading <count> records of Player Stats from the
@@ -36,7 +36,7 @@ public interface IDataStore {
 	 * @return List<StatStore>
 	 * @throws DataStoreException
 	 */
-	public List<StatStore> loadPlayerStats(StatType type, TimePeriod period, int count) throws DataStoreException;
+	List<StatStore> loadPlayerStats(StatType type, TimePeriod period, int count) throws DataStoreException;
 
 	/**
 	 * Save a Set of Player Stats to the Database
@@ -44,7 +44,7 @@ public interface IDataStore {
 	 * @param stats
 	 * @throws DataStoreException
 	 */
-	public void savePlayerStats(Set<StatStore> stats) throws DataStoreException;
+	void savePlayerStats(Set<StatStore> stats) throws DataStoreException;
 
 	/**
 	 * Load a Players Archievements
@@ -53,7 +53,7 @@ public interface IDataStore {
 	 * @return
 	 * @throws DataStoreException
 	 */
-	public Set<AchievementStore> loadAchievements(OfflinePlayer player) throws DataStoreException;
+	Set<AchievementStore> loadAchievements(OfflinePlayer player) throws DataStoreException;
 
 	/**
 	 * Save a Set of players archievements
@@ -61,7 +61,7 @@ public interface IDataStore {
 	 * @param achievements
 	 * @throws DataStoreException
 	 */
-	public void saveAchievements(Set<AchievementStore> achievements) throws DataStoreException;
+	void saveAchievements(Set<AchievementStore> achievements) throws DataStoreException;
 
 	/**
 	 * Get the player by his name from the Database. ings @param name
@@ -69,7 +69,7 @@ public interface IDataStore {
 	 * @return
 	 * @throws DataStoreException
 	 */
-	public OfflinePlayer getPlayerByName(String name) throws DataStoreException;
+	OfflinePlayer getPlayerByName(String name) throws DataStoreException;
 
 	/**
 	 * Get the players Settings from the Database
@@ -79,7 +79,7 @@ public interface IDataStore {
 	 * @throws DataStoreException
 	 * @throws SQLException
 	 */
-	public PlayerSettings loadPlayerSettings(OfflinePlayer player) throws DataStoreException, SQLException;
+	PlayerSettings loadPlayerSettings(OfflinePlayer player) throws DataStoreException, SQLException;
 
 	/**
 	 * Update the players Settings in the Database
@@ -87,7 +87,7 @@ public interface IDataStore {
 	 * @param playerDataSet
 	 * @throws DataStoreException
 	 */
-	public void savePlayerSettings(Set<PlayerSettings> ps) throws DataStoreException;
+	void savePlayerSettings(Set<PlayerSettings> ps) throws DataStoreException;
 
 	/**
 	 * Insert all PlayerData for one player into the Database
@@ -95,7 +95,7 @@ public interface IDataStore {
 	 * @param ps
 	 * @throws DataStoreException
 	 */
-	public void insertPlayerSettings(PlayerSettings ps) throws DataStoreException;
+	void insertPlayerSettings(PlayerSettings ps) throws DataStoreException;
 
 	/**
 	 * Load all bounties for the given player directly from the Sql Database
@@ -103,14 +103,14 @@ public interface IDataStore {
 	 * @return Set<Bounty>
 	 * @throws DataStoreException
 	 */
-	public Set<Bounty> loadBounties(OfflinePlayer mPlayer) throws DataStoreException;
+	Set<Bounty> loadBounties(OfflinePlayer mPlayer) throws DataStoreException;
 
 	/**
 	 * Save the Bounty Sets direktly to the Database
 	 * @param bountyDataSet
 	 * @throws DataStoreException
 	 */
-	public void saveBounties(Set<Bounty> bountyDataSet) throws DataStoreException;
+	void saveBounties(Set<Bounty> bountyDataSet) throws DataStoreException;
 
 	/**
 	 * Fixes error in the database
@@ -118,16 +118,16 @@ public interface IDataStore {
 	 * @throws SQLException
 	 * @throws DataStoreException 
 	 */
-	public void databaseFixLeaderboard() throws DataStoreException;
+	void databaseFixLeaderboard() throws DataStoreException;
 	
 	/**
 	 * Convert all tables to use UTF-8 character set.
 	 * @param database_name
 	 * @throws DataStoreException
 	 */
-	public void databaseConvertToUtf8(String database_name) throws DataStoreException;
+	void databaseConvertToUtf8(String database_name) throws DataStoreException;
 
-	public OfflinePlayer getPlayerByPlayerId(int playerId) throws DataStoreException;
+	OfflinePlayer getPlayerByPlayerId(int playerId) throws DataStoreException;
 
 	/**
 	 * Get the player ID directly from the database
@@ -136,41 +136,41 @@ public interface IDataStore {
 	 * @throws DataStoreException
 	 * @throws UserNotFoundException
 	 */
-	public int getPlayerId(OfflinePlayer player) throws DataStoreException, UserNotFoundException;
+	int getPlayerId(OfflinePlayer player) throws DataStoreException;
 
 	
-	public Set<ExtendedMob> loadMobs() throws DataStoreException;
+	Set<ExtendedMob> loadMobs() throws DataStoreException;
 
-	public void insertMissingVanillaMobs();
+	void insertMissingVanillaMobs();
 	
-	public void insertMissingMythicMobs();
+	void insertMissingMythicMobs();
 
-	public void insertMissingCitizensMobs();
+	void insertMissingCitizensMobs();
 
-	public void insertTARDISWeepingAngelsMobs();
+	void insertTARDISWeepingAngelsMobs();
 
-	public void insertMysteriousHalloweenMobs();
+	void insertMysteriousHalloweenMobs();
 	
-	public void insertSmartGiants();
+	void insertSmartGiants();
 
-	public void insertCustomMobs();
+	void insertCustomMobs();
 	
-	public void insertInfernalMobs();
+	void insertInfernalMobs();
 
-	public void insertMobs(Set<ExtendedMob> mobs) throws DataStoreException;
+	void insertMobs(Set<ExtendedMob> mobs) throws DataStoreException;
 
-	public void updateMobs(Set<ExtendedMob> mobs) throws DataStoreException;
+	void updateMobs(Set<ExtendedMob> mobs) throws DataStoreException;
 
-	public void insertMissingMythicMobs(String mob);
+	void insertMissingMythicMobs(String mob);
 
-	public void insertCitizensMobs(String mob);
+	void insertCitizensMobs(String mob);
 
-	public void insertTARDISWeepingAngelsMobs(String mob);
+	void insertTARDISWeepingAngelsMobs(String mob);
 
-	public void insertMysteriousHalloweenMobs(String mob);
+	void insertMysteriousHalloweenMobs(String mob);
 	
-	public void insertCustomMobs(String mob);
+	void insertCustomMobs(String mob);
 	
-	public void insertSmartGiants(String mob);
+	void insertSmartGiants(String mob);
 
 }

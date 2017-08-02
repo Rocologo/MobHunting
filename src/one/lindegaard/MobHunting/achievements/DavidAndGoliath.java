@@ -33,7 +33,7 @@ public class DavidAndGoliath implements Achievement, Listener {
 	}
 
 	@EventHandler
-	private void onKill(MobHuntKillEvent event) {
+	public void onKill(MobHuntKillEvent event) {
 		if (SmartGiantsCompat.isSmartGiants(event.getKilledEntity())
 				&& event.getDamageInfo().getWeapon().getType() == Material.STONE_BUTTON
 				&& !(MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) == 0

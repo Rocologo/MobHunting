@@ -16,7 +16,7 @@ import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
-public class Creepercide implements Achievement, Listener {
+public class Creepercide extends AbstractSkullAchievement implements Listener {
 
 	@Override
 	public String getName() {
@@ -93,14 +93,5 @@ public class Creepercide implements Achievement, Listener {
 	@Override
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialCreepercideCmdDesc;
-	}
-
-	@Override
-	public ItemStack getSymbol() {
-		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
-		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-		skullMeta.setOwner("MHF_Creeper");
-		skull.setItemMeta(skullMeta);
-		return skull;
 	}
 }

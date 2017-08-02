@@ -153,7 +153,7 @@ public class MobHuntingManager implements Listener {
 	private void onPlayerJoin(PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
 		setHuntEnabled(player, true);
-		if (player.hasPermission("mobhunting.update") && MobHunting.getConfigManager().updateCheck) {
+		if (player.hasPermission("mobhunting.update") && MobHunting.getInstance().getConfigManager().updateCheck) {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
@@ -310,7 +310,7 @@ public class MobHuntingManager implements Listener {
 	 */
 	public boolean isHuntEnabledInWorld(World world) {
 		if (world != null)
-			for (String worldName : MobHunting.getConfigManager().disabledInWorlds) {
+			for (String worldName : MobHunting.getInstance().getConfigManager().disabledInWorlds) {
 				if (world.getName().equalsIgnoreCase(worldName))
 					return false;
 			}
@@ -384,8 +384,8 @@ public class MobHuntingManager implements Listener {
 	// ************************************************************************************
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onPlayerDeath(PlayerDeathEvent event) {
-		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld())
-				|| !MobHunting.getMobHuntingManager().isHuntEnabled(event.getEntity()))
+		if (!MobHunting.getInstance().getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld())
+				|| !MobHunting.getInstance().getMobHuntingManager().isHuntEnabled(event.getEntity()))
 			return;
 
 		Player killed = event.getEntity();
@@ -431,7 +431,7 @@ public class MobHuntingManager implements Listener {
 
 				// MobArena
 				if (MobArenaCompat.isPlayingMobArena((Player) killed)
-						&& !MobHunting.getConfigManager().mobarenaGetRewards) {
+						&& !MobHunting.getInstance().getConfigManager().mobarenaGetRewards) {
 					Messages.debug("KillBlocked: %s was killed while playing MobArena.", killed.getName());
 					return;
 					// PVPArena
@@ -445,12 +445,12 @@ public class MobHuntingManager implements Listener {
 					return;
 				}
 
-				playerPenalty = MobHunting.getConfigManager().getPlayerKilledByMobPenalty(killed);
+				playerPenalty = MobHunting.getInstance().getConfigManager().getPlayerKilledByMobPenalty(killed);
 				if (playerPenalty != 0) {
 					boolean killed_muted = false;
-					if (MobHunting.getPlayerSettingsmanager().containsKey(killed))
-						killed_muted = MobHunting.getPlayerSettingsmanager().getPlayerSettings(killed).isMuted();
-					MobHunting.getRewardManager().withdrawPlayer(killed, playerPenalty);
+					if (MobHunting.getInstance().getPlayerSettingsmanager().containsKey(killed))
+						killed_muted = MobHunting.getInstance().getPlayerSettingsmanager().getPlayerSettings(killed).isMuted();
+					MobHunting.getInstance().getRewardManager().withdrawPlayer(killed, playerPenalty);
 					if (!killed_muted)
 						Messages.playerActionBarMessage(killed,
 								ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneylost",
@@ -469,8 +469,8 @@ public class MobHuntingManager implements Listener {
 		if (!(event.getEntity() instanceof Player))
 			return;
 
-		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld())
-				|| !MobHunting.getMobHuntingManager().isHuntEnabled((Player) event.getEntity()))
+		if (!MobHunting.getInstance().getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld())
+				|| !MobHunting.getInstance().getMobHuntingManager().isHuntEnabled((Player) event.getEntity()))
 			return;
 
 		Player player = (Player) event.getEntity();
@@ -483,14 +483,14 @@ public class MobHuntingManager implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onSkeletonShoot(ProjectileLaunchEvent event) {
-		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld()))
+		if (!MobHunting.getInstance().getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 
 		if (event.getEntity() instanceof Arrow) {
 			if (event.getEntity().getShooter() instanceof Skeleton) {
 				Skeleton shooter = (Skeleton) event.getEntity().getShooter();
 				if (shooter.getTarget() instanceof Player
-						&& MobHunting.getMobHuntingManager().isHuntEnabled((Player) shooter.getTarget())
+						&& MobHunting.getInstance().getMobHuntingManager().isHuntEnabled((Player) shooter.getTarget())
 						&& ((Player) shooter.getTarget()).getGameMode() != GameMode.CREATIVE) {
 					DamageInformation info = null;
 					info = mDamageHistory.get(shooter);
@@ -507,7 +507,7 @@ public class MobHuntingManager implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onFireballShoot(ProjectileLaunchEvent event) {
-		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld()))
+		if (!MobHunting.getInstance().getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 
 		if (event.getEntity() instanceof Fireball) {
@@ -527,7 +527,7 @@ public class MobHuntingManager implements Listener {
 			} else if (event.getEntity().getShooter() instanceof Wither) {
 				Wither wither = (Wither) event.getEntity().getShooter();
 				if (wither.getTarget() instanceof Player
-						&& MobHunting.getMobHuntingManager().isHuntEnabled((Player) wither.getTarget())
+						&& MobHunting.getInstance().getMobHuntingManager().isHuntEnabled((Player) wither.getTarget())
 						&& ((Player) wither.getTarget()).getGameMode() != GameMode.CREATIVE) {
 					DamageInformation info = null;
 					info = mDamageHistory.get(wither);
@@ -546,7 +546,7 @@ public class MobHuntingManager implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDamage(EntityDamageByEntityEvent event) {
 		if (!(event.getEntity() instanceof LivingEntity)
-				|| !MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld()))
+				|| !MobHunting.getInstance().getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;// ok
 		Entity damager = event.getDamager();
 		Entity damaged = event.getEntity();
@@ -701,27 +701,27 @@ public class MobHuntingManager implements Listener {
 		}
 
 		// Grinding Farm detections
-		if (MobHunting.getConfigManager().detectFarms
-				&& !MobHunting.getGrindingManager().isGrindingDisabledInWorld(event.getEntity().getWorld())) {
+		if (MobHunting.getInstance().getConfigManager().detectFarms
+				&& !MobHunting.getInstance().getGrindingManager().isGrindingDisabledInWorld(event.getEntity().getWorld())) {
 			if (killed.getLastDamageCause() != null) {
 				if (killed.getLastDamageCause().getCause() == DamageCause.FALL
-						&& !MobHunting.getGrindingManager().isWhitelisted(killed.getLocation())) {
+						&& !MobHunting.getInstance().getGrindingManager().isWhitelisted(killed.getLocation())) {
 					Messages.debug("===================== Farm detection =======================");
-					MobHunting.getGrindingManager().registerDeath(killed);
-					if (MobHunting.getConfigManager().detectNetherGoldFarms
-							&& MobHunting.getGrindingManager().isNetherGoldXPFarm(killed)) {
-						MobHunting.getMobHuntingManager().cancelDrops(event,
-								MobHunting.getConfigManager().disableNaturalItemDropsOnNetherGoldFarms,
-								MobHunting.getConfigManager().disableNaturalXPDropsOnNetherGoldFarms);
+					MobHunting.getInstance().getGrindingManager().registerDeath(killed);
+					if (MobHunting.getInstance().getConfigManager().detectNetherGoldFarms
+							&& MobHunting.getInstance().getGrindingManager().isNetherGoldXPFarm(killed)) {
+						MobHunting.getInstance().getMobHuntingManager().cancelDrops(event,
+								MobHunting.getInstance().getConfigManager().disableNaturalItemDropsOnNetherGoldFarms,
+								MobHunting.getInstance().getConfigManager().disableNaturalXPDropsOnNetherGoldFarms);
 						if (getPlayer(killer, killed) != null) {
-							if ((MobHunting.getPlayerSettingsmanager().containsKey(getPlayer(killer, killed))
-									&& MobHunting.getPlayerSettingsmanager()
+							if ((MobHunting.getInstance().getPlayerSettingsmanager().containsKey(getPlayer(killer, killed))
+									&& MobHunting.getInstance().getPlayerSettingsmanager()
 											.getPlayerSettings(getPlayer(killer, killed)).isLearningMode())
 									|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist")
 									|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist.show"))
-								ProtocolLibHelper.showGrindingArea(getPlayer(killer, killed),
+								MobHunting.getInstance().getPshowGrindingArea(getPlayer(killer, killed),
 										new Area(killed.getLocation(),
-												MobHunting.getConfigManager().rangeToSearchForGrinding,
+												MobHunting.getInstance().getConfigManager().rangeToSearchForGrinding,
 												MobHunting.getConfigManager().numberOfDeathsWhenSearchingForGringding),
 										killed.getLocation());
 							Messages.learn(getPlayer(killer, killed),

@@ -9,17 +9,17 @@ public interface ICommand
 	/**
 	 * Gets the name of the command
 	 */
-	public String getName();
+	String getName();
 	/**
 	 * Gets any aliases this command has
 	 * @return an array of the aliases or null if there are none
 	 */
-	public String[] getAliases();
+	String[] getAliases();
 	
 	/**
 	 * Gets the permission that this command needs to be used, or null if there isnt one
 	 */
-	public String getPermission();
+	String getPermission();
 	
 	/**
 	 * Gets the usage string for this command. This should be in the format of: "<command> <usage>"
@@ -27,22 +27,22 @@ public interface ICommand
 	 * @param sender The sender of the command
 	 * @return The usage string  
 	 */
-	public String[] getUsageString(String label, CommandSender sender);
+	String[] getUsageString(String label, CommandSender sender);
 	
 	/**
 	 * Gets the description of the command for the help system
 	 */
-	public String getDescription();
+	String getDescription();
 
 	/**
 	 * Can the sender of this command be a console?
 	 */
-	public boolean canBeConsole();
+	boolean canBeConsole();
 	
 	/**
 	 * Can the sender of this command be a command block?
 	 */
-	public boolean canBeCommandBlock();
+	boolean canBeCommandBlock();
 	
 	/**
 	 * Called when this command is executed. By this time the permission has been checked, and if this command does not accept the console as a sender, that wont trigger this command.
@@ -51,7 +51,7 @@ public interface ICommand
 	 * @param args The arguments for this command
 	 * @return True if this command was executed. False otherwise
 	 */
-	public boolean onCommand(CommandSender sender, String label, String[] args);
+	boolean onCommand(CommandSender sender, String label, String[] args);
 	
 	/**
 	 * Called when tab complete is used on this command. 
@@ -60,5 +60,5 @@ public interface ICommand
 	 * @param args The current arguments entered.
 	 * @return A list of all results or null
 	 */
-	public List<String> onTabComplete(CommandSender sender, String label, String[] args);
+	List<String> onTabComplete(CommandSender sender, String label, String[] args);
 }
