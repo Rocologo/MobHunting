@@ -4,8 +4,9 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<!-- <version>5.0.4</version> -->
-	<version>5.0.4-SNAPSHOT-B${build.number}</version>
+	<version>5.0.3</version>
+
+	<!-- <version>5.0.3-SNAPSHOT-B${build.number}</version> -->
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -24,11 +25,13 @@
 	<!-- ***************************** Properties ***************************** -->
 	<!-- ********************************************************************** -->
 	<properties>
+
+        <build.number>1337</build.number>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
 		<bukkit.version>1.12-R0.1-SNAPSHOT</bukkit.version>
-		<!--<craftbukkit.version>1.12-R0.1-SNAPSHOT</craftbukkit.version>-->
+		<craftbukkit.version>1.12-R0.1-SNAPSHOT</craftbukkit.version>
 		<spigotmc.version>1.12-R0.1-SNAPSHOT</spigotmc.version>
 		<spongeapi.version>5.1.0-SNAPSHOT</spongeapi.version>
 		<javacompiler.version>1.8</javacompiler.version>
@@ -46,7 +49,7 @@
 		<worldedit.version>6.1.5</worldedit.version>
 		<worldguard.version>6.2</worldguard.version>
 		<citizensapi.version>2.0.22-SNAPSHOT</citizensapi.version>
-		<libsdisguises.version>9.4.0-SNAPSHOT</libsdisguises.version>
+		<libsdisguises.version>9.4.0</libsdisguises.version>
 		<battleArena.version>3.9.10.6.2</battleArena.version>
 		<bossbarapi.version>2.4.1</bossbarapi.version>
 		<barapi.version>3.4</barapi.version>
@@ -77,8 +80,8 @@
 		<bossshop.version>2.7.3</bossshop.version>
 		<MobStacker.version>2.0.0</MobStacker.version>
 		<mythicmobsold.version>2.5.1</mythicmobsold.version>
-		<mythicmobs.version>4.0.0</mythicmobs.version>
-		<mythiclib.version>0.0.1-SNAPSHOT</mythiclib.version>
+		<mythicmobs.version>4.1.0-SNAPSHOT</mythicmobs.version>
+		<mythiclib.version>0.0.1-20170628.172950-1</mythiclib.version>
 		<StackMob.version>1.6.4</StackMob.version>
 		<InfernalMobs.version>5.3</InfernalMobs.version>
 
@@ -133,7 +136,7 @@
 							<addClasspath>true</addClasspath>
 						</manifest>
 						<manifestEntries>
-							<Implementation-Version>B${project.version}</Implementation-Version>
+							<Implementation-Version>B${build.number}</Implementation-Version>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -141,7 +144,7 @@
 			<plugin>
 				<groupId>org.jfrog.buildinfo</groupId>
 				<artifactId>artifactory-maven-plugin</artifactId>
-				<version>2.2.1</version>
+				<version>2.6.1</version>
 				<inherited>false</inherited>
 			</plugin>
 			<plugin>
@@ -188,21 +191,16 @@
 	<!-- **************************** Repositories **************************** -->
 	<!-- ********************************************************************** -->
 	<repositories>
-
-
-
-
-
 		<!-- MobHunhting repository -->
-
+		<repository>
+			<id>fractal</id>
+			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-release/</url>
+		</repository>
 		<repository>
 			<id>fractal-snapshots</id>
-            <url>http://fractal.lindegaard.one:8081/artifactory/plugins-snapshots</url>
+			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-snapshots/</url>
 		</repository>
-        <!--<repository>
-            <id>fractal</id>
-            <url>https://fractal.lindegaard.one:8187/artifactory/plugins-release/</url>
-        </repository>-->
+
 
 		<!-- SpigotMC Repository -->
 		<repository>
@@ -229,10 +227,10 @@
 		</repository>
 
 		<!-- dmulloy2 repository / ProtocolLib -->
-        <repository>
-            <id>dmulloy2-repo</id>
-            <url>http://repo.dmulloy2.net/content/groups/public/</url>
-        </repository>
+		<repository>
+			<id>dmulloy2-repo</id>
+			<url>http://repo.dmulloy2.net/content/groups/public/</url>
+		</repository>
 
 		<!-- mypet repository -->
 		<repository>
@@ -286,10 +284,6 @@
 		<!-- md5 repository -->
 		<!-- mcMMO -->
 		<!-- LibsDisguises -->
-        <repository>
-            <id>md5</id>
-            <url>http://repo.md-5.net/content/groups/public/</url>
-        </repository>
 		<repository>
 			<id>md5-repo</id>
 			<url>http://repo.md-5.net/content/repositories/public/</url>
@@ -307,14 +301,8 @@
 			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
 
-
-
-
-
-
-
-        <!-- BossShop <repository> <id>confuser-repo</id> <url>http://ci.frostcast.net/plugin/repository/everything/</url>
-            </repository> -->
+		<!-- BossShop <repository> <id>confuser-repo</id> <url>http://ci.frostcast.net/plugin/repository/everything/</url>
+			</repository> -->
 
 	</repositories>
 
@@ -328,6 +316,21 @@
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>${spigotmc.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- CraftBukkit Dependency for experimental features -->
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>${bukkit.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>craftbukkit</artifactId>
+			<version>${craftbukkit.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -510,8 +513,8 @@
 		</dependency>
 
 		<!-- MinigamesLib -->
-		<!-- <dependency> <groupId>com.comze_instancelabs.minigamesapi.MinigamesAPI</groupId> 
-			<artifactId>MinigamesLib</artifactId> <version>1.14.16-20170514.144611</version> 
+		<!-- <dependency> <groupId>com.comze_instancelabs.minigamesapi.MinigamesAPI</groupId>
+			<artifactId>MinigamesLib</artifactId> <version>1.14.16-20170514.144611</version>
 			<type>pom</type> </dependency> -->
 		<dependency>
 			<groupId>com.comze_instancelabs.minigamesapi.MinigamesAPI</groupId>
@@ -551,7 +554,7 @@
 		</dependency>
 
 		<!-- Gringotts -->
-		<!-- <dependency> <groupId>org.gestern.gringotts.Gringotts</groupId> <artifactId>Gringotts</artifactId> 
+		<!-- <dependency> <groupId>org.gestern.gringotts.Gringotts</groupId> <artifactId>Gringotts</artifactId>
 			<version>2.9</version> </dependency> -->
 		<dependency>
 			<groupId>org.gestern</groupId>
@@ -574,14 +577,12 @@
 			<groupId>io.lumine.xikage</groupId>
 			<artifactId>MythicMobs</artifactId>
 			<version>${mythicmobs.version}</version>
-			<scope>provided</scope>
 		</dependency>
-		<!--<dependency>
+		<dependency>
 			<groupId>MythicLib</groupId>
 			<artifactId>MythicLib</artifactId>
 			<version>${mythiclib.version}</version>
-            <scope>provided</scope>
-		</dependency>-->
+		</dependency>
 
 
 		<!-- CustomMobs -->
@@ -703,6 +704,16 @@
 			<artifactId>CrackShot</artifactId>
 			<version>${crackshot.version}</version>
 		</dependency>
+
+
+        <dependency>
+            <groupId>org.jfrog.buildinfo</groupId>
+            <artifactId>artifactory-maven-plugin</artifactId>
+            <version>2.6.1</version>
+            <type>pom</type>
+        </dependency>
+
+
 
 	</dependencies>
 
