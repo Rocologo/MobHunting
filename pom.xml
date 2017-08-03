@@ -195,15 +195,15 @@
 
 
 		<!-- MobHunhting repository -->
-		<repository>
-			<id>fractal</id>
-			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-release/</url>
-		</repository>
+
 		<repository>
 			<id>fractal-snapshots</id>
-			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-snapshots/</url>
+            <url>http://fractal.lindegaard.one:8081/artifactory/plugins-snapshots</url>
 		</repository>
-
+        <!--<repository>
+            <id>fractal</id>
+            <url>https://fractal.lindegaard.one:8187/artifactory/plugins-release/</url>
+        </repository>-->
 
 		<!-- SpigotMC Repository -->
 		<repository>
@@ -287,6 +287,10 @@
 		<!-- md5 repository -->
 		<!-- mcMMO -->
 		<!-- LibsDisguises -->
+        <repository>
+            <id>md5</id>
+            <url>http://repo.md-5.net/content/groups/public/</url>
+        </repository>
 		<repository>
 			<id>md5-repo</id>
 			<url>http://repo.md-5.net/content/repositories/public/</url>
@@ -306,10 +310,7 @@
 
 
 
-        <repository>
-            <id>md5</id>
-            <url>http://repo.md-5.net/content/groups/public/</url>
-        </repository>
+
 
 
 
@@ -330,21 +331,6 @@
 			<version>${spigotmc.version}</version>
 			<scope>provided</scope>
 		</dependency>
-
-		<!-- CraftBukkit Dependency for experimental features -->
-		<!-- <dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>${bukkit.version}</version>
-			<scope>provided</scope>
-		</dependency> -->
-
-		<!--<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>${craftbukkit.version}</version>
-			<scope>provided</scope>
-		</dependency>-->
 
 		<!-- SpongeAPI -->
 		<dependency>
@@ -591,12 +577,12 @@
 			<version>${mythicmobs.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>MythicLib</groupId>
 			<artifactId>MythicLib</artifactId>
 			<version>${mythiclib.version}</version>
             <scope>provided</scope>
-		</dependency>
+		</dependency>-->
 
 
 		<!-- CustomMobs -->

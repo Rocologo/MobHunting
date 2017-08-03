@@ -516,4 +516,7 @@ public class MobHunting extends JavaPlugin {
 		return mAdvancementManager;
 	}
 
+
+	public ProtocolLibHelper getProtocolLibHelper(){return mProtocolLibHelper;}
+
 }
