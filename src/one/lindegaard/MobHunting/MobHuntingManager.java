@@ -719,7 +719,7 @@ public class MobHuntingManager implements Listener {
 											.getPlayerSettings(getPlayer(killer, killed)).isLearningMode())
 									|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist")
 									|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist.show"))
-								MobHunting.getInstance().getPshowGrindingArea(getPlayer(killer, killed),
+								MobHunting.getInstance().getGrindingManager().getPshowGrindingArea(getPlayer(killer, killed),
 										new Area(killed.getLocation(),
 												MobHunting.getInstance().getConfigManager().rangeToSearchForGrinding,
 												MobHunting.getConfigManager().numberOfDeathsWhenSearchingForGringding),
