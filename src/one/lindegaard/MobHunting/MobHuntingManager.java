@@ -1792,5 +1792,4 @@ public class MobHuntingManager implements Listener {
     public WeakHashMap<LivingEntity, DamageInformation> getDamageHistory() {
         return mDamageHistory;
     }
-
 }

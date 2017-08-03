@@ -1,3 +1,5 @@
+V5.0.4
+* Fixed NPE bug, when a MyPet killed a mob, while checking for grinding.
 V5.0.3
 * Fixed duplication bug, where is was possible to duplicate the Bag of gold. 
 V5.0.2
