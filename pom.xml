@@ -192,6 +192,15 @@
     <!-- **************************** Repositories **************************** -->
     <!-- ********************************************************************** -->
     <repositories>
+
+
+        <repository>
+            <id>MinigamesAPI-Repo</id>
+            <name>MinigamesAPI Repository</name>
+            <url>http://nexus.xworlds.eu/nexus/content/repositories/mce/</url>
+        </repository>
+
+
         <!-- MobHunhting repository -->
 
         <repository>
@@ -313,6 +322,11 @@
             <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
 
+
+
+
+
+
         <!-- BossShop <repository> <id>confuser-repo</id> <url>http://ci.frostcast.net/plugin/repository/everything/</url>
             </repository> -->
 
@@ -331,22 +345,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- CraftBukkit Dependency for experimental features -->
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>${bukkit.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
-            <version>${craftbukkit.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- SpongeAPI -->
+       <!-- SpongeAPI -->
         <dependency>
             <groupId>org.spongepowered</groupId>
             <artifactId>spongeapi</artifactId>
@@ -525,15 +524,13 @@
         </dependency>
 
         <!-- MinigamesLib -->
-        <!-- <dependency> <groupId>com.comze_instancelabs.minigamesapi.MinigamesAPI</groupId>
-            <artifactId>MinigamesLib</artifactId> <version>1.14.16-20170514.144611</version>
-            <type>pom</type> </dependency> -->
-        <dependency>
-            <groupId>com.comze_instancelabs.minigamesapi.MinigamesAPI</groupId>
+          <dependency>
+            <groupId>com.github.MCE-Plugins</groupId>
             <artifactId>MinigamesLib</artifactId>
-            <version>1.14.16-20170514.144611</version>
+            <version>1.14.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
 
         <!-- TitleAPI -->
         <dependency>
