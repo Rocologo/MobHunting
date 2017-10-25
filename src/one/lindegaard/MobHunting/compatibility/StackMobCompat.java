@@ -22,7 +22,7 @@ public class StackMobCompat implements Listener {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with StackMob is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.StackMob.getName());
-			if (Integer.parseInt(mPlugin.getDescription().getVersion().replace(".", "")) >= 211) {
+			if (Integer.parseInt(mPlugin.getDescription().getVersion().replace(".", "")) >= 209) {
 				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with StackMob ("
 						+ mPlugin.getDescription().getVersion() + ").");
 				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
@@ -31,7 +31,7 @@ public class StackMobCompat implements Listener {
 				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 				console.sendMessage(ChatColor.RED + "[MobHunting] Your current version of StackMob ("
 						+ mPlugin.getDescription().getVersion()
-						+ ") is not supported by MobHunting, please upgrade to 2.1.1 or newer.");
+						+ ") is not supported by MobHunting, please upgrade to 2.0.9 or newer.");
 			}
 		}
 	}
