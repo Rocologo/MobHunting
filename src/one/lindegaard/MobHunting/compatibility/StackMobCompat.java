@@ -22,7 +22,7 @@ public class StackMobCompat implements Listener {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with StackMob is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.StackMob.getName());
-			if (mPlugin.getDescription().getVersion().compareTo("2.0.0") >= 0) {
+			if (Integer.parseInt(mPlugin.getDescription().getVersion().replace(".", "")) >= 211) {
 				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with StackMob ("
 						+ mPlugin.getDescription().getVersion() + ").");
 				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
