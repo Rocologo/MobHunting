@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
 import one.lindegaard.MobHunting.MobHunting;
-import uk.antiperson.stackmob.tools.extras.*;
+import uk.antiperson.stackmob.api.EntityManager;
 
 public class StackMobCompat implements Listener {
 
@@ -31,7 +31,7 @@ public class StackMobCompat implements Listener {
 				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 				console.sendMessage(ChatColor.RED + "[MobHunting] Your current version of StackMob ("
 						+ mPlugin.getDescription().getVersion()
-						+ ") is not supported by MobHunting, please upgrade to 2.0.7 or newer.");
+						+ ") is not supported by MobHunting, please upgrade to 2.1.1 or newer.");
 			}
 		}
 	}
@@ -52,17 +52,21 @@ public class StackMobCompat implements Listener {
 	private static boolean isEnabledInConfig() {
 		return !MobHunting.getConfigManager().disableIntegrationStackMob;
 	}
+	
+	public static EntityManager getEntityManager(){
+		return new EntityManager(sm);
+	}
 
 	public static boolean isStackedMob(Entity entity) {
 		if (isSupported()) {
-			return entity.hasMetadata(getTag());
+			return getEntityManager().isStackedEntity(entity);
 		}
 		return false;
 	}
 
 	public static int getStackSize(Entity entity) {
 		if (entity.hasMetadata(getTag())) {
-			return (Integer) entity.getMetadata(getTag()).get(0).value();
+			return getEntityManager().getStackedEntity(entity).getSize();
 		}
 		return 1;
 	}
@@ -75,8 +79,5 @@ public class StackMobCompat implements Listener {
 		return MobHunting.getConfigManager().isGrindingStackedMobsAllowed;
 	}
 
-	private static String getTag() {
-		return GlobalValues.metaTag;
-	}
 
 }
