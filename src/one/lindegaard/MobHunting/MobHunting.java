@@ -13,13 +13,13 @@ import one.lindegaard.MobHunting.commands.DatabaseCommand;
 import one.lindegaard.MobHunting.commands.DebugCommand;
 import one.lindegaard.MobHunting.commands.HappyHourCommand;
 import one.lindegaard.MobHunting.commands.HeadCommand;
+import one.lindegaard.MobHunting.commands.HologramCommand;
 import one.lindegaard.MobHunting.commands.LeaderboardCommand;
 import one.lindegaard.MobHunting.commands.LearnCommand;
 import one.lindegaard.MobHunting.commands.MoneyCommand;
 import one.lindegaard.MobHunting.commands.AchievementsCommand;
 import one.lindegaard.MobHunting.commands.BlacklistAreaCommand;
 import one.lindegaard.MobHunting.commands.MuteCommand;
-import one.lindegaard.MobHunting.commands.NpcCommand;
 import one.lindegaard.MobHunting.commands.RegionCommand;
 import one.lindegaard.MobHunting.commands.ReloadCommand;
 import one.lindegaard.MobHunting.commands.SelectCommand;
@@ -72,7 +72,9 @@ public class MobHunting extends JavaPlugin {
 	private static DataStoreManager mStoreManager;
 	private static ConfigManager mConfig;
 	private AdvancementManager mAdvancementManager;
-	
+	private CommandDispatcher mCommandDispatcher;
+	// private HologramManager mHologramManager;
+
 	private boolean mInitialized = false;
 
 	@Override
@@ -85,8 +87,7 @@ public class MobHunting extends JavaPlugin {
 		instance = this;
 
 		mMessages = new Messages(this);
-		
-		Messages.exportDefaultLanguages(this);
+		mMessages.exportDefaultLanguages(this);
 
 		mConfig = new ConfigManager(new File(getDataFolder(), "config.yml"));
 
@@ -177,9 +178,12 @@ public class MobHunting extends JavaPlugin {
 		// Protection plugins
 		registerPlugin(WorldEditCompat.class, CompatPlugin.WorldEdit);
 		registerPlugin(WorldGuardCompat.class, CompatPlugin.WorldGuard);
+		registerPlugin(HologramsCompat.class, CompatPlugin.Holograms);
+		registerPlugin(HolographicDisplaysCompat.class, CompatPlugin.HolographicDisplays);
 		registerPlugin(FactionsCompat.class, CompatPlugin.Factions);
 		registerPlugin(TownyCompat.class, CompatPlugin.Towny);
 		registerPlugin(ResidenceCompat.class, CompatPlugin.Residence);
+		registerPlugin(PreciousStonesCompat.class, CompatPlugin.PreciousStones);
 
 		// Other plugins
 		registerPlugin(McMMOCompat.class, CompatPlugin.mcMMO);
@@ -232,35 +236,36 @@ public class MobHunting extends JavaPlugin {
 		mExtendedMobManager = new ExtendedMobManager(this);
 
 		// Register commands
-		CommandDispatcher cmd = new CommandDispatcher("mobhunt",
+		mCommandDispatcher = new CommandDispatcher(this, "mobhunt",
 				Messages.getString("mobhunting.command.base.description") + getDescription().getVersion());
-		getCommand("mobhunt").setExecutor(cmd);
-		getCommand("mobhunt").setTabCompleter(cmd);
-		cmd.registerCommand(new AchievementsCommand(this));
-		cmd.registerCommand(new BlacklistAreaCommand(this));
-		cmd.registerCommand(new CheckGrindingCommand(this));
-		cmd.registerCommand(new ClearGrindingCommand(this));
-		cmd.registerCommand(new DatabaseCommand(this));
-		cmd.registerCommand(new HeadCommand(this));
-		cmd.registerCommand(new LeaderboardCommand(this));
-		cmd.registerCommand(new LearnCommand(this));
-		cmd.registerCommand(new MuteCommand(this));
-		if (CitizensCompat.isSupported())
-			cmd.registerCommand(new NpcCommand(this));
-		cmd.registerCommand(new ReloadCommand(this));
+		getCommand("mobhunt").setExecutor(mCommandDispatcher);
+		getCommand("mobhunt").setTabCompleter(mCommandDispatcher);
+		mCommandDispatcher.registerCommand(new AchievementsCommand(this));
+		mCommandDispatcher.registerCommand(new BlacklistAreaCommand(this));
+		mCommandDispatcher.registerCommand(new CheckGrindingCommand(this));
+		mCommandDispatcher.registerCommand(new ClearGrindingCommand(this));
+		mCommandDispatcher.registerCommand(new DatabaseCommand(this));
+		mCommandDispatcher.registerCommand(new HeadCommand(this));
+		mCommandDispatcher.registerCommand(new LeaderboardCommand(this));
+		if (HolographicDisplaysCompat.isSupported() || HologramsCompat.isSupported())
+			mCommandDispatcher.registerCommand(new HologramCommand(this));
+		mCommandDispatcher.registerCommand(new LearnCommand(this));
+		mCommandDispatcher.registerCommand(new MuteCommand(this));
+		// mCommandDispatcher.registerCommand(new NpcCommand(this));
+		mCommandDispatcher.registerCommand(new ReloadCommand(this));
 		if (WorldGuardCompat.isSupported())
-			cmd.registerCommand(new RegionCommand());
+			mCommandDispatcher.registerCommand(new RegionCommand());
 		if (WorldEditCompat.isSupported())
-			cmd.registerCommand(new SelectCommand(this));
-		cmd.registerCommand(new TopCommand());
-		cmd.registerCommand(new WhitelistAreaCommand(this));
-		cmd.registerCommand(new UpdateCommand(this));
-		cmd.registerCommand(new VersionCommand(this));
-		cmd.registerCommand(new DebugCommand(this));
+			mCommandDispatcher.registerCommand(new SelectCommand(this));
+		mCommandDispatcher.registerCommand(new TopCommand());
+		mCommandDispatcher.registerCommand(new WhitelistAreaCommand(this));
+		mCommandDispatcher.registerCommand(new UpdateCommand(this));
+		mCommandDispatcher.registerCommand(new VersionCommand(this));
+		mCommandDispatcher.registerCommand(new DebugCommand(this));
 		if (!mConfig.disablePlayerBounties)
-			cmd.registerCommand(new BountyCommand(this));
-		cmd.registerCommand(new HappyHourCommand());
-		cmd.registerCommand(new MoneyCommand(this));
+			mCommandDispatcher.registerCommand(new BountyCommand(this));
+		mCommandDispatcher.registerCommand(new HappyHourCommand(this));
+		mCommandDispatcher.registerCommand(new MoneyCommand(this));
 
 		mLeaderboardManager = new LeaderboardManager(this);
 
@@ -279,8 +284,9 @@ public class MobHunting extends JavaPlugin {
 		if (!getServer().getName().toLowerCase().contains("glowstone")) {
 			mMetricsManager = new MetricsManager(this);
 			mMetricsManager.startMetrics();
+
+			mMetricsManager.startBStatsMetrics();
 		}
-		mMetricsManager.startBStatsMetrics();
 
 		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 			public void run() {
@@ -306,7 +312,7 @@ public class MobHunting extends JavaPlugin {
 			mAdvancementManager = new AdvancementManager(this);
 			mAdvancementManager.getAdvancementsFromAchivements();
 		}
-		
+
 		// for (int i = 0; i < 2; i++)
 		// Messages.debug("Random uuid = %s", UUID.randomUUID());
 
@@ -336,6 +342,10 @@ public class MobHunting extends JavaPlugin {
 		mLeaderboardManager.shutdown();
 		Messages.debug("Shutdown AreaManager");
 		mAreaManager.saveData();
+		if (PlaceholderAPICompat.isSupported()) {
+			Messages.debug("Shutdown PlaceHolderManager");
+			PlaceholderAPICompat.shutdown();
+		}
 		getMobHuntingManager().getHuntingModifiers().clear();
 		if (!mConfig.disableFishingRewards)
 			getFishingManager().getFishingModifiers().clear();
@@ -501,10 +511,15 @@ public class MobHunting extends JavaPlugin {
 
 	/**
 	 * Get the MessagesManager
+	 * 
 	 * @return
 	 */
 	public Messages getMessages() {
 		return mMessages;
 	}
-	
+
+	public CommandDispatcher getCommandDispatcher() {
+		return mCommandDispatcher;
+	}
+
 }

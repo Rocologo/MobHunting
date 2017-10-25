@@ -18,7 +18,7 @@ Websites - more info
 * MasterMobHunters (Citizens2) and Signs
 * Leaderboards
 * Mob grinder detection
-* [Supports Minecraft 1.7.9 - 1.11.2](http://dev.bukkit.org/bukkit-plugins/mobhunting/pages/compability/)
+* [Supports Minecraft 1.7.9 - 1.12.1]
 * Heavily customizable
 * Language support
 * Tested on SpigotMC, CraftBukkit, PaperSpigot/PaperClip, Glowstone and Cauldron

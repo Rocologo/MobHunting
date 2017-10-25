@@ -72,11 +72,11 @@ private MobHunting plugin;
 		boolean debug = MobHunting.getConfigManager().killDebug;
 		if (debug) {
 			MobHunting.getConfigManager().killDebug = false;
-			sender.sendMessage("[MobHunting] " + Messages.getString("mobhunting.commands.debug.disabled"));
+			plugin.getMessages().senderSendMessage(sender,"[MobHunting] " + Messages.getString("mobhunting.commands.debug.disabled"));
 			MobHunting.getConfigManager().saveConfig();
 		} else {
 			MobHunting.getConfigManager().killDebug = true;
-			sender.sendMessage("[MobHunting] " + Messages.getString("mobhunting.commands.debug.enabled"));
+			plugin.getMessages().senderSendMessage(sender,"[MobHunting] " + Messages.getString("mobhunting.commands.debug.enabled"));
 			MobHunting.getConfigManager().saveConfig();
 		}
 

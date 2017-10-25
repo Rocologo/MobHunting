@@ -44,7 +44,8 @@ public class PickupRewards {
 						if (Reward.isReward(is)) {
 							Reward rewardInSlot = Reward.getReward(is);
 							if ((reward.isBagOfGoldReward() || reward.isItemReward())
-									&& rewardInSlot.getRewardUUID().equals(reward.getRewardUUID())) {
+									&& (rewardInSlot.getRewardUUID().equals(reward.getRewardUUID())
+											&& rewardInSlot.getDisplayname().equals(reward.getDisplayname()))) {
 								ItemMeta im = is.getItemMeta();
 								Reward newReward = Reward.getReward(is);
 								newReward.setMoney(newReward.getMoney() + reward.getMoney());

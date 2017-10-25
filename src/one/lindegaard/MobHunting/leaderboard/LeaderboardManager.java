@@ -38,6 +38,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import com.google.common.collect.HashMultimap;
 
+import one.lindegaard.MobHunting.HologramManager;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
@@ -49,23 +50,31 @@ public class LeaderboardManager implements Listener {
 	private MobHunting plugin;
 	private Set<LegacyLeaderboard> mLegacyLeaderboards = new HashSet<LegacyLeaderboard>();
 	private HashMultimap<World, WorldLeaderboard> mLeaderboards = HashMultimap.create();
+	private HologramManager hologramManager;
 	private HashMap<String, LegacyLeaderboard> mLegacyNameMap = new HashMap<String, LegacyLeaderboard>();
 	private BukkitTask mUpdater = null;
 
 	public LeaderboardManager(MobHunting instance) {
-		this.plugin=instance;
+		this.plugin = instance;
 		int leaderboardUpdatePeriod = MobHunting.getConfigManager().leaderboardUpdatePeriod;
 		if (leaderboardUpdatePeriod < 1200) {
 			leaderboardUpdatePeriod = 1200;
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED
 					+ "[MobHunting][Warning] leaderboard-update-period: in your config.yml is too low. Please raise it to 1200 or higher. Reccommended is 6000. ");
+			MobHunting.getConfigManager().leaderboardUpdatePeriod=1200;
+			MobHunting.getConfigManager().saveConfig();
 		}
 		mUpdater = Bukkit.getScheduler().runTaskTimer(MobHunting.getInstance(), new Updater(), 120L,
 				leaderboardUpdatePeriod);
-		loadLegacy();
+
+		loadLegacyboards();
 
 		for (World world : Bukkit.getWorlds())
 			loadWorld(world);
+
+		hologramManager = new HologramManager(plugin);
+		hologramManager.loadHologramLeaderboards();
+		hologramManager.saveHologramLeaderboards();
 
 		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 	}
@@ -78,7 +87,12 @@ public class LeaderboardManager implements Listener {
 
 			for (WorldLeaderboard board : mLeaderboards.values())
 				board.update();
-			Messages.debug("Refreshed %s leaderboards.", mLegacyLeaderboards.size() + mLeaderboards.size());
+
+			for (HologramLeaderboard board : hologramManager.getHolograms().values())
+				board.update();
+
+			Messages.debug("Refreshed %s leaderboards.",
+					hologramManager.getHolograms().size() + mLegacyLeaderboards.size() + mLeaderboards.size());
 		}
 	}
 
@@ -90,12 +104,17 @@ public class LeaderboardManager implements Listener {
 		mUpdater.cancel();
 	}
 
+	public HologramManager getHologramManager() {
+		return hologramManager;
+	}
+
 	// *******************************************************************
 	// LEADERBOARDS
 	// *******************************************************************
 	public void createLeaderboard(Location location, BlockFace facing, StatType[] type, TimePeriod[] period,
 			boolean horizontal, int width, int height) throws IllegalArgumentException {
-		WorldLeaderboard board = new WorldLeaderboard(plugin, location, facing, width, height, horizontal, type, period);
+		WorldLeaderboard board = new WorldLeaderboard(plugin, location, facing, width, height, horizontal, type,
+				period);
 		if (!board.isSpaceAvailable())
 			throw new IllegalArgumentException("There is not enough room for the signs.");
 
@@ -125,14 +144,14 @@ public class LeaderboardManager implements Listener {
 			throw new IllegalArgumentException(Messages.getString("leaderboard.notexists", "leaderboard", id));
 
 		mLegacyLeaderboards.remove(mLegacyNameMap.remove(id.toLowerCase()));
-		saveLegacyBoard();
+		saveLegacyBoards();
 	}
 
 	public Set<LegacyLeaderboard> getAllLegacyBoards() {
 		return Collections.unmodifiableSet(mLegacyLeaderboards);
 	}
 
-	public void saveLegacyBoard() {
+	public void saveLegacyBoards() {
 		try {
 			YamlConfiguration config = new YamlConfiguration();
 			config.options().header(
@@ -153,7 +172,7 @@ public class LeaderboardManager implements Listener {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void loadLegacy() {
+	private void loadLegacyboards() {
 		try {
 			File file = new File(MobHunting.getInstance().getDataFolder(), "boards.yml");
 
@@ -216,8 +235,6 @@ public class LeaderboardManager implements Listener {
 				mLeaderboards.put(world, board);
 			} catch (InvalidConfigurationException e) {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getMessage());
-				//if (MobHunting.getConfigManager().killDebug)
-				//	e.printStackTrace();
 			}
 		}
 

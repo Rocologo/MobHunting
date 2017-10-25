@@ -24,7 +24,7 @@ public class FactionsCompat {
 
 	public FactionsCompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("[MobHunting] Compatibility with Factions in config.yml");
+			Bukkit.getLogger().info("[MobHunting] Compatibility with Factions is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.Factions.getName());
 			if (mPlugin.getDescription().getVersion().compareTo("1.6.9.6") < 0) {

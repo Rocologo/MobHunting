@@ -22,24 +22,14 @@ public class PlayerSettingsRetrieverTask implements IDataStoreTask<PlayerSetting
 		mWaiting = waiting;
 	}
 
-	//private void updateUsingCache(Set<PlayerSettings> achievements) {
-	//	for (Object obj : mWaiting) {
-	//		if (obj instanceof PlayerSettings) {
-	//			PlayerSettings cached = (PlayerSettings) obj;
-	//			if (!cached.getPlayer().equals(mPlayer))
-	//				continue;
-    //
-	//		}
-	//	}
-	//}
-
 	public PlayerSettings run(IDataStore store) throws DataStoreException {
 		synchronized (mWaiting) {
 			try {
 				return store.loadPlayerSettings(mPlayer);
 			} catch (UserNotFoundException e) {
 				Messages.debug("Saving new PlayerSettings for %s to database.", mPlayer.getName());
-				PlayerSettings ps = new PlayerSettings(mPlayer, MobHunting.getConfigManager().learningMode, false);
+				PlayerSettings ps = new PlayerSettings(mPlayer, MobHunting.getConfigManager().learningMode, false,
+						MobHunting.getConfigManager().startingBalance, 0, 0, 0);
 				try {
 					store.insertPlayerSettings(ps);
 				} catch (DataStoreException e1) {

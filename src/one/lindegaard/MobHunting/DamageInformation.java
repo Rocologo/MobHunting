@@ -224,7 +224,7 @@ public class DamageInformation {
 
 	// CRACKSHOT Integration
 	public boolean isCrackShotWeaponUsed() {
-		return !crackShotWeapon.isEmpty();
+		return crackShotWeapon!=null && !crackShotWeapon.isEmpty();
 	}
 
 	public String getCrackShotWeaponUsed() {

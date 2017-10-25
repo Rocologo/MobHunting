@@ -76,7 +76,7 @@ public class GrindingManager implements Listener {
 		final long seconds = MobHunting.getConfigManager().secondsToSearchForGrinding;
 		final double killRadius = MobHunting.getConfigManager().rangeToSearchForGrinding;
 		final int numberOfDeaths = MobHunting.getConfigManager().numberOfDeathsWhenSearchingForGringding;
-		if (MinecraftMob.getMinecraftMobType(mob.getMobtype()) == MinecraftMob.ZombiePigman) {
+		if (MinecraftMob.getMinecraftMobType(killed) == MinecraftMob.ZombiePigman) {
 			if (killed.getLastDamageCause().getCause() == DamageCause.FALL) {
 				Area detectedGrindingArea = getGrindingArea(killed.getLocation());
 				if (detectedGrindingArea == null) {
@@ -132,7 +132,7 @@ public class GrindingManager implements Listener {
 		final long seconds = MobHunting.getConfigManager().secondsToSearchForGrinding;
 		final double killRadius = MobHunting.getConfigManager().rangeToSearchForGrinding;
 		final int numberOfDeaths = MobHunting.getConfigManager().numberOfDeathsWhenSearchingForGringding;
-		if (MinecraftMob.getMinecraftMobType(mob.getMobtype()) == MinecraftMob.ZombiePigman) {
+		if (MinecraftMob.getMinecraftMobType(killed) == MinecraftMob.ZombiePigman) {
 			if (killed.getLastDamageCause().getCause() == DamageCause.FALL) {
 				Area detectedGrindingArea = getGrindingArea(killed.getLocation());
 				if (detectedGrindingArea == null) {

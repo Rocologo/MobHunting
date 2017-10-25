@@ -24,6 +24,8 @@ import one.lindegaard.MobHunting.compatibility.ExtraHardModeCompat;
 import one.lindegaard.MobHunting.compatibility.FactionsCompat;
 import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.compatibility.HerobrineCompat;
+import one.lindegaard.MobHunting.compatibility.HologramsCompat;
+import one.lindegaard.MobHunting.compatibility.HolographicDisplaysCompat;
 import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
 import one.lindegaard.MobHunting.compatibility.InfernalMobsCompat;
 import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
@@ -35,6 +37,7 @@ import one.lindegaard.MobHunting.compatibility.MyPetCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
+import one.lindegaard.MobHunting.compatibility.PreciousStonesCompat;
 import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
 import one.lindegaard.MobHunting.compatibility.ResidenceCompat;
 import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
@@ -85,6 +88,7 @@ public class MetricsManager {
 				valueMap.put("Factions", FactionsCompat.isSupported() ? 1 : 0);
 				valueMap.put("Towny", TownyCompat.isSupported() ? 1 : 0);
 				valueMap.put("Residence", ResidenceCompat.isSupported() ? 1 : 0);
+				valueMap.put("PreciousStones", PreciousStonesCompat.isSupported() ? 1 : 0);
 				return valueMap;
 			}
 		});
@@ -169,6 +173,8 @@ public class MetricsManager {
 				valueMap.put("ActionBar", ActionbarCompat.isSupported() ? 1 : 0);
 				valueMap.put("ActionBarAPI", ActionBarAPICompat.isSupported() ? 1 : 0);
 				valueMap.put("ActionAnnouncer", ActionAnnouncerCompat.isSupported() ? 1 : 0);
+				valueMap.put("Holograms", HologramsCompat.isSupported() ? 1 : 0);
+				valueMap.put("Holographic Display", HolographicDisplaysCompat.isSupported() ? 1 : 0);
 				return valueMap;
 			}
 		});
@@ -177,6 +183,8 @@ public class MetricsManager {
 			@Override
 			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
 				valueMap.put("Leaderboards", MobHunting.getLeaderboardManager().getWorldLeaderBoards().size());
+				valueMap.put("Holographic Leaderboards",
+						MobHunting.getLeaderboardManager().getHologramManager().getHolograms().size());
 				valueMap.put("MasterMobHunters", CitizensCompat.getMasterMobHunterManager().getAll().size());
 				valueMap.put("PlayerBounties", MobHunting.getConfigManager().disablePlayerBounties ? 0
 						: plugin.getBountyManager().getAllBounties().size());
@@ -307,6 +315,13 @@ public class MetricsManager {
 			@Override
 			public int getValue() {
 				return ResidenceCompat.isSupported() ? 1 : 0;
+
+			}
+		});
+		protectionPluginsGraph.addPlotter(new Metrics.Plotter("PreciousStones") {
+			@Override
+			public int getValue() {
+				return PreciousStonesCompat.isSupported() ? 1 : 0;
 
 			}
 		});
@@ -491,6 +506,18 @@ public class MetricsManager {
 				return ActionAnnouncerCompat.isSupported() ? 1 : 0;
 			}
 		});
+		titleManagerGraph.addPlotter(new Metrics.Plotter("Holograms") {
+			@Override
+			public int getValue() {
+				return HologramsCompat.isSupported() ? 1 : 0;
+			}
+		});
+		titleManagerGraph.addPlotter(new Metrics.Plotter("Holographic Display") {
+			@Override
+			public int getValue() {
+				return HolographicDisplaysCompat.isSupported() ? 1 : 0;
+			}
+		});
 		metrics.addGraph(titleManagerGraph);
 
 		automaticUpdatesGraph = metrics.createGraph("# of installations with automatic update");
@@ -509,12 +536,20 @@ public class MetricsManager {
 				return MobHunting.getLeaderboardManager().getWorldLeaderBoards().size();
 			}
 		});
+		usageGraph = metrics.createGraph("Usage");
+		usageGraph.addPlotter(new Metrics.Plotter("# of Holographic Leaderboards") {
+			@Override
+			public int getValue() {
+				return MobHunting.getLeaderboardManager().getHologramManager().getHolograms().size();
+			}
+		});
 		usageGraph.addPlotter(new Metrics.Plotter("# of MasterMobHunters") {
 			@Override
 			public int getValue() {
-				if (CitizensCompat.getMasterMobHunterManager()!=null)
-				return CitizensCompat.getMasterMobHunterManager().getAll().size();
-				else return 0;
+				if (CitizensCompat.getMasterMobHunterManager() != null)
+					return CitizensCompat.getMasterMobHunterManager().getAll().size();
+				else
+					return 0;
 			}
 		});
 		usageGraph.addPlotter(new Metrics.Plotter("# of Bounties") {

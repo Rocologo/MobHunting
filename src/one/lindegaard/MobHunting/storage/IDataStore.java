@@ -157,6 +157,8 @@ public interface IDataStore {
 	
 	void insertInfernalMobs();
 
+	void insertHerobrineMobs();
+
 	void insertMobs(Set<ExtendedMob> mobs) throws DataStoreException;
 
 	void updateMobs(Set<ExtendedMob> mobs) throws DataStoreException;
@@ -172,5 +174,7 @@ public interface IDataStore {
 	void insertCustomMobs(String mob);
 	
 	void insertSmartGiants(String mob);
+	
+	void insertMissingHerobrineMobs(String mob);
 
 }

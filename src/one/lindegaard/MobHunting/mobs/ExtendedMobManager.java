@@ -15,6 +15,7 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.HerobrineCompat;
 import one.lindegaard.MobHunting.compatibility.InfernalMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
@@ -48,6 +49,8 @@ public class ExtendedMobManager {
 			MobHunting.getStoreManager().insertMysteriousHalloweenMobs();
 		if (SmartGiantsCompat.isSupported())
 			MobHunting.getStoreManager().insertSmartGiants();
+		if (HerobrineCompat.isSupported())
+			MobHunting.getStoreManager().insertHerobrineMobs();
 		// Not needed
 		// if (InfernalMobsCompat.isSupported())
 		// MobHunting.getStoreManager().insertInfernalMobs();
@@ -102,6 +105,11 @@ public class ExtendedMobManager {
 				if (!InfernalMobsCompat.isSupported() || InfernalMobsCompat.isDisabledInConfig())
 					continue;
 				break;
+				
+			case Herobrine:
+				if (!HerobrineCompat.isSupported()|| HerobrineCompat.isDisabledInConfig())
+					continue;
+				break;
 
 			case Minecraft:
 				break;
@@ -135,8 +143,6 @@ public class ExtendedMobManager {
 			if (mob.getMobPlugin().equals(mobPlugin) && mob.getMobtype().equalsIgnoreCase(mobtype))
 				return mob.getMob_id();
 		}
-		// Bukkit.getLogger().warning("[MobHunting] The " + mobPlugin.name() + "
-		// mobtype " + mobtype + " was not found.");
 		return 0;
 	}
 
@@ -172,6 +178,9 @@ public class ExtendedMobManager {
 				Messages.debug("unhandled entity %s", entity.getType());
 				mobtype = "";
 			}
+		} else if (HerobrineCompat.isHerobrineMob(entity)){
+			mobPlugin = MobPlugin.Herobrine;
+			mobtype = HerobrineCompat.getHerobrineMobType(entity);
 		} else {
 			// StatType
 			mobPlugin = MobPlugin.Minecraft;

@@ -100,7 +100,7 @@ public class FishingManager implements Listener {
 			}
 
 			Material material_under_hook = fish.getLocation().getBlock().getType();
-			if (!(material_under_hook == Material.WATER || material_under_hook == Material.STATIONARY_WATER )) {
+			if (!(material_under_hook == Material.WATER || material_under_hook == Material.STATIONARY_WATER)) {
 				Messages.debug("FishingBlocked: %s was fishing on %s", player.getName(), material_under_hook);
 				return;
 			}
@@ -117,25 +117,48 @@ public class FishingManager implements Listener {
 			Messages.debug("Basic Prize=%s for catching a %s", plugin.getRewardManager().format(cash),
 					eMob.getMobName());
 
-			// Pay the reward to player and assister
-			if ((cash >= MobHunting.getConfigManager().minimumReward)
-					|| (cash <= -MobHunting.getConfigManager().minimumReward)) {
-
-				// Apply the modifiers to Basic reward
-				double multipliers = 1.0;
-				HashMap<String, Double> multiplierList = new HashMap<String, Double>();
-				ArrayList<String> modifiers = new ArrayList<String>();
-				for (IModifier mod : mFishingModifiers) {
-					if (mod.doesApply(fish, player, null, null, null)) {
-						double amt = mod.getMultiplier(fish, player, null, null, null);
-						if (amt != 1.0) {
-							Messages.debug("Multiplier: %s = %s", mod.getName(), amt);
-							modifiers.add(mod.getName());
-							multiplierList.put(mod.getName(), amt);
-							multipliers *= amt;
-						}
+			// Apply the modifiers to Basic reward
+			double multipliers = 1.0;
+			HashMap<String, Double> multiplierList = new HashMap<String, Double>();
+			ArrayList<String> modifiers = new ArrayList<String>();
+			for (IModifier mod : mFishingModifiers) {
+				if (mod.doesApply(fish, player, null, null, null)) {
+					double amt = mod.getMultiplier(fish, player, null, null, null);
+					if (amt != 1.0) {
+						Messages.debug("Multiplier: %s = %s", mod.getName(), amt);
+						modifiers.add(mod.getName());
+						multiplierList.put(mod.getName(), amt);
+						multipliers *= amt;
 					}
 				}
+			}
+
+			String extraString = "";
+
+			// Only display the multiplier if its not 1
+			if (Math.abs(multipliers - 1) > 0.05)
+				extraString += String.format("x%.1f", multipliers);
+
+			// Add on modifiers
+			int i = 0;
+			for (String modifier : modifiers) {
+				if (i == 0)
+					extraString += ChatColor.WHITE + " ( " + modifier;
+				else
+					extraString += ChatColor.WHITE + " * " + modifier;
+				i++;
+			}
+			if (i != 0)
+				extraString += ChatColor.WHITE + " ) ";
+
+			cash *= multipliers;
+
+			cash = Misc.ceil(cash);
+
+			// Pay the reward to player and assister
+			if (cash >= MobHunting.getConfigManager().minimumReward
+					|| cash <= -MobHunting.getConfigManager().minimumReward
+					|| !plugin.getRewardManager().getKillConsoleCmd(fish).isEmpty()) {
 
 				// Handle MobHuntFishingEvent
 				MobHuntFishingEvent event2 = new MobHuntFishingEvent(player, fish, cash, multiplierList);
@@ -146,36 +169,12 @@ public class FishingManager implements Listener {
 					return;
 				}
 
-				String extraString = "";
-
-				// Only display the multiplier if its not 1
-				if (Math.abs(multipliers - 1) > 0.05)
-					extraString += String.format("x%.1f", multipliers);
-
-				// Add on modifiers
-				int i = 0;
-				for (String modifier : modifiers) {
-					if (i == 0)
-						extraString += ChatColor.WHITE + " ( " + modifier;
-					else
-						extraString += ChatColor.WHITE + " * " + modifier;
-					i++;
-				}
-				if (i != 0)
-					extraString += ChatColor.WHITE + " ) ";
-
-				cash *= multipliers;
-
-				cash = Misc.ceil(cash);
-
 				if (cash >= MobHunting.getConfigManager().minimumReward) {
 					plugin.getRewardManager().depositPlayer(player, cash);
-					Messages.debug("%s got a reward (%s)", player.getName(),
-							plugin.getRewardManager().format(cash));
+					Messages.debug("%s got a reward (%s)", player.getName(), plugin.getRewardManager().format(cash));
 				} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
 					plugin.getRewardManager().withdrawPlayer(player, -cash);
-					Messages.debug("%s got a penalty (%s)", player.getName(),
-							plugin.getRewardManager().format(cash));
+					Messages.debug("%s got a penalty (%s)", player.getName(), plugin.getRewardManager().format(cash));
 				}
 
 				// Record Fishing Achievement is done using
@@ -239,7 +238,7 @@ public class FishingManager implements Listener {
 					if (chance < plugin.getRewardManager().getMcMMOChance(fish)) {
 						McMMOCompat.addLevel(player, SkillType.FISHING.getName(), level);
 						Messages.debug("%s was rewarded with %s McMMO level for Fishing", player.getName(), level);
-						player.sendMessage(Messages.getString("mobhunting.mcmmo.fishing_level", "mcmmo_level", level));
+						plugin.getMessages().playerSendMessage(player, Messages.getString("mobhunting.mcmmo.fishing_level", "mcmmo_level", level));
 					}
 				}
 
@@ -275,7 +274,7 @@ public class FishingManager implements Listener {
 								.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", fishermanPos);
 
 						Messages.debug("Description to be send:" + message);
-						player.sendMessage(message);
+						plugin.getMessages().playerSendMessage(player, message);
 					}
 				}
 			}

@@ -1,9 +1,55 @@
+V5.1.7
+* New command "/mh money", "/mh money balance", "/mh money balance playername" to get the amount of BagOfGold in the players inventory
+* Added new placeholder '%mobhunting_balance%'
+* Upgrade to MobHunting database V5 (Added new fields to mh_Players)  
+* PlaceHolders from PlacerHolderAPI can be used in the language files now. 
+* Added Hidden data to store Skin UUID for player and mobs for better skin persistence.
+* Fixed bug (https://www.spigotmc.org/threads/mobhunting.46937/page-143#post-2722870)
+V5.1.6
+* Added support for PlaceHolderAPI. (https://www.spigotmc.org/resources/placeholderapi.6245/)
+* Placedholders added: %mobhunting_rank% (Only updated when leaderboards is updated), %mobhunting_total_kills%, %mobhunting_total_cash%, %mobhunting_droped_money%, %mobhunting_dropped_rewards%
+* Fixed Ticket 317 (https://github.com/Rocologo/MobHunting/issues/317)
+* Fixed ticket 309 (https://github.com/Rocologo/MobHunting/issues/309)
+V5.1.5
+* Fixed Ticket 307. (https://github.com/Rocologo/MobHunting/issues/307)
+* Fixed NPE bug, when using command /mh happyhour
+* Fix bug on servers using a Java version where String.format uses a "," instead of a "." when formatting numbers.
+* Fixed ticket 313. (https://github.com/Rocologo/MobHunting/issues/313) 
+* You now click on any head and get the Owner (if it is not a custom texture head, without an owner)
+V5.1.4
+* Fixed bug on MC 1.8 servers, where BagOfGold signs dit not clear the slot if the bag was completely sold.
+V5.1.3
+* You can right click MobHunting rewards to get the name and value. (BagOfGold, mob name or player name).
+* Moved "You ware wanted" Bounty message from ActionBar to Player chat.
+* Updated the Chinese translation. (Thanks to Fisherman_wcz https://www.spigotmc.org/threads/mobhunting.46937/page-141#post-2711741) 
+* Fixed bug, where heads and BagOfGold was placed as a block lost its value.
+* /mh head drop... fixed
+* /mh head rename... fixed
+* /mh head value ... fixed
+* Selling rewards using a BagOfGold Sign now shows the correct name when sold.
+V5.1.2
+* Important fix. BagOfGold was destroyed when the Bag was kept in the inventory while it was opened! A workaround is implemented. The BagOfGold cant be moved when the player is in creative mode. 
+V5.1.1
+* Fixed NPE bug on servers using the Herobrine plugin.
+V5.1.0
+* Added support for PreciousStones (https://www.spigotmc.org/resources/preciousstones.5270/)
+* Added "Collect_To_Cursor". Double click on one BagOfGold to collect them all un the player inventory.
+* Fixed bug where /mh money sell could leave a BagOfGold with a value 0.
+* Fixed NPE bug (https://github.com/Rocologo/MobHunting/issues/305)
+* Fixed bug where Spliting a BagOfGold in the inventory, resulted in a small loss. 
+V5.0.9
+* Added support for Holograms (https://www.spigotmc.org/resources/holograms.4924/)
+* Added support for HolographicDisplays (https://dev.bukkit.org/projects/holographic-displays)
+* Fixed ticket 293. (https://github.com/Rocologo/MobHunting/issues/293).
+V5.0.8
+* Fixed NoClassDefFoundError bug. (https://www.spigotmc.org/threads/mobhunting.46937/page-136#post-2629696)
 V5.0.7
-* Added new features. Ticket 287 (https://github.com/Rocologo/MobHunting/issues/287)
+* Admins can now delete bounties on other players. Ticket 287 (https://github.com/Rocologo/MobHunting/issues/287)
 * Vanished players is exempt from Random Bounties
 * Players with permission "mobhunting.bounty.randombounty.exempt" is exempt from Random Bounties.
 * Players with permission "mobhunting.bounty.admin" can delete random bounties
 * Support for StackMob 2.0.7 Added
+* /mh npc command was broken in V5.0.6. Ticket 289. (https://github.com/Rocologo/MobHunting/issues/289)
 V5.0.6
 * Changed to static file and config access in the RewardManager
 * Fixed NPE error. Ticket 286. (https://github.com/Rocologo/MobHunting/issues/286)

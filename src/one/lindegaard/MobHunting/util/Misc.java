@@ -41,7 +41,7 @@ public class Misc {
 	public static boolean isUnarmed(ItemStack item) {
 		return (item == null || item.getType() == Material.AIR);
 	}
-	
+
 	public static boolean isSign(Block block) {
 		if (block.getType().equals(Material.SIGN_POST) || block.getType().equals(Material.WALL_SIGN))
 			return true;

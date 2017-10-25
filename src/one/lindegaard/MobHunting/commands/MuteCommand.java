@@ -15,9 +15,9 @@ import one.lindegaard.MobHunting.storage.PlayerSettings;
 public class MuteCommand implements ICommand {
 
 	private MobHunting plugin;
-	
+
 	public MuteCommand(MobHunting plugin) {
-		this.plugin=plugin;
+		this.plugin = plugin;
 	}
 
 	// Used case
@@ -79,12 +79,12 @@ public class MuteCommand implements ICommand {
 				if (sender.hasPermission("mobhunting.mute.other") || sender instanceof ConsoleCommandSender) {
 					togglePlayerMuteMode(player);
 				} else {
-					sender.sendMessage(
+					plugin.getMessages().senderSendMessage(sender,
 							ChatColor.RED + "You dont have permission " + ChatColor.AQUA + "'mobhunting.mute.other'");
 				}
 				return true;
 			} else {
-				sender.sendMessage(ChatColor.RED + "Player " + args[0] + " is not online.");
+				plugin.getMessages().senderSendMessage(sender,ChatColor.RED + "Player " + args[0] + " is not online.");
 				return false;
 			}
 		}
@@ -93,14 +93,19 @@ public class MuteCommand implements ICommand {
 
 	private void togglePlayerMuteMode(Player player) {
 		DataStoreManager ds = MobHunting.getDataStoreManager();
-		boolean lm = plugin.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode();
-		if (plugin.getPlayerSettingsmanager().getPlayerSettings(player).isMuted()) {
-			ds.updatePlayerSettings(player, lm, false);
-			plugin.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, lm, false));
+		PlayerSettings ps = plugin.getPlayerSettingsmanager().getPlayerSettings(player);
+		boolean lm = ps.isLearningMode();
+		if (ps.isMuted()) {
+			ds.updatePlayerSettings(player, lm, false, ps.getBalance(), ps.getBalanceChanges(), ps.getBankBalance(),
+					ps.getBankBalanceChanges());
+			plugin.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, lm, false,
+					ps.getBalance(), ps.getBalanceChanges(), ps.getBankBalance(), ps.getBankBalanceChanges()));
 			player.sendMessage(Messages.getString("mobhunting.commands.mute.unmuted", "player", player.getName()));
 		} else {
-			ds.updatePlayerSettings(player, lm, true);
-			plugin.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, lm, true));
+			ds.updatePlayerSettings(player, lm, true, ps.getBalance(), ps.getBalanceChanges(), ps.getBankBalance(),
+					ps.getBankBalanceChanges());
+			plugin.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, lm, true,
+					ps.getBalance(), ps.getBalanceChanges(), ps.getBankBalance(), ps.getBankBalanceChanges()));
 			player.sendMessage(Messages.getString("mobhunting.commands.mute.muted", "player", player.getName()));
 		}
 	}

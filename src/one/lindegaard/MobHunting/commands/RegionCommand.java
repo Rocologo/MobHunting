@@ -159,7 +159,7 @@ private MobHunting plugin;
 										WorldGuardHelper.getMobHuntingFlag());
 							}
 						}
-						sender.sendMessage(ChatColor.RED + Messages
+						plugin.getMessages().senderSendMessage(sender,ChatColor.RED + Messages
 								.getString("mobhunting.commands.region.unknownRegionId", "regionid", args[0]));
 					} else if ((args.length >= 3) && args[1].equalsIgnoreCase("mobhunting")) {
 						RegionManager rm = WorldGuardHelper.getRegionContainer().get(((Player) sender).getWorld());
@@ -174,15 +174,15 @@ private MobHunting plugin;
 												WorldGuardHelper.getMobHuntingFlag(), args[2]);
 							}
 						}
-						sender.sendMessage(ChatColor.RED + Messages
+						plugin.getMessages().senderSendMessage(sender,ChatColor.RED + Messages
 								.getString("mobhunting.commands.region.unknownRegionId", "regionid", args[0]));
 					} else {
-						sender.sendMessage(
+						plugin.getMessages().senderSendMessage(sender,
 								ChatColor.RED + Messages.getString("mobhunting.commands.region.specifyRegionId"));
 					}
 				}
 			} else {
-				sender.sendMessage(
+				plugin.getMessages().senderSendMessage(sender,
 						ChatColor.RED + Messages.getString("mobhunting.commands.region.noWorldguardSupport"));
 			}
 		}

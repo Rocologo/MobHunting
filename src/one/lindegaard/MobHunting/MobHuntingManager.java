@@ -11,6 +11,7 @@ import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 import one.lindegaard.MobHunting.grinding.Area;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.modifier.*;
+import one.lindegaard.MobHunting.placeholder.PlaceHolderData;
 import one.lindegaard.MobHunting.update.Updater;
 import one.lindegaard.MobHunting.util.Misc;
 import org.bukkit.*;
@@ -469,9 +470,6 @@ public class MobHuntingManager implements Listener {
 
 		// check if damager or damaged is Sentry / Sentinel. Only Sentry gives a
 		// reward.
-		if (CitizensCompat.isNPC(damager) && !CitizensCompat.isSentryOrSentinelOrSentries(damager))
-			return;
-
 		if (CitizensCompat.isNPC(damaged) && !CitizensCompat.isSentryOrSentinelOrSentries(damaged))
 			return;
 
@@ -479,6 +477,10 @@ public class MobHuntingManager implements Listener {
 				&& !WorldGuardHelper.isAllowedByWorldGuard(damager, damaged, DefaultFlag.MOB_DAMAGE, true)) {
 			return;
 		}
+
+		if (damager instanceof Player && (PreciousStonesCompat.isMobDamageProtected((Player) damager)
+				|| PreciousStonesCompat.isPVPProtected((Player) damager)))
+			return;
 
 		if (CrackShotCompat.isSupported() && CrackShotCompat.isCrackShotUsed(damaged)) {
 			return;
@@ -786,6 +788,17 @@ public class MobHuntingManager implements Listener {
 			}
 		}
 
+		if (PreciousStonesCompat.isMobDamageProtected(getPlayer(killer, killed))) {
+			Player player = getPlayer(killer, killed);
+			Messages.debug("KillBlocked: %s is hiding in PreciousStone Field with prevent-mob-damage flag",
+					player.getName());
+			plugin.getMessages().learn(player, Messages.getString("mobhunting.learn.prevent-mob-damage-flag"));
+			cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDrops,
+					MobHunting.getConfigManager().disableNatualXPDrops);
+			Messages.debug("======================= kill ended (5.5)======================");
+			return;
+		}
+
 		// Factions Compatibility - no reward when player are in SafeZone
 		if (FactionsCompat.isSupported()) {
 			if ((killer != null || MyPetCompat.isMyPet(killer)) && !CitizensCompat.isNPC(killer)) {
@@ -918,6 +931,13 @@ public class MobHuntingManager implements Listener {
 				return;
 
 				//
+			} else if (PreciousStonesCompat.isPVPProtected(getPlayer(killer, killed))) {
+				Player player = getPlayer(killer, killed);
+				Messages.debug("KillBlocked: %s is hiding in PreciousStone Field with prevent-pvp flag",
+						player.getName());
+				plugin.getMessages().learn(player, Messages.getString("mobhunting.learn.prevent-pvp-flag"));
+				Messages.debug("======================= kill ended (16.5)======================");
+				return;
 			} else if (killer != null) {
 				if (killed.equals(killer)) {
 					// Suicide
@@ -1138,7 +1158,7 @@ public class MobHuntingManager implements Listener {
 				if (data.getKillstreakLevel() != 0 && data.getKillstreakMultiplier() != 1)
 					plugin.getMessages().playerActionBarMessage(getPlayer(killer, killed),
 							ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
-				data.resetKillStreak(killer);
+				data.resetKillStreak(getPlayer(killer, killed));
 			}
 		} else {
 			Messages.debug("======================= kill ended (31)=====================");
@@ -1594,6 +1614,22 @@ public class MobHuntingManager implements Listener {
 					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Command:" + str);
 				}
 			}
+
+			// Update PlaceHolderData
+			if (PlaceholderAPICompat.isSupported()) {
+				if (info.getAssister() == null) {
+					PlaceHolderData p = PlaceholderAPICompat.getPlaceHolders()
+							.get(getPlayer(killer, killed).getUniqueId());
+					p.setTotal_kills(p.getTotal_kills()+1);
+					PlaceholderAPICompat.getPlaceHolders().put(getPlayer(killer, killed).getUniqueId(), p);
+				} else {
+					PlaceHolderData p = PlaceholderAPICompat.getPlaceHolders()
+							.get(getPlayer(killer, killed).getUniqueId());
+					p.setTotal_assists(p.getTotal_assists()+1);
+					PlaceholderAPICompat.getPlaceHolders().put(getPlayer(killer, killed).getUniqueId(), p);
+				}
+			}
+
 			// send a message to the player
 			if (!plugin.getRewardManager().getKillRewardDescription(killed).equals("") && !killer_muted) {
 				String message = ChatColor.GREEN + "" + ChatColor.ITALIC

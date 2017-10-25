@@ -7,12 +7,11 @@ import one.lindegaard.MobHunting.util.ConfigField;
 import org.bukkit.configuration.InvalidConfigurationException;
 
 public class ConfigManager extends AutoConfig {
-	
 
 	public ConfigManager(File file) {
-		
+
 		super(file);
-		
+
 		setCategoryComment("mobs", "########################################################################"
 				+ "\nRewards for killing mobs."
 				+ "\n########################################################################"
@@ -80,8 +79,11 @@ public class ConfigManager extends AutoConfig {
 						+ "\n########################################################################"
 						+ "\nHere is where you set the prize in $ for achieving a special kill. "
 						+ "\nFor each achievment you can run a console command to give the player a reward. "
-						+ "\nYou can use the following variables {player},{world}."
-						+ "\nAn example could be to give the player permission to fly "
+						+ "\nYou can use the following variables {player},{world}, {killerpos},"
+						+ "\n{monstertype} and more can be added on request."
+						+ "\nmonstertype is the monstername. A valid list can be found in your "
+						+ "\nlang file. Ex. if it is mobs.skeleton.name, monstertype will return skeleton"
+						+ "\nAn example command could be to give the player permission to fly "
 						+ "\nfor 1 hour or use give command to the player items."
 						+ "\nYou can also specify the message send to the player."
 						+ "\nYou can run many console commands on each line, each command" + "\nmust be separated by |"
@@ -210,7 +212,8 @@ public class ConfigManager extends AutoConfig {
 						+ "\nand the chance to get the xp.");
 
 		setCategoryComment("crackshot",
-				"########################################################################" + "\nIntegration to CrackShot"
+				"########################################################################"
+						+ "\nIntegration to CrackShot"
 						+ "\n########################################################################"
 						+ "\nThis section only relevant if you use CrackShot."
 						+ "\nHere you configure if the player will get a multiplier for using a CrackShot weapon");
@@ -231,8 +234,11 @@ public class ConfigManager extends AutoConfig {
 		setCategoryComment("updates", "########################################################################"
 				+ "\nUpdate settings" + "\n########################################################################");
 
+		setCategoryComment("economy", "########################################################################"
+				+ "\nEconomy Settings" + "\n########################################################################");
+
 		setCategoryComment("general", "########################################################################"
-				+ "\nGeneral Setting." + "\n########################################################################");
+				+ "\nGeneral Settings" + "\n########################################################################");
 
 	}
 
@@ -2170,10 +2176,22 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-extra-hard-mode", category = "plugins", comment = "Disable integration with ExtraHardmode."
 			+ "\nhttps://www.spigotmc.org/resources/extra-hard-mode.19673/")
 	public boolean disableIntegrationExtraHardMode = false;
-	
+
 	@ConfigField(name = "disable-integration-herobrine", category = "plugins", comment = "Disable integration with Herobrine."
 			+ "\nhttps://www.theprogrammersworld.net/Herobrine/")
 	public boolean disableIntegrationHerobrine = false;
+
+	@ConfigField(name = "disable-integration-holograms", category = "plugins", comment = "Disable integration with Holograms."
+			+ "\nhttps://www.spigotmc.org/resources/holograms.4924/")
+	public boolean disableIntegrationHolograms = false;
+
+	@ConfigField(name = "disable-integration-holographic-displays", category = "plugins", comment = "Disable integration with Holograms."
+			+ "\nhttps://dev.bukkit.org/projects/holographic-displays")
+	public boolean disableIntegrationHolographicDisplays = false;
+
+	@ConfigField(name = "disable-integration-preciousstones", category = "plugins", comment = "Disable integration with PreciousStones."
+			+ "\nhttps://www.spigotmc.org/resources/preciousstones.5270/")
+	public boolean disableIntegrationPreciousStones = false;
 
 	// #####################################################################################
 	// Database
@@ -2211,6 +2229,12 @@ public class ConfigManager extends AutoConfig {
 	public boolean autoupdate = false;
 
 	// #####################################################################################
+	// Economy settings
+	// #####################################################################################
+	@ConfigField(name = "starting_balance", category = "economy", comment = "Set initial balance for new players.")
+	public double startingBalance = 3000;
+
+	// #####################################################################################
 	// Generel settings
 	// #####################################################################################
 	@ConfigField(name = "disabled-in-worlds", category = "general", comment = "Put the names of the worlds here that you do not wish for mobhunting to be enabled in.")
@@ -2230,7 +2254,7 @@ public class ConfigManager extends AutoConfig {
 	public boolean disableNaturallyDroppedXPFromMobSpawnersEggsAndDispensers = false;
 
 	@ConfigField(name = "disable_mobhunting_advancements", category = "general", comment = "As of V 5.0.0 MobHunting utilizises the Advancement system (L key) to to show which"
-			+ "\nAchievements the players has made. This is still BETA feature and if you have any problems, you can set 'disable_mobhunting_advancements: true and the reload the plugin.")
+			+ "\nAchievements the players has made. This is still BETA feature and it is only Supported on Spigot Servers and if you have any problems, you can set 'disable_mobhunting_advancements: true and the reload the plugin.")
 	public boolean disableMobHuntingAdvancements = true;
 
 	@ConfigField(name = "use-actionbar-for-broadcasts", category = "general", comment = "Broadcast messages will be send in the ActionBar if MobHunting finds a supported ActionBar plugin.")

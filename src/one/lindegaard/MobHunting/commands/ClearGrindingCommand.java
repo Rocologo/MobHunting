@@ -69,7 +69,7 @@ private MobHunting plugin;
 			data.clearGrindingArea(loc);
 		}
 
-		sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.cleargrinding.done"));
+		plugin.getMessages().senderSendMessage(sender,ChatColor.GREEN + Messages.getString("mobhunting.commands.cleargrinding.done"));
 
 		return true;
 	}

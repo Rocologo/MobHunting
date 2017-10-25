@@ -58,7 +58,7 @@ public class InFighting implements Achievement, Listener {
 		EntityDamageByEntityEvent damage = (EntityDamageByEntityEvent) killed.getLastDamageCause();
 
 		if (damage.getDamager() instanceof Arrow && ((Arrow) damage.getDamager()).getShooter() instanceof Skeleton) {
-			
+
 			Skeleton skele = (Skeleton) ((Arrow) damage.getDamager()).getShooter();
 
 			if (killed.getTarget() == skele && skele.getTarget() == killed) {

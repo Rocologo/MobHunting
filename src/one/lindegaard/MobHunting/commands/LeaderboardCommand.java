@@ -103,10 +103,10 @@ public class LeaderboardCommand implements ICommand, Listener {
 
 		try {
 			MobHunting.getLeaderboardManager().deleteLegacyLeaderboard(id);
-			sender.sendMessage(
+			plugin.getMessages().senderSendMessage(sender,
 					ChatColor.GREEN + Messages.getString("mobhunting.commands.leaderboard.delete", "leaderboard", id));
 		} catch (IllegalArgumentException e) {
-			sender.sendMessage(ChatColor.RED + e.getMessage());
+			plugin.getMessages().senderSendMessage(sender,ChatColor.RED + e.getMessage());
 		}
 
 		return true;
@@ -124,7 +124,7 @@ public class LeaderboardCommand implements ICommand, Listener {
 			try {
 				state.type = parseTypes(args[2]);
 			} catch (IllegalArgumentException e) {
-				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat",
+				plugin.getMessages().senderSendMessage(sender,ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat",
 						ChatColor.YELLOW + e.getMessage() + ChatColor.RED));
 				return true;
 			}
@@ -132,7 +132,7 @@ public class LeaderboardCommand implements ICommand, Listener {
 			try {
 				state.addType = parseTypes(args[2]);
 			} catch (IllegalArgumentException e) {
-				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat",
+				plugin.getMessages().senderSendMessage(sender,ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat",
 						ChatColor.YELLOW + e.getMessage() + ChatColor.RED));
 				return true;
 			}
@@ -140,7 +140,7 @@ public class LeaderboardCommand implements ICommand, Listener {
 			try {
 				state.period = parsePeriods(args[2]);
 			} catch (IllegalArgumentException e) {
-				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period",
+				plugin.getMessages().senderSendMessage(sender,ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period",
 						"period", ChatColor.YELLOW + e.getMessage() + ChatColor.RED));
 				return true;
 			}
@@ -148,14 +148,14 @@ public class LeaderboardCommand implements ICommand, Listener {
 			try {
 				state.addPeriod = parsePeriods(args[2]);
 			} catch (IllegalArgumentException e) {
-				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period",
+				plugin.getMessages().senderSendMessage(sender,ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period",
 						"period", ChatColor.YELLOW + e.getMessage() + ChatColor.RED));
 				return true;
 			}
 		} else if (args[1].equalsIgnoreCase("horizontal")) {
 			state.horizontal = Boolean.parseBoolean(args[2]);
 		} else {
-			sender.sendMessage(ChatColor.RED
+			plugin.getMessages().senderSendMessage(sender,ChatColor.RED
 					+ Messages.getString("mobhunting.commands.leaderboard.edit.unknown", "setting", args[1]));
 			return true;
 		}
@@ -163,9 +163,9 @@ public class LeaderboardCommand implements ICommand, Listener {
 		// TODO: Create new strings in Message
 		mWaitingStates.put((Player) sender, state);
 		if (state.create)
-			sender.sendMessage(ChatColor.GOLD + "Changes saved, right click a wall sign to create the board.");
+			plugin.getMessages().senderSendMessage(sender,ChatColor.GOLD + "Changes saved, right click a wall sign to create the board.");
 		else
-			sender.sendMessage(ChatColor.GOLD + "Changes saved, right click a leaderboard to apply changes.");
+			plugin.getMessages().senderSendMessage(sender,ChatColor.GOLD + "Changes saved, right click a leaderboard to apply changes.");
 
 		return true;
 	}
@@ -178,7 +178,7 @@ public class LeaderboardCommand implements ICommand, Listener {
 		try {
 			types = parseTypes(args[1]);
 		} catch (IllegalArgumentException e) {
-			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat",
+			plugin.getMessages().senderSendMessage(sender,ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat",
 					ChatColor.YELLOW + e.getMessage() + ChatColor.RED));
 			return true;
 		}
@@ -188,7 +188,7 @@ public class LeaderboardCommand implements ICommand, Listener {
 		try {
 			periods = parsePeriods(args[2]);
 		} catch (IllegalArgumentException e) {
-			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period",
+			plugin.getMessages().senderSendMessage(sender,ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period",
 					ChatColor.YELLOW + e.getMessage() + ChatColor.RED));
 			return true;
 		}
@@ -204,12 +204,12 @@ public class LeaderboardCommand implements ICommand, Listener {
 				width = Integer.parseInt(args[args.length - 2]);
 				if (width < 1) {
 					// TODO: Create new strings in Message
-					sender.sendMessage(ChatColor.RED + "Width is too small. Must be at least 1");
+					plugin.getMessages().senderSendMessage(sender,ChatColor.RED + "Width is too small. Must be at least 1");
 					return true;
 				}
 			} catch (NumberFormatException e) {
 				// TODO: Create new strings in Message
-				sender.sendMessage(ChatColor.RED + "Width must be a whole number of at least 1");
+				plugin.getMessages().senderSendMessage(sender,ChatColor.RED + "Width must be a whole number of at least 1");
 				return true;
 			}
 
@@ -217,12 +217,12 @@ public class LeaderboardCommand implements ICommand, Listener {
 				height = Integer.parseInt(args[args.length - 1]);
 				if (height < 1) {
 					// TODO: Create new strings in Message
-					sender.sendMessage(ChatColor.RED + "Height is too small. Must be at least 1");
+					plugin.getMessages().senderSendMessage(sender,ChatColor.RED + "Height is too small. Must be at least 1");
 					return true;
 				}
 			} catch (NumberFormatException e) {
 				// TODO: Create new strings in Message
-				sender.sendMessage(ChatColor.RED + "Height must be a whole number of at least 1");
+				plugin.getMessages().senderSendMessage(sender,ChatColor.RED + "Height must be a whole number of at least 1");
 				return true;
 			}
 
@@ -241,7 +241,7 @@ public class LeaderboardCommand implements ICommand, Listener {
 		mWaitingStates.put((Player) sender, state);
 
 		// TODO: create string in messages.
-		sender.sendMessage(ChatColor.GOLD + "Click a wall sign to create the leaderboard");
+		plugin.getMessages().senderSendMessage(sender,ChatColor.GOLD + "Click a wall sign to create the leaderboard");
 
 		return true;
 	}
@@ -274,7 +274,8 @@ public class LeaderboardCommand implements ICommand, Listener {
 				if (args.length == 2) {
 					for (StatType type : StatType.values())
 						if (type != null)
-							items.add(type.getDBColumn());
+							items.add(ChatColor.stripColor(type.translateName().replaceAll(" ", "_")));
+							//items.add(type.getDBColumn());
 				} else if (args.length == 3)
 					for (TimePeriod period : TimePeriod.values())
 						items.add(period.translateName().replaceAll(" ", "_"));

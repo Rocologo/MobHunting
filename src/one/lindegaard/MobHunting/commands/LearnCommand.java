@@ -15,9 +15,9 @@ import one.lindegaard.MobHunting.storage.PlayerSettings;
 public class LearnCommand implements ICommand {
 
 	private MobHunting plugin;
-	
+
 	public LearnCommand(MobHunting plugin) {
-		this.plugin=plugin;
+		this.plugin = plugin;
 	}
 
 	// Used case
@@ -78,12 +78,12 @@ public class LearnCommand implements ICommand {
 				if (sender.hasPermission("mobhunting.learn.other") || sender instanceof ConsoleCommandSender) {
 					togglePlayerLearningMode(player);
 				} else {
-					sender.sendMessage(
+					plugin.getMessages().senderSendMessage(sender,
 							ChatColor.RED + "You dont have permission " + ChatColor.AQUA + "'mobhunting.learn.other'");
 				}
 				return true;
 			} else {
-				sender.sendMessage(ChatColor.RED + "Player " + args[0] + " is not online.");
+				plugin.getMessages().senderSendMessage(sender,ChatColor.RED + "Player " + args[0] + " is not online.");
 				return false;
 			}
 		}
@@ -93,12 +93,16 @@ public class LearnCommand implements ICommand {
 	private void togglePlayerLearningMode(Player player) {
 		DataStoreManager ds = MobHunting.getDataStoreManager();
 		boolean mm = plugin.getPlayerSettingsmanager().getPlayerSettings(player).isMuted();
-		if (plugin.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode()) {
-			ds.updatePlayerSettings(player, false, mm);
-			plugin.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, false, mm));
+		PlayerSettings ps = plugin.getPlayerSettingsmanager().getPlayerSettings(player);
+		if (ps.isLearningMode()) {
+			ds.updatePlayerSettings(player, false, mm, ps.getBalance(), ps.getBalanceChanges(), ps.getBankBalance(),
+					ps.getBankBalanceChanges());
+			plugin.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, false, mm,
+					ps.getBalance(), ps.getBalanceChanges(), ps.getBankBalance(), ps.getBankBalanceChanges()));
 			player.sendMessage(Messages.getString("mobhunting.commands.learn.disabled", "player", player.getName()));
 		} else {
-			plugin.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, true, mm));
+			plugin.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, true, mm,
+					ps.getBalance(), ps.getBalanceChanges(), ps.getBankBalance(), ps.getBankBalanceChanges()));
 			player.sendMessage(Messages.getString("mobhunting.commands.learn.enabled", "player", player.getName()));
 		}
 	}

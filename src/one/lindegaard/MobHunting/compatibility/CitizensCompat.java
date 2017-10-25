@@ -14,6 +14,7 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.TraitInfo;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.commands.NpcCommand;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.npc.MasterMobHunter;
 import one.lindegaard.MobHunting.npc.MasterMobHunterManager;
@@ -216,6 +217,19 @@ public class CitizensCompat implements Listener {
 		return mMobRewardData.get(mobtype).getAchivementLevel1();
 	}
 
+	/**
+	 * Get the MasterMobHunterManager
+	 * 
+	 * @return
+	 */
+	public static MasterMobHunterManager getMasterMobHunterManager() {
+		return mMasterMobHunterManager;
+	}
+
+	// **************************************************************************
+	// EVENTS
+	// **************************************************************************
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onCitizensEnableEvent(CitizensEnableEvent event) {
 		Messages.debug("Citizens2 was enabled");
@@ -261,20 +275,13 @@ public class CitizensCompat implements Listener {
 
 		Bukkit.getPluginManager().registerEvents(new MasterMobHunterSign(MobHunting.getInstance()),
 				MobHunting.getInstance());
+		
+		MobHunting.getInstance().getCommandDispatcher().registerCommand(new NpcCommand(MobHunting.getInstance()));;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onCitizensDisableEvent(CitizensDisableEvent event) {
 		// Messages.debug("CitizensDisableEvent - saving");
-	}
-
-	/**
-	 * Get the MasterMobHunterManager
-	 * 
-	 * @return
-	 */
-	public static MasterMobHunterManager getMasterMobHunterManager() {
-		return mMasterMobHunterManager;
 	}
 
 }

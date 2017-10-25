@@ -18,6 +18,7 @@ public class BossShopHelper {
 
 	public static boolean openShop(MobHunting plugin, Player p, String shop_name) {
 
+		//BossShopCompat.getBossShop().getAPI().
 		BSShop shop = BossShopCompat.getBossShop().getAPI().getShop(shop_name);
 
 		if (shop == null) {
@@ -37,7 +38,7 @@ public class BossShopHelper {
 		ItemStack is = new CustomItems(plugin).getCustomtexture(uuid,
 				MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 				MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-				MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, 10, UUID.randomUUID());
+				MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, 10, UUID.randomUUID(), uuid);
 
 		// ItemStack menu_item = new ItemStack(is);
 		BossShopCompat.getBossShop().getAPI().addItemToShop(is, buy, shop);

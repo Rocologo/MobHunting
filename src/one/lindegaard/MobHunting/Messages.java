@@ -23,33 +23,37 @@ import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import one.lindegaard.MobHunting.compatibility.ActionAnnouncerCompat;
 import one.lindegaard.MobHunting.compatibility.ActionBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.ActionbarCompat;
 import one.lindegaard.MobHunting.compatibility.BarAPICompat;
 import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
+import one.lindegaard.MobHunting.compatibility.PlaceholderAPICompat;
 import one.lindegaard.MobHunting.compatibility.TitleAPICompat;
 import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 
 public class Messages {
-	
+
 	private MobHunting plugin;
-	public Messages(MobHunting plugin){
-		this.plugin=plugin;
+
+	public Messages(MobHunting plugin) {
+		this.plugin = plugin;
 	}
-	
+
 	private static Map<String, String> mTranslationTable;
 	private static String[] mValidEncodings = new String[] { "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-8", "ISO646-US" };
 	private static final String PREFIX = "[MobHunting]";
 	private static String[] sources = new String[] { "en_US.lang", "zh_CN.lang" };
 	private static MobHunting mPlugin;
 
-	public static void exportDefaultLanguages(MobHunting plugin) {
+	public void exportDefaultLanguages(MobHunting plugin) {
 		mPlugin = plugin;
 		File folder = new File(plugin.getDataFolder(), "lang");
 		if (!folder.exists())
@@ -213,7 +217,7 @@ public class Messages {
 				if (!dest.containsKey(k)) {
 					Bukkit.getLogger()
 							.info(PREFIX + " Creating missing key (" + k + ") in language file " + onDisk.getName());
-					newEntries.put(k, p.name() + " [$]");
+					newEntries.put(k, p.name() + " cash");
 				}
 			}
 
@@ -420,22 +424,29 @@ public class Messages {
 			Player player = players.next();
 			if (player.equals(except) || plugin.getPlayerSettingsmanager().getPlayerSettings(player).isMuted())
 				continue;
+
 			if (MobHunting.getConfigManager().useActionBarforBroadcasts)
 				playerActionBarMessage(player, message);
-			else if (isEmpty(message))
-				player.sendMessage(message);
+			else if (isEmpty(message)) {
+				player.sendMessage(PlaceholderAPICompat.setPlaceholders(player, message));
+			}
 		}
 	}
 
 	/**
 	 * Show debug information in the Server console log
 	 * 
-	 * @param text
+	 * @param message
 	 * @param args
 	 */
-	public static void debug(String text, Object... args) {
-		if (MobHunting.getConfigManager().killDebug)
-			Bukkit.getServer().getConsoleSender().sendMessage(PREFIX + "[Debug] " + String.format(text, args));
+	public static void debug(String message, Object... args) {
+		if (MobHunting.getConfigManager().killDebug) {
+			if (PlaceholderAPICompat.isSupported())
+				Bukkit.getServer().getConsoleSender().sendMessage(
+						PREFIX + "[Debug] " + PlaceholderAPI.setPlaceholders(null, String.format(message, args)));
+			else
+				Bukkit.getServer().getConsoleSender().sendMessage(PREFIX + "[Debug] " + String.format(message, args));
+		}
 	}
 
 	/**
@@ -456,19 +467,22 @@ public class Messages {
 	 * available the player chat will be used.
 	 * 
 	 * @param player
-	 * @param text
+	 * @param message
 	 * @param args
 	 */
-	public void playerBossbarMessage(Player player, String text, Object... args) {
-		if (isEmpty(text))
+	public void playerBossbarMessage(Player player, String message, Object... args) {
+		if (isEmpty(message))
 			return;
+
+		message = PlaceholderAPICompat.setPlaceholders(player, message);
+
 		if (BossBarAPICompat.isSupported()) {
-			BossBarAPICompat.addBar(player, String.format(text, args));
+			BossBarAPICompat.addBar(player, String.format(message, args));
 		} else if (BarAPICompat.isSupported()) {
-			BarAPICompat.setMessageTime(player, String.format(text, args), 5);
+			BarAPICompat.setMessageTime(player, String.format(message, args), 5);
 		} else {
-			player.sendMessage(
-					ChatColor.AQUA + Messages.getString("mobhunting.learn.prefix") + " " + String.format(text, args));
+			player.sendMessage(ChatColor.AQUA + Messages.getString("mobhunting.learn.prefix") + " "
+					+ String.format(message, args));
 		}
 	}
 
@@ -478,9 +492,12 @@ public class Messages {
 	 * @param player
 	 * @param message
 	 */
-	public void playerActionBarMessage(final Player player, final String message) {
+	public void playerActionBarMessage(final Player player, String message) {
 		if (isEmpty(message))
 			return;
+
+		message = PlaceholderAPICompat.setPlaceholders(player, message);
+
 		if (TitleManagerCompat.isSupported()) {
 			TitleManagerCompat.setActionBar(player, message);
 		} else if (ActionbarCompat.isSupported()) {
@@ -495,13 +512,27 @@ public class Messages {
 		}
 	}
 
-	public static void playerSendMessage(final Player player, final String message) {
-		if (!isEmpty(message))
-			player.sendMessage(message);
+	public void playerSendMessage(final Player player, String message) {
+		if (isEmpty(message))
+			return;
+		player.sendMessage(PlaceholderAPICompat.setPlaceholders(player, message));
 	}
 
-	public static void playerSendTitlesMessage(Player player, String title, String subtitle, int fadein, int stay,
+	public void senderSendMessage(final CommandSender sender, String message) {
+		if (isEmpty(message))
+			return;
+		if (sender instanceof Player)
+			((Player) sender).sendMessage(PlaceholderAPICompat.setPlaceholders((Player) sender, message));
+		else
+			sender.sendMessage(message);
+	}
+
+	public void playerSendTitlesMessage(Player player, String title, String subtitle, int fadein, int stay,
 			int fadeout) {
+
+		title = PlaceholderAPICompat.setPlaceholders(player, title);
+		subtitle = PlaceholderAPICompat.setPlaceholders(player, subtitle);
+
 		if (TitleManagerCompat.isSupported()) {
 			TitleManagerCompat.sendTitles(player, title, subtitle, fadein, stay, fadeout);
 		} else if (TitleAPICompat.isSupported()) {

@@ -16,6 +16,7 @@ import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.command.TabCompleter;
 
 import one.lindegaard.MobHunting.Messages;
+import one.lindegaard.MobHunting.MobHunting;
 
 /**
  * This allows sub commands to be handled in a clean easily expandable way. Just
@@ -27,296 +28,271 @@ import one.lindegaard.MobHunting.Messages;
  * @author Schmoller
  */
 public class CommandDispatcher implements CommandExecutor, TabCompleter {
-    private HashMap<String, ICommand> mCommands;
-    private String mRootCommandName;
-    private String mRootCommandDescription;
 
-    public CommandDispatcher(String commandName, String description) {
-        mRootCommandName = commandName;
-        mRootCommandDescription = description;
+	private MobHunting plugin;
 
-        mCommands = new HashMap<>();
+	private HashMap<String, ICommand> mCommands;
+	private String mRootCommandName;
+	private String mRootCommandDescription;
 
-        registerCommand(new InternalHelp());
-    }
+	public CommandDispatcher(MobHunting plugin, String commandName, String description) {
 
-    /**
-     * Registers a command to be handled by this dispatcher
-     *
-     * @param command
-     */
-    public void registerCommand(ICommand command) {
-        mCommands.put(command.getName().toLowerCase(), command);
-    }
+		this.plugin = plugin;
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command,
-                             String label, String[] args) {
-        if (args.length == 0) {
-            displayUsage(sender, label, null);
-            return true;
-        }
+		mRootCommandName = commandName;
+		mRootCommandDescription = description;
 
-        String subCommand = args[0].toLowerCase();
-        String[] subArgs = (args.length > 1 ? Arrays.copyOfRange(args, 1,
-                args.length) : new String[0]);
+		mCommands = new HashMap<>();
 
-        ICommand com = isSubCommand(subCommand);
+		registerCommand(new InternalHelp());
+	}
 
+	/**
+	 * Registers a command to be handled by this dispatcher
+	 *
+	 * @param command
+	 */
+	public void registerCommand(ICommand command) {
+		mCommands.put(command.getName().toLowerCase(), command);
+	}
 
-        // Was not found
-        if (com == null) {
-            displayUsage(sender, label, subCommand);
-            return true;
-        }
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		if (args.length == 0) {
+			displayUsage(sender, label, null);
+			return true;
+		}
 
-        // Check that the sender is correct
-        if (!com.canBeConsole()
-                && (sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender)) {
-            sender.sendMessage(ChatColor.RED
-                    + Messages.getString("mobhunting.commands.base.noconsole",
-                    "command", "/" + label + " " + subCommand));
-            return true;
-        }
-        if (!com.canBeCommandBlock() && sender instanceof BlockCommandSender) {
-            sender.sendMessage(ChatColor.RED
-                    + Messages.getString(
-                    "mobhunting.commands.base.nocommandblock",
-                    "command", "/" + label + " " + subCommand));
-            return true;
-        }
+		String subCommand = args[0].toLowerCase();
+		String[] subArgs = (args.length > 1 ? Arrays.copyOfRange(args, 1, args.length) : new String[0]);
 
-        // Check that they have permission
-        if (com.getPermission() != null
-                && !sender.hasPermission(com.getPermission())) {
-            sender.sendMessage(ChatColor.RED
-                    + Messages.getString(
-                    "mobhunting.commands.base.nopermission", "command",
-                    "/" + label + " " + subCommand, "perm",
-                    com.getPermission()));
-            return true;
-        }
+		ICommand com = isSubCommand(subCommand);
 
-        if (!com.onCommand(sender, subCommand, subArgs)) {
-            String[] lines = com.getUsageString(subCommand, sender);
-            String usageString = "";
+		// Was not found
+		if (com == null) {
+			displayUsage(sender, label, subCommand);
+			return true;
+		}
 
-            for (String line : lines) {
-                if (lines.length > 1)
-                    usageString += "\n    ";
+		// Check that the sender is correct
+		if (!com.canBeConsole()
+				&& (sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender)) {
+			plugin.getMessages().senderSendMessage(sender, ChatColor.RED + Messages
+					.getString("mobhunting.commands.base.noconsole", "command", "/" + label + " " + subCommand));
+			return true;
+		}
+		if (!com.canBeCommandBlock() && sender instanceof BlockCommandSender) {
+			plugin.getMessages().senderSendMessage(sender, ChatColor.RED + Messages
+					.getString("mobhunting.commands.base.nocommandblock", "command", "/" + label + " " + subCommand));
+			return true;
+		}
 
-                usageString += ChatColor.GRAY + "/" + label + " " + line;
-            }
+		// Check that they have permission
+		if (com.getPermission() != null && !sender.hasPermission(com.getPermission())) {
+			plugin.getMessages().senderSendMessage(sender,
+					ChatColor.RED + Messages.getString("mobhunting.commands.base.nopermission", "command",
+							"/" + label + " " + subCommand, "perm", com.getPermission()));
+			return true;
+		}
 
-            usageString = ChatColor.RED
-                    + Messages.getString("mobhunting.commands.base.usage",
-                    "usage", usageString);
-            sender.sendMessage(usageString);
-        }
+		if (!com.onCommand(sender, subCommand, subArgs)) {
+			String[] lines = com.getUsageString(subCommand, sender);
+			String usageString = "";
 
-        return true;
-    }
+			for (String line : lines) {
+				if (lines.length > 1)
+					usageString += "\n    ";
 
-    private void displayUsage(CommandSender sender, String label,
-                              String subcommand) {
-        String usage = "";
+				usageString += ChatColor.GRAY + "/" + label + " " + line;
+			}
 
-        if (subcommand != null) {
-            sender.sendMessage(ChatColor.RED
-                    + Messages.getString(
-                    "mobhunting.commands.base.unknowncommand",
-                    "command", ChatColor.RESET + "/" + label + " "
-                            + ChatColor.GOLD + subcommand));
-            sender.sendMessage(Messages
-                    .getString("mobhunting.commands.base.validcommands"));
-        } else {
-            sender.sendMessage(ChatColor.RED
-                    + Messages.getString("mobhunting.commands.base.nocommand",
-                    "command", ChatColor.RESET + "/" + label
-                            + ChatColor.GOLD + " <command>"));
-            sender.sendMessage(Messages
-                    .getString("mobhunting.commands.base.validcommands"));
-        }
+			usageString = ChatColor.RED + Messages.getString("mobhunting.commands.base.usage", "usage", usageString);
+			plugin.getMessages().senderSendMessage(sender, usageString);
+		}
 
-        boolean first = true;
-        boolean odd = true;
-        // Build the list
-        for (Entry<String, ICommand> ent : mCommands.entrySet()) {
-            if (odd)
-                usage += ChatColor.WHITE;
-            else
-                usage += ChatColor.GRAY;
-            odd = !odd;
+		return true;
+	}
 
-            if (first)
-                usage += ent.getKey();
-            else
-                usage += ", " + ent.getKey();
+	private void displayUsage(CommandSender sender, String label, String subcommand) {
+		String usage = "";
 
-            first = false;
-        }
+		if (subcommand != null) {
+			plugin.getMessages().senderSendMessage(sender,
+					ChatColor.RED + Messages.getString("mobhunting.commands.base.unknowncommand", "command",
+							ChatColor.RESET + "/" + label + " " + ChatColor.GOLD + subcommand));
+			plugin.getMessages().senderSendMessage(sender,
+					Messages.getString("mobhunting.commands.base.validcommands"));
+		} else {
+			plugin.getMessages().senderSendMessage(sender,
+					ChatColor.RED + Messages.getString("mobhunting.commands.base.nocommand", "command",
+							ChatColor.RESET + "/" + label + ChatColor.GOLD + " <command>"));
+			plugin.getMessages().senderSendMessage(sender,
+					Messages.getString("mobhunting.commands.base.validcommands"));
+		}
 
-        sender.sendMessage(usage);
+		boolean first = true;
+		boolean odd = true;
+		// Build the list
+		for (Entry<String, ICommand> ent : mCommands.entrySet()) {
+			if (odd)
+				usage += ChatColor.WHITE;
+			else
+				usage += ChatColor.GRAY;
+			odd = !odd;
 
-        if (subcommand == null) {
-            sender.sendMessage(Messages
-                    .getString("mobhunting.commands.base.morehelp"));
-        }
+			if (first)
+				usage += ent.getKey();
+			else
+				usage += ", " + ent.getKey();
 
-    }
+			first = false;
+		}
 
+		plugin.getMessages().senderSendMessage(sender, usage);
 
-    public ICommand isSubCommand(String subCommand) {
-        if (mCommands.containsKey(subCommand)) {
-            return mCommands.get(subCommand);
-        } else {
-            // Check aliases
-            for (Entry<String, ICommand> ent : mCommands.entrySet()) {
-                if (ent.getValue().getAliases() != null) {
-                    String[] aliases = ent.getValue().getAliases();
-                    for (String alias : aliases) {
-                        if (subCommand.equalsIgnoreCase(alias)) {
-                            return ent.getValue();
-                        }
-                    }
-                }
-            }
-        }
-        return null;
-    }
+		if (subcommand == null) {
+			plugin.getMessages().senderSendMessage(sender, Messages.getString("mobhunting.commands.base.morehelp"));
+		}
 
+	}
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command,
-                                      String label, String[] args) {
-        List<String> results = new ArrayList<String>();
-        if (args.length == 1) // Tab completing the sub command
-        {
-            for (ICommand registeredCommand : mCommands.values()) {
-                if (registeredCommand.getName().toLowerCase()
-                        .startsWith(args[0].toLowerCase()))
-                    results.add(registeredCommand.getName());
-            }
-        } else {
-            // Find the command to use
-            String subCommand = args[0].toLowerCase();
+	public ICommand isSubCommand(String subCommand) {
+		if (mCommands.containsKey(subCommand)) {
+			return mCommands.get(subCommand);
+		} else {
+			// Check aliases
+			for (Entry<String, ICommand> ent : mCommands.entrySet()) {
+				if (ent.getValue().getAliases() != null) {
+					String[] aliases = ent.getValue().getAliases();
+					for (String alias : aliases) {
+						if (subCommand.equalsIgnoreCase(alias)) {
+							return ent.getValue();
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
 
-            ICommand com = isSubCommand(subCommand);
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+		List<String> results = new ArrayList<String>();
+		if (args.length == 1) // Tab completing the sub command
+		{
+			for (ICommand registeredCommand : mCommands.values()) {
+				if (registeredCommand.getName().toLowerCase().startsWith(args[0].toLowerCase()))
+					results.add(registeredCommand.getName());
+			}
+		} else {
+			// Find the command to use
+			String subCommand = args[0].toLowerCase();
 
+			ICommand com = isSubCommand(subCommand);
 
-            // Was not found
-            if (com == null) {
-                return results;
-            }
+			// Was not found
+			if (com == null) {
+				return results;
+			}
 
-            // Check that the sender is correct
-            if (!com.canBeConsole() && sender instanceof ConsoleCommandSender) {
-                return results;
-            }
+			// Check that the sender is correct
+			if (!com.canBeConsole() && sender instanceof ConsoleCommandSender) {
+				return results;
+			}
 
-            // Check that they have permission
-            if (com.getPermission() != null
-                    && !sender.hasPermission(com.getPermission())) {
-                return results;
-            }
+			// Check that they have permission
+			if (com.getPermission() != null && !sender.hasPermission(com.getPermission())) {
+				return results;
+			}
 
-            String[] subArgs = (args.length > 1 ? Arrays.copyOfRange(args, 1,
-                    args.length) : new String[0]);
-            results = com.onTabComplete(sender, subCommand, subArgs);
-            if (results == null)
-                // return new ArrayList<String>();
-                return results;
+			String[] subArgs = (args.length > 1 ? Arrays.copyOfRange(args, 1, args.length) : new String[0]);
+			results = com.onTabComplete(sender, subCommand, subArgs);
+			if (results == null)
+				// return new ArrayList<String>();
+				return results;
 
-        }
-        return results;
-    }
+		}
+		return results;
+	}
 
-    private class InternalHelp implements ICommand {
+	private class InternalHelp implements ICommand {
 
-        @Override
-        public String getName() {
-            return "help";
-        }
+		@Override
+		public String getName() {
+			return "help";
+		}
 
-        @Override
-        public String[] getAliases() {
-            return null;
-        }
+		@Override
+		public String[] getAliases() {
+			return null;
+		}
 
-        @Override
-        public String getPermission() {
-            return null;
-        }
+		@Override
+		public String getPermission() {
+			return null;
+		}
 
-        @Override
-        public String[] getUsageString(String label, CommandSender sender) {
-            return new String[]{label};
-        }
+		@Override
+		public String[] getUsageString(String label, CommandSender sender) {
+			return new String[] { label };
+		}
 
-        @Override
-        public String getDescription() {
-            return Messages
-                    .getString("mobhunting.commands.base.help.description");
-        }
+		@Override
+		public String getDescription() {
+			return Messages.getString("mobhunting.commands.base.help.description");
+		}
 
-        @Override
-        public boolean canBeConsole() {
-            return true;
-        }
+		@Override
+		public boolean canBeConsole() {
+			return true;
+		}
 
-        @Override
-        public boolean canBeCommandBlock() {
-            return true;
-        }
+		@Override
+		public boolean canBeCommandBlock() {
+			return true;
+		}
 
-        @Override
-        public boolean onCommand(CommandSender sender, String label,
-                                 String[] args) {
-            if (args.length != 0)
-                return false;
+		@Override
+		public boolean onCommand(CommandSender sender, String label, String[] args) {
+			if (args.length != 0)
+				return false;
 
-            sender.sendMessage(ChatColor.GOLD + mRootCommandDescription);
-            sender.sendMessage(ChatColor.GOLD
-                    + Messages
-                    .getString("mobhunting.commands.base.help.commands"));
+			plugin.getMessages().senderSendMessage(sender, ChatColor.GOLD + mRootCommandDescription);
+			plugin.getMessages().senderSendMessage(sender,
+					ChatColor.GOLD + Messages.getString("mobhunting.commands.base.help.commands"));
 
-            for (ICommand command : mCommands.values()) {
-                // Dont show commands that are irrelevant
-                if (!command.canBeCommandBlock()
-                        && sender instanceof BlockCommandSender)
-                    continue;
-                if (!command.canBeConsole()
-                        && (sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender))
-                    continue;
+			for (ICommand command : mCommands.values()) {
+				// Dont show commands that are irrelevant
+				if (!command.canBeCommandBlock() && sender instanceof BlockCommandSender)
+					continue;
+				if (!command.canBeConsole()
+						&& (sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender))
+					continue;
 
-                if (command.getPermission() != null
-                        && !sender.hasPermission(command.getPermission()))
-                    continue;
+				if (command.getPermission() != null && !sender.hasPermission(command.getPermission()))
+					continue;
 
-                String usageString = "";
-                boolean first = true;
-                for (String line : command.getUsageString(command.getName(),
-                        sender)) {
-                    if (!first)
-                        usageString += "\n";
+				String usageString = "";
+				boolean first = true;
+				for (String line : command.getUsageString(command.getName(), sender)) {
+					if (!first)
+						usageString += "\n";
 
-                    first = false;
+					first = false;
 
-                    usageString += ChatColor.GOLD + "/" + mRootCommandName
-                            + " " + line;
-                }
+					usageString += ChatColor.GOLD + "/" + mRootCommandName + " " + line;
+				}
 
-                sender.sendMessage(usageString + "\n  " + ChatColor.WHITE
-                        + command.getDescription());
-            }
-            return true;
-        }
+				plugin.getMessages().senderSendMessage(sender,
+						usageString + "\n  " + ChatColor.WHITE + command.getDescription());
+			}
+			return true;
+		}
 
-        @Override
-        public List<String> onTabComplete(CommandSender sender, String label,
-                                          String[] args) {
-            return null;
-        }
+		@Override
+		public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
+			return null;
+		}
 
-    }
+	}
 }

@@ -18,6 +18,7 @@ import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyStatus;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.HerobrineCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
@@ -123,7 +124,12 @@ public abstract class DatabaseDataStore implements IDataStore {
 	/**
 	 * Setup / Setup Triggers for V4 Database Layout
 	 */
-	protected abstract void setupTriggerV4(Connection connection) throws SQLException;
+	protected abstract void setupTriggerV4andV5(Connection connection) throws SQLException;
+
+	/**
+	 * Setup / Create database version 5 tables for MobHunting
+	 */
+	protected abstract void setupV5Tables(Connection connection) throws SQLException;
 
 	/**
 	 * Open a connection to the Database and prepare a statement for executing.
@@ -154,43 +160,54 @@ public abstract class DatabaseDataStore implements IDataStore {
 			if (MobHunting.getConfigManager().databaseVersion == 0) {
 				Statement statement = mConnection.createStatement();
 				try {
-					ResultSet rs = statement.executeQuery("SELECT TOTAL_CASH FROM mh_Daily LIMIT 0");
+					ResultSet rs = statement.executeQuery("SELECT BALANCE FROM mh_Players LIMIT 0");
 					rs.close();
-					// The TABLE Coloumn TOTAL_CASH only exists in Database
-					// layout V4
-					MobHunting.getConfigManager().databaseVersion = 4;
+					// The TABLE Coloumn BALANCE only exists in Database
+					// layout V5
+					MobHunting.getConfigManager().databaseVersion = 5;
 					MobHunting.getConfigManager().saveConfig();
-				} catch (SQLException e4) {
+				} catch (SQLException e5) {
 					try {
-						ResultSet rs = statement.executeQuery("SELECT MOB_ID FROM mh_Mobs LIMIT 0");
+						ResultSet rs = statement.executeQuery("SELECT TOTAL_CASH FROM mh_Daily LIMIT 0");
 						rs.close();
-						// The TABLE mh_Mobs created for V3 and does only
-						// contain
-						// data after migration
-						MobHunting.getConfigManager().databaseVersion = 3;
+						// The TABLE Coloumn TOTAL_CASH only exists in Database
+						// layout V4
+						MobHunting.getConfigManager().databaseVersion = 4;
 						MobHunting.getConfigManager().saveConfig();
-					} catch (SQLException e3) {
+					} catch (SQLException e4) {
 						try {
-							ResultSet rs = statement.executeQuery("SELECT UUID from mh_Players LIMIT 0");
+							ResultSet rs = statement.executeQuery("SELECT MOB_ID FROM mh_Mobs LIMIT 0");
 							rs.close();
-							// Player UUID is migrated in V2
-							MobHunting.getConfigManager().databaseVersion = 2;
+							// The TABLE mh_Mobs created for V3 and does only
+							// contain
+							// data after migration
+							MobHunting.getConfigManager().databaseVersion = 3;
 							MobHunting.getConfigManager().saveConfig();
-						} catch (SQLException e2) {
-							// database if from before Minecraft 1.7.9 R1 (No
-							// UUID)
-							// = V1
+						} catch (SQLException e3) {
 							try {
-								ResultSet rs = statement.executeQuery("SELECT PLAYER_ID from mh_Players LIMIT 0");
+								ResultSet rs = statement.executeQuery("SELECT UUID from mh_Players LIMIT 0");
 								rs.close();
-								MobHunting.getConfigManager().databaseVersion = 1;
+								// Player UUID is migrated in V2
+								MobHunting.getConfigManager().databaseVersion = 2;
 								MobHunting.getConfigManager().saveConfig();
-							} catch (SQLException e1) {
-								// DATABASE DOES NOT EXIST AT ALL, CREATE NEW
-								// EMPTY
-								// V3 DATABASE
-								MobHunting.getConfigManager().databaseVersion = 4;
-								MobHunting.getConfigManager().saveConfig();
+							} catch (SQLException e2) {
+								// database if from before Minecraft 1.7.9 R1
+								// (No
+								// UUID)
+								// = V1
+								try {
+									ResultSet rs = statement.executeQuery("SELECT PLAYER_ID from mh_Players LIMIT 0");
+									rs.close();
+									MobHunting.getConfigManager().databaseVersion = 1;
+									MobHunting.getConfigManager().saveConfig();
+								} catch (SQLException e1) {
+									// DATABASE DOES NOT EXIST AT ALL, CREATE
+									// NEW
+									// EMPTY
+									// V3 DATABASE
+									MobHunting.getConfigManager().databaseVersion = 4;
+									MobHunting.getConfigManager().saveConfig();
+								}
 							}
 						}
 					}
@@ -216,7 +233,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 				setupTriggerV3(mConnection);
 				MobHunting.getConfigManager().databaseVersion = 3;
 				MobHunting.getConfigManager().saveConfig();
-				break;
 			case 3:
 				Bukkit.getLogger().info("[MobHunting] Database version " + MobHunting.getConfigManager().databaseVersion
 						+ " detected.");
@@ -228,15 +244,23 @@ public abstract class DatabaseDataStore implements IDataStore {
 				migrateDatabaseLayoutFromV3ToV4(mConnection);
 				MobHunting.getConfigManager().databaseVersion = 4;
 				MobHunting.getConfigManager().saveConfig();
-				break;
 			case 4:
 				Bukkit.getLogger().info("[MobHunting] Database version " + MobHunting.getConfigManager().databaseVersion
 						+ " detected.");
 				setupV4Tables(mConnection);
 				migrateDatabaseLayoutFromV3ToV4(mConnection);
-				setupTriggerV4(mConnection);
-				break;
+				setupTriggerV4andV5(mConnection);
+				addPlayerBalancesToV4(mConnection);
+				MobHunting.getConfigManager().databaseVersion = 5;
+				MobHunting.getConfigManager().saveConfig();
+			case 5:
+				Bukkit.getLogger().info("[MobHunting] Database version " + MobHunting.getConfigManager().databaseVersion
+						+ " detected.");
+				setupV5Tables(mConnection);
+				setupTriggerV4andV5(mConnection);
 			}
+
+			insertMissingVanillaMobs();
 
 			// Enable FOREIGN KEY for Sqlite database
 			if (!MobHunting.getConfigManager().databaseType.equalsIgnoreCase("MySQL")) {
@@ -882,6 +906,43 @@ public abstract class DatabaseDataStore implements IDataStore {
 		}
 	}
 
+	@Override
+	public void insertHerobrineMobs() {
+		int n = 0;
+		try {
+			Connection mConnection = setupConnection();
+			Statement statement = mConnection.createStatement();
+			for (String mob : HerobrineCompat.getMobRewardData().keySet())
+				if (HerobrineCompat.isHerobrineMob(mob) && getMobIdFromExtendedMobType(mob, MobPlugin.Herobrine) == 0) {
+					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (8,'" + mob + "')");
+					n++;
+				}
+			if (n > 0)
+				Bukkit.getLogger().info("[MobHunting] " + n + " Herobrine Mobs was inserted to mh_Mobs");
+			statement.close();
+			mConnection.commit();
+			mConnection.close();
+		} catch (SQLException | DataStoreException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void insertMissingHerobrineMobs(String mob) {
+		if (HerobrineCompat.isHerobrineMob(mob) && getMobIdFromExtendedMobType(mob, MobPlugin.Herobrine) == 0)
+			try {
+				Connection mConnection = setupConnection();
+				Statement statement = mConnection.createStatement();
+				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (8,'" + mob + "')");
+				Bukkit.getLogger().info("[MobHunting] Herobrine Mobs MobType " + mob + " was inserted to mh_Mobs");
+				statement.close();
+				mConnection.commit();
+				mConnection.close();
+			} catch (SQLException | DataStoreException e) {
+				e.printStackTrace();
+			}
+	}
+
 	// ******************************************************************
 	// Bounties
 	// ******************************************************************
@@ -970,7 +1031,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 		ResultSet result = mGetPlayerData.executeQuery();
 		if (result.next()) {
 			PlayerSettings ps = new PlayerSettings(offlinePlayer, result.getBoolean("LEARNING_MODE"),
-					result.getBoolean("MUTE_MODE"));
+					result.getBoolean("MUTE_MODE"), result.getDouble("BALANCE"), result.getDouble("BALANCE_CHANGES"),
+					result.getDouble("BANK_BALANCE"), result.getDouble("BANK_BALANCE_CHANGES"));
 			int id = result.getInt("PLAYER_ID");
 			if (id != 0)
 				ps.setPlayerId(id);
@@ -999,6 +1061,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mInsertPlayerData.setString(2, playerSettings.getPlayer().getName());
 				mInsertPlayerData.setInt(3, playerSettings.isLearningMode() ? 1 : 0);
 				mInsertPlayerData.setInt(4, playerSettings.isMuted() ? 1 : 0);
+				mInsertPlayerData.setDouble(5, playerSettings.getBalance());
+				mInsertPlayerData.setDouble(6, playerSettings.getBalanceChanges());
+				mInsertPlayerData.setDouble(7, playerSettings.getBankBalance());
+				mInsertPlayerData.setDouble(8, playerSettings.getBankBalanceChanges());
 				mInsertPlayerData.addBatch();
 				mInsertPlayerData.executeBatch();
 				mInsertPlayerData.close();
@@ -1025,7 +1091,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 				for (PlayerSettings playerData : playerDataSet) {
 					mUpdatePlayerSettings.setInt(1, playerData.isLearningMode() ? 1 : 0);
 					mUpdatePlayerSettings.setInt(2, playerData.isMuted() ? 1 : 0);
-					mUpdatePlayerSettings.setString(3, playerData.getPlayer().getUniqueId().toString());
+					mUpdatePlayerSettings.setDouble(3, playerData.getBalance());
+					mUpdatePlayerSettings.setDouble(4, playerData.getBalanceChanges());
+					mUpdatePlayerSettings.setDouble(5, playerData.getBankBalance());
+					mUpdatePlayerSettings.setDouble(6, playerData.getBankBalanceChanges());
+					mUpdatePlayerSettings.setString(7, playerData.getPlayer().getUniqueId().toString());
 					mUpdatePlayerSettings.addBatch();
 				}
 				mUpdatePlayerSettings.executeBatch();
@@ -1038,6 +1108,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 							&& !playerData.getPlayer().isOnline())
 						plugin.getPlayerSettingsmanager().removePlayerSettings((Player) playerData.getPlayer());
 				}
+
+				Messages.debug("PlayerSettings saved.");
 
 			} catch (SQLException e) {
 				rollback(mConnection);
@@ -1333,6 +1405,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 					if (!SmartGiantsCompat.isSupported() || SmartGiantsCompat.isDisabledInConfig())
 						continue;
 					break;
+				case Herobrine:
+					if (!HerobrineCompat.isSupported() || HerobrineCompat.isDisabledInConfig())
+						continue;
+					break;
 				case Minecraft:
 					break;
 				default:
@@ -1534,6 +1610,28 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 		}
 
+		statement.close();
+		connection.commit();
+	}
+
+	private void addPlayerBalancesToV4(Connection connection) throws SQLException {
+		Statement statement = connection.createStatement();
+
+		try {
+			ResultSet rs = statement.executeQuery("SELECT BALANCE from `mh_Players` LIMIT 0");
+			rs.close();
+		} catch (SQLException e) {
+			try {
+				System.out.println("[MobHunting] Adding Player balances to MobHunting Database V4.");
+				statement.executeUpdate("alter table `mh_Players` add column `BALANCE` REAL NOT NULL DEFAULT 0");
+				statement.executeUpdate("alter table `mh_Players` add column `BALANCE_CHANGES` REAL NOT NULL DEFAULT 0");
+				statement.executeUpdate("alter table `mh_Players` add column `BANK_BALANCE` REAL NOT NULL DEFAULT 0");
+				statement.executeUpdate("alter table `mh_Players` add column `BANK_BALANCE_CHANGES` REAL NOT NULL DEFAULT 0");
+				System.out.println("[MobHunting] MobHunting Database upgraded to V5.");
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
 		statement.close();
 		connection.commit();
 	}

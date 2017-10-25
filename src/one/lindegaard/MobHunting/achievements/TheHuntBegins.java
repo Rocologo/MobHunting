@@ -11,7 +11,7 @@ import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
 public class TheHuntBegins implements Achievement, Listener {
-	
+
 	private MobHunting plugin;
 
 	public TheHuntBegins(MobHunting plugin) {

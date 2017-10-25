@@ -12,6 +12,7 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.HerobrineCompat;
 import one.lindegaard.MobHunting.compatibility.InfernalMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
@@ -110,6 +111,8 @@ public class ExtendedMob {
 			return "SmartGiant";
 		case InfernalMobs:
 			return "Infernal " + mobtype;
+		case Herobrine:
+			return HerobrineCompat.getMobRewardData().get(mobtype).getMobName();
 		default:
 			ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 			console.sendMessage(
@@ -143,6 +146,8 @@ public class ExtendedMob {
 			return SmartGiantsCompat.getProgressAchievementLevel1(mobtype);
 		case InfernalMobs:
 			return InfernalMobsCompat.getProgressAchievementLevel1(mobtype);
+		case Herobrine:
+			return HerobrineCompat.getProgressAchievementLevel1(mobtype);
 		default:
 			ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 			console.sendMessage(

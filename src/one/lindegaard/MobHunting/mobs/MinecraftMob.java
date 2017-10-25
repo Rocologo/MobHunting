@@ -374,8 +374,8 @@ public enum MinecraftMob {
 		return mTextureSignature;
 	}
 
-	public String getPlayerUUID() {
-		return mPlayerUUID;
+	public UUID getPlayerUUID() {
+		return UUID.fromString(mPlayerUUID);
 	}
 
 	public String getFriendlyName() {
@@ -781,11 +781,21 @@ public enum MinecraftMob {
 		return null;
 	}
 
+	public static MinecraftMob getMinecraftMobType(UUID uuid) {
+		if (uuid != null) {
+			for (MinecraftMob mob : values())
+				if (uuid.equals(mob.getPlayerUUID()))
+					return mob;
+		}
+		return null;
+	}
+
 	public static MinecraftMob getMinecraftMobType(String name) {
+		String name1 = name.replace(" ", "_");
 		for (MinecraftMob type : values())
-			if (type.getFriendlyName().replace(" ", "_").equalsIgnoreCase(name)
-					|| type.getDisplayName().replace(" ", "_").equalsIgnoreCase(name)
-					|| type.name().equalsIgnoreCase(name))
+			if (type.getFriendlyName().replace(" ", "_").equalsIgnoreCase(name1)
+					|| type.getDisplayName().replace(" ", "_").equalsIgnoreCase(name1)
+					|| type.name().equalsIgnoreCase(name1))
 				return type;
 		return null;
 	}
@@ -836,19 +846,19 @@ public enum MinecraftMob {
 		case Skeleton:
 			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 0);
 			skull = plugin.getRewardManager().setDisplayNameAndHiddenLores(skull, getFriendlyName(), money,
-					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), getPlayerUUID());
 			break;
 
 		case WitherSkeleton:
 			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 1);
 			skull = plugin.getRewardManager().setDisplayNameAndHiddenLores(skull, getFriendlyName(), money,
-					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), getPlayerUUID());
 			break;
 
 		case Zombie:
 			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 2);
 			skull = plugin.getRewardManager().setDisplayNameAndHiddenLores(skull, getFriendlyName(), money,
-					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), getPlayerUUID());
 			break;
 
 		case PvpPlayer:
@@ -861,19 +871,19 @@ public enum MinecraftMob {
 		case Creeper:
 			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 4);
 			skull = plugin.getRewardManager().setDisplayNameAndHiddenLores(skull, getFriendlyName(), money,
-					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), getPlayerUUID());
 			break;
 
 		case EnderDragon:
 			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 5);
 			skull = plugin.getRewardManager().setDisplayNameAndHiddenLores(skull, getFriendlyName(), money,
-					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), getPlayerUUID());
 			break;
 
 		default:
-			ItemStack is = new ItemStack(
-					new CustomItems(plugin).getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID),
-							getFriendlyName(), mTextureValue, mTextureSignature, money, UUID.randomUUID()));
+			ItemStack is = new ItemStack(new CustomItems(plugin).getCustomtexture(
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), getFriendlyName(), mTextureValue,
+					mTextureSignature, money, UUID.randomUUID(), getPlayerUUID()));
 			is.setAmount(amount);
 			return is;
 		}

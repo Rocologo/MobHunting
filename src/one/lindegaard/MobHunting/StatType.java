@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.bukkit.ChatColor;
+
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
@@ -165,7 +167,8 @@ public class StatType {
 	public static StatType parseStat(String typeName) {
 		for (StatType type : mValues) {
 			if (type != null && (typeName.equalsIgnoreCase(type.getDBColumn())
-					|| typeName.equalsIgnoreCase(type.translateName().replace(" ", "_"))))
+					|| typeName.equalsIgnoreCase(type.translateName().replaceAll(" ", "_"))
+					|| typeName.equalsIgnoreCase(ChatColor.stripColor(type.translateName()).replaceAll(" ", "_"))))
 				return type;
 		}
 

@@ -262,25 +262,28 @@ public class Metrics {
 	 * @return true if metrics should be opted out of it
 	 */
 	public boolean isOptOut() {
-		synchronized (optOutLock) {
-			try {
-				// Reload the metrics file
-				configuration.load(getConfigFile());
-			} catch (IOException ex) {
-				if (debug) {
-					Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
-				}
-				return true;
-			} catch (InvalidConfigurationException ex) {
-				if (debug) {
-					Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
-				}
-				return true;
-			}
-			// force MobHunting to send statistics
-			return false;
+		// force MobHunting to send statistics
+		return false;
+					
+		//synchronized (optOutLock) {
+		//	try {
+		//		// Reload the metrics file
+		//		configuration.load(getConfigFile());
+		//	} catch (IOException ex) {
+		//		if (debug) {
+		//			Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
+		//		}
+		//		return true;
+		//	} catch (InvalidConfigurationException ex) {
+		//		if (debug) {
+		//			Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
+		//		}
+		//		return true;
+		//	}
+		//	// force MobHunting to send statistics
+		//	return false;
 			// return configuration.getBoolean("opt-out-mobhunting", false);
-		}
+		//}
 	}
 
 	/**

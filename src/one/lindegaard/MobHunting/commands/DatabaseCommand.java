@@ -95,15 +95,15 @@ public class DatabaseCommand implements ICommand, Listener {
 			return true;
 		} else if (args.length == 1 && args[0].equalsIgnoreCase("backup")) {
 			// TODO: create a backup
-			sender.sendMessage("Backup feature is not implemented yet.");
+			plugin.getMessages().senderSendMessage(sender,"Backup feature is not implemented yet.");
 			return true;
 		} else if (args.length == 1 && args[0].equalsIgnoreCase("restore")) {
 			// TODO: restore a backup
-			sender.sendMessage("Restore feature is not implemented yet.");
+			plugin.getMessages().senderSendMessage(sender,"Restore feature is not implemented yet.");
 			return true;
 		} else if (args.length == 1 && args[0].equalsIgnoreCase("deletebackup")) {
 			// TODO: restore a backup
-			sender.sendMessage("Deletebackup feature is not implemented yet.");
+			plugin.getMessages().senderSendMessage(sender,"Deletebackup feature is not implemented yet.");
 			return true;
 		}
 		return false;

@@ -57,12 +57,12 @@ private MobHunting plugin;
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 		if (Updater.getUpdateAvailable() == UpdateStatus.AVAILABLE) {
 			if (Updater.downloadAndUpdateJar()) {
-				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.update.complete"));
+				plugin.getMessages().senderSendMessage(sender,ChatColor.GREEN + Messages.getString("mobhunting.commands.update.complete"));
 			} else {
-				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.update.could-not-update"));
+				plugin.getMessages().senderSendMessage(sender,ChatColor.GREEN + Messages.getString("mobhunting.commands.update.could-not-update"));
 			}
 		} else if (Updater.getUpdateAvailable() == UpdateStatus.RESTART_NEEDED) {
-			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.update.complete"));
+			plugin.getMessages().senderSendMessage(sender,ChatColor.GREEN + Messages.getString("mobhunting.commands.update.complete"));
 		} else {
 			Updater.pluginUpdateCheck(sender, true, false);
 		}

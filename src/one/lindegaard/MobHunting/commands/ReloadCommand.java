@@ -98,10 +98,10 @@ public class ReloadCommand implements ICommand {
 			if (CitizensCompat.isSupported())
 				CitizensCompat.loadCitizensData();
 
-			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.reload.reload-complete"));
+			plugin.getMessages().senderSendMessage(sender,ChatColor.GREEN + Messages.getString("mobhunting.commands.reload.reload-complete"));
 
 		} else
-			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.reload.reload-error"));
+			plugin.getMessages().senderSendMessage(sender,ChatColor.RED + Messages.getString("mobhunting.commands.reload.reload-error"));
 
 		return true;
 	}

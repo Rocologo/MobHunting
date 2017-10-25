@@ -6,8 +6,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<!-- <version>5.0.7</version> -->
-	<version>5.0.7-SNAPSHOT-B${build.number}</version>
+	<!-- <version>5.1.7</version> -->
+	<version>5.1.7-SNAPSHOT-B${build.number}</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -49,6 +49,7 @@
 		<mypet.version>2.2.9</mypet.version>
 		<worldedit.version>6.1.5</worldedit.version>
 		<worldguard.version>6.2</worldguard.version>
+		<PreciousStones.version>10.7.2</PreciousStones.version>
 		<citizensapi.version>2.0.22-SNAPSHOT</citizensapi.version>
 		<libsdisguises.version>9.4.0-SNAPSHOT</libsdisguises.version>
 		<battleArena.version>3.9.10.6.2</battleArena.version>
@@ -73,7 +74,7 @@
 		<TitleAPI.version>1.7.5</TitleAPI.version>
 		<TARDISWeepingAngels.version>2.4</TARDISWeepingAngels.version>
 		<ConquestiaMobs.version>3.3.3</ConquestiaMobs.version>
-		<MysteriousHalloween.version>1.3.2</MysteriousHalloween.version>
+		<MysteriousHalloween.version>1.3.5</MysteriousHalloween.version>
 		<SmartGiants.version>2.3.6</SmartGiants.version>
 		<Herobrine.version>1.7.1</Herobrine.version>
 		<towny.version>0.91.4.2</towny.version>
@@ -86,6 +87,8 @@
 		<StackMob.version>2.0.7</StackMob.version>
 		<InfernalMobs.version>5.3</InfernalMobs.version>
 		<minigameslib.version>1.14.15.jar</minigameslib.version>
+		<holograms.version>2.5.0-SNAPSHOT</holograms.version>
+		<hologramdisplays.version>2.2.6</hologramdisplays.version>
 
 		<gringotts.version>2.10-20170805.084200-1</gringotts.version>
 		<gringotts.jar.version>Gringotts-2.10-SNAPSHOT.jar</gringotts.jar.version>
@@ -319,7 +322,9 @@
 			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
 
-
+		<!-- Holograms API -->
+		<!-- <repository> <id>maven.sainttx.com</id> <url>http://maven.sainttx.com/nexus/content/groups/public/</url> 
+			</repository> -->
 
 
 
@@ -403,6 +408,12 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>net.sacredlabyrinth.Phaed</groupId>
+			<artifactId>PreciousStones</artifactId>
+			<version>${PreciousStones.version}</version>
+		</dependency>
+
 		<!-- Citizens -->
 		<dependency>
 			<groupId>net.citizensnpcs</groupId>
@@ -480,7 +491,7 @@
 
 		<!-- MysteriousHalloween -->
 		<dependency>
-			<groupId>MysteriousHalloween</groupId>
+			<groupId>me.F_o_F_1092.MysteriousHalloween</groupId>
 			<artifactId>MysteriousHalloween</artifactId>
 			<version>${MysteriousHalloween.version}</version>
 		</dependency>
@@ -557,14 +568,6 @@
 			<version>${MobStacker.version}</version>
 		</dependency>
 
-		<!-- Gringotts -->
-		<!-- <dependency> <groupId>org.gestern.gringotts.Gringotts</groupId> <artifactId>Gringotts</artifactId> 
-			<version>2.9</version> </dependency> -->
-		<!--<dependency> <groupId>org.gestern</groupId> <artifactId>gringotts</artifactId> 
-			<version>2.9</version> <scope>provided</scope> </dependency> -->
-		<!-- <dependency> <groupId>org.gestern.gringotts.Gringotts</groupId> <artifactId>Gringotts</artifactId> 
-			<version>${gringotts.version}</version> </dependency> -->
-
 		<dependency>
 			<groupId>org.gestern.gringotts</groupId>
 			<artifactId>Gringotts</artifactId>
@@ -629,6 +632,21 @@
 			<version>${ActionAnnouncer.version}</version>
 		</dependency>
 
+		<!-- Holograms -->
+		<!-- <dependency> <groupId>com.sainttx.holograms</groupId> <artifactId>holograms-api</artifactId> 
+			<version>${holograms.version}</version> <scope>provided</scope> </dependency> -->
+		<dependency>
+			<groupId>com.sainttx.holograms</groupId>
+			<artifactId>holograms</artifactId>
+			<version>${holograms.version}</version>
+		</dependency>
+
+		<!-- HologramDisplays -->
+		<dependency>
+			<groupId>com.gmail.filoghost.holographicdisplays.HolographicDisplays</groupId>
+			<artifactId>HolographicDisplays</artifactId>
+			<version>${hologramdisplays.version}</version>
+		</dependency>
 
 		<!-- Minigames -->
 		<dependency>

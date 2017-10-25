@@ -42,7 +42,10 @@ public enum CompatPlugin {
 	VanishNoPacket("VanishNoPacket", 40), //
 	War("War", 41), //
 	WorldEdit("WorldEdit", 42), //
-	WorldGuard("WorldGuard", 43);
+	WorldGuard("WorldGuard", 43), //
+	Holograms("Holograms",44), //
+	HolographicDisplays("HolographicDisplays",45), 
+	PreciousStones ("PreciousStones",46);
 
 	private final String name;
 	private final Integer id;

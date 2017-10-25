@@ -207,7 +207,7 @@ public class BountyManager implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onInventoryClick(InventoryClickEvent event) {
 		if (ChatColor.stripColor(event.getInventory().getName()).startsWith("MostWanted:")
 				|| ChatColor.stripColor(event.getInventory().getName()).startsWith("Wanted:")) {
@@ -249,9 +249,10 @@ public class BountyManager implements Listener {
 					sort();
 				Messages.debug("%s bounties for %s was loaded.", n, player.getName());
 				if (n > 0 && hasOpenBounties(player)) {
-					plugin.getMessages().playerActionBarMessage(player,
+					plugin.getMessages().playerSendMessage(player,
 							Messages.getString("mobhunting.bounty.youarewanted"));
-					if (!EssentialsCompat.isVanishedModeEnabled(player)  && !VanishNoPacketCompat.isVanishedModeEnabled(player))
+					if (!EssentialsCompat.isVanishedModeEnabled(player)
+							&& !VanishNoPacketCompat.isVanishedModeEnabled(player))
 						plugin.getMessages().broadcast(
 								Messages.getString("mobhunting.bounty.playeriswanted", "playername", player.getName()),
 								player);
@@ -283,14 +284,14 @@ public class BountyManager implements Listener {
 	 */
 	public void save(Bounty bounty) {
 		if (hasOpenBounty(bounty)) {
-			Messages.debug("adding bounty %s+%s",getOpenBounty(bounty).getPrize(),bounty.getPrize());
+			Messages.debug("adding bounty %s+%s", getOpenBounty(bounty).getPrize(), bounty.getPrize());
 			getOpenBounty(bounty).setPrize(getOpenBounty(bounty).getPrize() + bounty.getPrize());
 			getOpenBounty(bounty).setMessage(bounty.getMessage());
 			MobHunting.getDataStoreManager().updateBounty(getOpenBounty(bounty));
 		} else {
 			mOpenBounties.add(bounty);
 			MobHunting.getDataStoreManager().updateBounty(bounty);
-			Messages.debug("adding bounty %s",getOpenBounty(bounty).getPrize());
+			Messages.debug("adding bounty %s", getOpenBounty(bounty).getPrize());
 		}
 	}
 
@@ -335,8 +336,8 @@ public class BountyManager implements Listener {
 						if (bounty.isOpen()) {
 							if (bounty.getBountyOwner() != null)
 								AchievementManager.addInventoryDetails(
-										customItems.getPlayerHead(wantedPlayer.getName(), bounty.getPrize()), inventory,
-										n, ChatColor.GREEN + wantedPlayer.getName(),
+										customItems.getPlayerHead(wantedPlayer.getUniqueId(), 1, bounty.getPrize()),
+										inventory, n, ChatColor.GREEN + wantedPlayer.getName(),
 										new String[] { ChatColor.WHITE + "", Messages.getString(
 												"mobhunting.commands.bounty.bounties", "bountyowner",
 												bounty.getBountyOwner().getName(), "prize",
@@ -345,8 +346,8 @@ public class BountyManager implements Listener {
 												(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
 							else
 								AchievementManager.addInventoryDetails(
-										customItems.getPlayerHead(wantedPlayer.getName(), bounty.getPrize()), inventory,
-										n, ChatColor.GREEN + wantedPlayer.getName(),
+										customItems.getPlayerHead(wantedPlayer.getUniqueId(), 1, bounty.getPrize()),
+										inventory, n, ChatColor.GREEN + wantedPlayer.getName(),
 										new String[] { ChatColor.WHITE + "", Messages.getString(
 												"mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
 												"prize", plugin.getRewardManager().format(bounty.getPrize()),
@@ -398,7 +399,8 @@ public class BountyManager implements Listener {
 					for (Bounty bounty : mOpenBounties) {
 						if (bounty.getBountyOwner() != null)
 							AchievementManager.addInventoryDetails(
-									customItems.getPlayerHead(bounty.getWantedPlayer().getName(), bounty.getPrize()),
+									customItems.getPlayerHead(bounty.getWantedPlayer().getUniqueId(), 1,
+											bounty.getPrize()),
 									inventory, n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
 									new String[] { ChatColor.WHITE + "", Messages.getString(
 											"mobhunting.commands.bounty.bounties", "bountyowner",
@@ -408,7 +410,8 @@ public class BountyManager implements Listener {
 											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
 						else
 							AchievementManager.addInventoryDetails(
-									customItems.getPlayerHead(bounty.getWantedPlayer().getName(), bounty.getPrize()),
+									customItems.getPlayerHead(bounty.getWantedPlayer().getUniqueId(), 1,
+											bounty.getPrize()),
 									inventory, n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
 									new String[] { ChatColor.WHITE + "", Messages.getString(
 											"mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
@@ -466,7 +469,8 @@ public class BountyManager implements Listener {
 				int random = MobHunting.getMobHuntingManager().mRand.nextInt(noOfPlayersNotVanished);
 				int n = 0;
 				for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
-					if (n == random && !EssentialsCompat.isVanishedModeEnabled(player) && !VanishNoPacketCompat.isVanishedModeEnabled(player)
+					if (n == random && !EssentialsCompat.isVanishedModeEnabled(player)
+							&& !VanishNoPacketCompat.isVanishedModeEnabled(player)
 							&& !player.hasPermission("mobhunting.bounty.randombounty.exempt")) {
 						randomPlayer = player;
 						break;
@@ -481,11 +485,11 @@ public class BountyManager implements Listener {
 					save(randomBounty);
 					for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
 						if (player.getName().equals(randomPlayer.getName()))
-							plugin.getMessages().playerActionBarMessage(player,
+							plugin.getMessages().playerSendMessage(player,
 									Messages.getString("mobhunting.bounty.randombounty.self", "prize",
 											plugin.getRewardManager().format(randomBounty.getPrize())));
 						else
-							plugin.getMessages().playerActionBarMessage(player,
+							plugin.getMessages().playerSendMessage(player,
 									Messages.getString("mobhunting.bounty.randombounty", "prize",
 											plugin.getRewardManager().format(randomBounty.getPrize()), "playername",
 											randomPlayer.getName()));

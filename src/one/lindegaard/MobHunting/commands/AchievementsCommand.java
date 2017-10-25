@@ -79,7 +79,7 @@ private MobHunting plugin;
 		final boolean self = (player == sender);
 
 		if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
-			sender.sendMessage("list all archivement descriptions");
+			plugin.getMessages().senderSendMessage(sender,"list all archivement descriptions");
 			MobHunting.getAchievementManager().listAllAchievements(sender);
 
 		} else if (args.length == 1 && (args[0].equalsIgnoreCase("nogui") || args[0].equalsIgnoreCase("gui"))) {
@@ -101,7 +101,7 @@ private MobHunting plugin;
 					otherPlayer = MobHunting.getDataStoreManager().getPlayerByName(name);
 
 				if (otherPlayer == null) {
-					sender.sendMessage(ChatColor.RED
+					plugin.getMessages().senderSendMessage(sender,ChatColor.RED
 							+ Messages.getString("mobhunting.commands.listachievements.player-not-exist"));
 					return true;
 				}

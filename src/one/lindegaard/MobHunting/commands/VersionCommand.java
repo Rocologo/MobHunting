@@ -57,12 +57,12 @@ public class VersionCommand implements ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 
-		sender.sendMessage(ChatColor.GREEN
+		plugin.getMessages().senderSendMessage(sender,ChatColor.GREEN
 				+ Messages.getString(
 						"mobhunting.commands.version.currentversion","currentversion",
 						MobHunting.getInstance().getDescription().getVersion()));
 		if (Updater.getUpdateAvailable() == UpdateStatus.AVAILABLE)
-			sender.sendMessage(ChatColor.GREEN
+			plugin.getMessages().senderSendMessage(sender,ChatColor.GREEN
 					+ Messages.getString(
 							"mobhunting.commands.version.newversion","newversion",
 							Updater.getBukkitUpdate().getVersionName()));
