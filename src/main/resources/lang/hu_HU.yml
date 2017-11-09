@@ -29,6 +29,7 @@ mobhunting.moneygain-for-killing=Neked van ${money} az ölésért ${killed}.
 mobhunting.moneylost=Vesztettél ${prize}!
 mobhunting.moneygain.assist=Segít! Neked van ${prize}
 mobhunting.moneygain.assist.bonuses=Segít! Neked van ${prize} Vele: ${bonuses}
+mobhunting.money.you_cant_sell_and_buy_bagofgold=Nem lehet vásárolni/eladni ${itemname} ${itemname}
 mobhunting.npc.notamastermobhuner=Id=${npcid} nem MasterMobHuner. 
 mobhunting.npc.clickednpc=&4${killer}&2 egy MasterMobHunter(&4${npcid}&2) - Rang &4${rank} &4${numberofkills}&2 ${stattype} ${period}
 mobhunting.npc.clickednpcsign=&2Ez egy MasterMobHunter tábla, amely az NPC-hez kapcsolódik &4${npcid}&2.
@@ -324,6 +325,7 @@ mobhunting.bagofgoldsign.hold_bag_in_hand=&4Meg kell tartanod a ${rewardname} &4
 mobhunting.bagofgoldsign.no_permission=&4Engedélyre van szükséged (${perm}) ehhez.
 mobhunting.bagofgoldsign.no_permission_to_use=&4Jogra van szükséged a tábla használatához (${perm})
 mobhunting.bagofgoldsign.line4.error_on_sign=&4Hiba sor ${line}
+mobhunting.bagofgoldsign.item_has_no_value=A(z) ${itemname} nincs értéke, nem tudod eladni
 
 mobhunting.learn.prefix=[MobHunting]
 mobhunting.learn.overruled=MobHunting letiltva ${huntworld}, de a régió lehetővé teszi mobhunting=allow 
