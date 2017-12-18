@@ -1,6 +1,5 @@
 package one.lindegaard.MobHunting.rewards;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -36,6 +35,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.event.block.Action;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.BagOfGold.storage.PlayerSettings;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.BagOfGoldCompat;
@@ -56,8 +56,10 @@ public class RewardListeners implements Listener {
 	public void onPlayerDropReward(PlayerDropItemEvent event) {
 		if (event.isCancelled())
 			return;
+
 		Item item = event.getItemDrop();
 		Player player = event.getPlayer();
+
 		if (Reward.isReward(item)) {
 			Reward reward = Reward.getReward(item);
 			double money = reward.getMoney();
@@ -80,8 +82,8 @@ public class RewardListeners implements Listener {
 
 				Messages.debug("%s dropped %s money. (# of rewards left=%s)", player.getName(),
 						plugin.getRewardManager().format(money), plugin.getRewardManager().getDroppedMoney().size());
-				plugin.getMessages().playerActionBarMessage(player,
-						Messages.getString("mobhunting.moneydrop", "money", plugin.getRewardManager().format(money)));
+				plugin.getMessages().playerActionBarMessage(player, Messages.getString("mobhunting.moneydrop", "money",
+						plugin.getRewardManager().format(money), "rewardname", reward.getDisplayname()));
 				if (BagOfGoldCompat.isSupported() && (reward.isBagOfGoldReward() || reward.isItemReward())) {
 					if (player.getGameMode() == GameMode.SURVIVAL)
 						BagOfGold.getInstance().getEconomyManager().removeMoneyFromBalance(player, money);
@@ -140,92 +142,45 @@ public class RewardListeners implements Listener {
 				Entity entity = entityList.next();
 				if (!(entity instanceof Item))
 					continue;
+
 				Item item = (Item) entity;
-				ItemStack isOnground = item.getItemStack();
-				if ((Reward.isReward(isOnground) || Reward.isReward(entity))
+
+				if (Reward.isReward(item)
 						&& plugin.getRewardManager().getDroppedMoney().containsKey(entity.getEntityId())) {
-					Reward rewardOnGround = Reward.getReward(item);
-					double moneyOnGround = rewardOnGround.getMoney();
-					// If not Gringotts
-					if (rewardOnGround.getMoney() != 0) {
-						if (ProtocolLibCompat.isSupported())
-							ProtocolLibHelper.pickupMoney(player, entity);
+					Reward reward = Reward.getReward(item);
+					if (reward.isBagOfGoldReward()) {
+						item.remove();
 						if (plugin.getRewardManager().getDroppedMoney().containsKey(entity.getEntityId()))
 							plugin.getRewardManager().getDroppedMoney().remove(entity.getEntityId());
-						if (!plugin.getConfigManager().dropMoneyOnGroundUseAsCurrency) {
-							plugin.getRewardManager().depositPlayer(player, moneyOnGround);
-							entity.remove();
-							Messages.debug("%s picked up the %s money. (# of rewards left=%s)(PlayerMoveEvent)",
-									player.getName(), plugin.getRewardManager().format(rewardOnGround.getMoney()),
+						if (ProtocolLibCompat.isSupported())
+							ProtocolLibHelper.pickupMoney(player, item);
+						if (BagOfGoldCompat.isSupported() && (reward.isBagOfGoldReward() || reward.isItemReward())) {
+							if (player.getGameMode() == GameMode.SURVIVAL) {
+								PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsManager()
+										.getPlayerSettings(player);
+								ps.setBalance(Misc.round(ps.getBalance() + reward.getMoney()));
+								BagOfGold.getInstance().getPlayerSettingsManager().setPlayerSettings(player, ps);
+								BagOfGold.getInstance().getDataStoreManager().updatePlayerSettings(player, ps);
+							}
+						} else if (reward.getMoney() != 0
+								&& !plugin.getConfigManager().dropMoneyOnGroundUseAsCurrency) {
+							// If not Gringotts
+							plugin.getRewardManager().depositPlayer(player, reward.getMoney());
+						} else {
+							plugin.getRewardManager().addBagOfGoldPlayer_RewardManager(player, reward.getMoney());
+						}
+						if (reward.getMoney() == 0) {
+							Messages.debug("%s picked up a %s (# of rewards left=%s)", player.getName(),
+									reward.getDisplayname(), plugin.getRewardManager().getDroppedMoney().size());
+						} else {
+							Messages.debug("%s picked up a %s with a value:%s (# of rewards left=%s)(PickupRewards)",
+									player.getName(), reward.getDisplayname(),
+									plugin.getRewardManager().format(Misc.round(reward.getMoney())),
 									plugin.getRewardManager().getDroppedMoney().size());
 							plugin.getMessages().playerActionBarMessage(player,
 									Messages.getString("mobhunting.moneypickup", "money",
-											plugin.getRewardManager().format(rewardOnGround.getMoney())));
-						} else {
-
-							if (BagOfGoldCompat.isSupported()
-									&& (rewardOnGround.isBagOfGoldReward() || rewardOnGround.isItemReward())) {
-								if (player.getGameMode() == GameMode.SURVIVAL)
-									plugin.getRewardManager().depositPlayer(player, moneyOnGround);
-								entity.remove();
-
-							} else {
-								boolean found = false;
-								HashMap<Integer, ? extends ItemStack> slots = player.getInventory()
-										.all(item.getItemStack().getType());
-								for (int slot : slots.keySet()) {
-									ItemStack is = player.getInventory().getItem(slot);
-									if (Reward.isReward(is)) {
-										Reward reward = Reward.getReward(is);
-										if ((rewardOnGround.isBagOfGoldReward() || rewardOnGround.isItemReward())
-												&& reward.getRewardUUID().equals(rewardOnGround.getRewardUUID())) {
-											ItemMeta im = is.getItemMeta();
-											Reward newReward = Reward.getReward(is);
-											newReward.setMoney(newReward.getMoney() + rewardOnGround.getMoney());
-											im.setLore(newReward.getHiddenLore());
-											String displayName = plugin.getConfigManager().dropMoneyOnGroundItemtype
-													.equalsIgnoreCase("ITEM")
-															? plugin.getRewardManager().format(newReward.getMoney())
-															: newReward.getDisplayname() + " (" + plugin
-																	.getRewardManager().format(newReward.getMoney())
-																	+ ")";
-											im.setDisplayName(ChatColor
-													.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-													+ displayName);
-											is.setItemMeta(im);
-											is.setAmount(1);
-											event.setCancelled(true);
-											if (ProtocolLibCompat.isSupported())
-												ProtocolLibHelper.pickupMoney(player, item);
-											item.remove();
-											Messages.debug(
-													"Item in slot %s added value %s, new value %s(RewardListeners)",
-													slot, plugin.getRewardManager().format(rewardOnGround.getMoney()),
-													plugin.getRewardManager().format(newReward.getMoney()));
-											found = true;
-											break;
-										}
-									}
-								}
-
-								if (!found) {
-									ItemStack is = item.getItemStack();
-									ItemMeta im = is.getItemMeta();
-									String displayName = plugin.getConfigManager().dropMoneyOnGroundItemtype
-											.equalsIgnoreCase("ITEM")
-													? plugin.getRewardManager().format(rewardOnGround.getMoney())
-													: rewardOnGround.getDisplayname() + " (" + plugin.getRewardManager()
-															.format(rewardOnGround.getMoney()) + ")";
-									im.setDisplayName(
-											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-													+ displayName);
-									im.setLore(rewardOnGround.getHiddenLore());
-									is.setItemMeta(im);
-									item.setItemStack(is);
-									item.setMetadata(Reward.MH_REWARD_DATA,
-											new FixedMetadataValue(plugin, new Reward(rewardOnGround)));
-								}
-							}
+											plugin.getRewardManager().format(reward.getMoney()), "rewardname",
+											reward.getDisplayname()));
 						}
 					}
 				}
@@ -467,7 +422,6 @@ public class RewardListeners implements Listener {
 						plugin.getMessages().playerActionBarMessage(player,
 								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 										+ owner.getName());
-						// skullState.update();
 					} else
 						plugin.getMessages().playerActionBarMessage(player,
 								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
@@ -478,7 +432,6 @@ public class RewardListeners implements Listener {
 					if (!owner.equalsIgnoreCase("")) {
 						plugin.getMessages().playerActionBarMessage(player,
 								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + owner);
-						// skullState.update();
 					} else
 						plugin.getMessages().playerActionBarMessage(player,
 								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
