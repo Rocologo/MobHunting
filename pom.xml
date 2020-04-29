@@ -385,7 +385,7 @@
 
 		<!-- LorinthsRpgMobs -->
 		<dependency>
-			<groupId>me.Lorinth.LRM.LorinthsRpgMobs</groupId>
+			<groupId>me.lorinth.rpgmobs.LorinthsRpgMobs</groupId>
 			<artifactId>LorinthsRpgMobs</artifactId>
 			<version>${LorinthsRpgMobs.version}</version>
 		</dependency>
