@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>one.lindegaard</groupId>
 		<artifactId>Main</artifactId>
-		<version>0.1.5-SNAPSHOT</version>
+		<version>0.1.6-SNAPSHOT</version>
 		<relativePath>../Main/pom.xml</relativePath>
 	</parent>
 
@@ -142,7 +142,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>${spigotmc_1_20_R2.version}</version>
+			<version>${spigotmc_1_21_R3.version}</version>
 		</dependency>
 
 		<!-- Rocologo CustomItemsLib -->
