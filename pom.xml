@@ -48,7 +48,7 @@
 		<LevelledMobs.version>3.4.1</LevelledMobs.version>
 		<MysteriousHalloween.version>1.3.3</MysteriousHalloween.version>
 		<EliteMobs.version>6.5.0</EliteMobs.version>
-		<SmartGiants.version>2.3.6</SmartGiants.version>
+		<SmartGiants.version>2.5.0</SmartGiants.version>
 		<Herobrine.version>2.1.1</Herobrine.version>
 		<towny.version>0.91.4.2</towny.version>
 		<residence.version>4.7.0.1</residence.version>
@@ -407,6 +407,7 @@
 			<groupId>me.jjm_223.smartgiants</groupId>
 			<artifactId>SmartGiants</artifactId>
 			<version>${SmartGiants.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Herobrine -->
