@@ -361,9 +361,10 @@
 
 		<!-- ConquestiaMobs -->
 		<dependency>
-			<groupId>CqMobs</groupId>
+			<groupId>com.conquestiamc.cqmobs</groupId>
 			<artifactId>CqMobs</artifactId>
 			<version>${ConquestiaMobs.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- LorinthsRpgMobs -->
