@@ -216,11 +216,12 @@
 			<version>${TitleAPI.version}</version>
 		</dependency>
 
-		<!-- Essentials -->
+		<!-- EssentialsX -->
 		<dependency>
 			<groupId>net.essentialsx</groupId>
 			<artifactId>EssentialsX</artifactId>
 			<version>${EssentialsX.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- ActionBarAPI -->
@@ -571,6 +572,7 @@
 			<groupId>com.palmergames.bukkit.towny</groupId>
 			<artifactId>Towny</artifactId>
 			<version>${towny.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Residence -->
