@@ -160,14 +160,6 @@
 			<version>${bagofgold.version}</version>
 		</dependency>
 
-		<!-- Vault / -->
-		<dependency>
-			<groupId>net.milkbowl.vault</groupId>
-			<artifactId>VaultAPI</artifactId>
-			<version>${vaultapi.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<!-- Reserve / -->
 		<dependency>
 			<groupId>net.tnemc</groupId>
