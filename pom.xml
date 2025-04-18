@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
@@ -21,8 +20,7 @@
 	<properties>
 		<bagofgold.version>4.2.1-SNAPSHOT</bagofgold.version>
 
-		<minigames.version>1.9.0-SNAPSHOT</minigames.version>
-		<minigameslib.version>1.14.18-SNAPSHOT</minigameslib.version>
+		<minigameslib.version>1.14.15-20170123</minigameslib.version>
 		<mypet.version>3.12-SNAPSHOT</mypet.version>
 		<mcmmohorses.version>4.3.55</mcmmohorses.version>
 		<PreciousStones.version>10.7.2</PreciousStones.version>
@@ -34,14 +32,14 @@
 		<factions.version>2.14.0</factions.version>
 		<factionsuuid.version>1.6.9.5-U0.3.0</factionsuuid.version>
 
-		<iDisguise.version>5.5.5</iDisguise.version>
+		<iDisguise.version>5.6.1</iDisguise.version>
 		<vanishnopacket.version>3.22</vanishnopacket.version>
 		<mcmmo160version>1.6.0</mcmmo160version>
 		<mcmmo210.version>2.1.211</mcmmo210.version>
 		<disguisecraft.version>5.1</disguisecraft.version>
 		<crackshot.version>0.98.5</crackshot.version>
 		<WeaponMechanics.version>1.11.10</WeaponMechanics.version>
-		<PvpArena.version>1.3</PvpArena.version>
+		<PvpArena.version>2.0.0</PvpArena.version>
 		<TARDISWeepingAngels.version>4.1.1</TARDISWeepingAngels.version>
 		<ConquestiaMobs.version>3.3.3</ConquestiaMobs.version>
 		<LorinthsRpgMobs.version>1.6.8</LorinthsRpgMobs.version>
@@ -53,11 +51,11 @@
 		<towny.version>0.91.4.2</towny.version>
 		<residence.version>4.7.0.1</residence.version>
 		<MobStacker.version>2.0.0</MobStacker.version>
-		<mythicmobs2.version>2.5.1</mythicmobs2.version>
-		<mythicmobs4.version>4.7.2</mythicmobs4.version>
+		<mythicmobs2.version>2.6.0</mythicmobs2.version>
+		<mythicmobs4.version>4.12.0</mythicmobs4.version>
 		<mythicmobs5.version>5.1.0</mythicmobs5.version>
 		<StackMob.version>5.6.2</StackMob.version>
-		<InfernalMobs.version>5.8</InfernalMobs.version>
+		<InfernalMobs.version>6.4</InfernalMobs.version>
 		<boss.version>4.1.9</boss.version>
 		<PVPControl.version>1.4.1-SNAPSHOT</PVPControl.version>
 
@@ -426,22 +424,22 @@
 
 		<!-- iDisguise -->
 		<dependency>
-			<groupId>iDisguise</groupId>
+			<groupId>de.robingrether.idisguise</groupId>
 			<artifactId>iDisguise</artifactId>
 			<version>${iDisguise.version}</version>
 		</dependency>
 
 		<!-- DisguiseCraft -->
 		<dependency>
-			<groupId>pgDev</groupId>
+			<groupId>pgDev.bukkit.DisguiseCraft</groupId>
 			<artifactId>DisguiseCraft</artifactId>
 			<version>${disguisecraft.version}</version>
 		</dependency>
 
 		<!-- PvpArena -->
 		<dependency>
-			<groupId>net.slipcor</groupId>
-			<artifactId>pvparena</artifactId>
+			<groupId>net.slipcor.pvparena</groupId>
+			<artifactId>PVPArena</artifactId>
 			<version>${PvpArena.version}</version>
 		</dependency>
 
@@ -468,20 +466,22 @@
 
 		<!-- MythicMobs -->
 		<dependency>
-			<groupId>io.lumine</groupId>
-			<artifactId>Mythic-Dist</artifactId>
+			<groupId>io.lumine.mythic.bukkit</groupId>
+			<artifactId>MythicMobs</artifactId>
 			<version>${mythicmobs5.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.lumine.xikage</groupId>
+			<groupId>io.lumine.xikage.mythicmobs</groupId>
 			<artifactId>MythicMobs</artifactId>
 			<version>${mythicmobs4.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.elseland.xikage</groupId>
+			<groupId>net.elseland.xikage.MythicMobs</groupId>
 			<artifactId>MythicMobs</artifactId>
 			<version>${mythicmobs2.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- CustomMobs -->
@@ -493,7 +493,7 @@
 
 		<!-- InfernalMobs -->
 		<dependency>
-			<groupId>io.hotmail.com.jacob_vejvoda.infernal_mobs.infernal_mobs</groupId>
+			<groupId>io.hotmail.com.jacob_vejvoda</groupId>
 			<artifactId>InfernalMobs</artifactId>
 			<version>${InfernalMobs.version}</version>
 		</dependency>
@@ -529,23 +529,6 @@
 			<groupId>net.Zrips</groupId>
 			<artifactId>CMILib</artifactId>
 			<version>${CMILib.version}</version>
-		</dependency>
-
-		<!-- Minigames -->
-		<dependency>
-			<groupId>au.com.mineauz</groupId>
-			<artifactId>Minigames</artifactId>
-			<version>${minigames.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.bukkit</groupId>
-					<artifactId>bukkit</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.bukkit</groupId>
-					<artifactId>craftbukkit</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<!-- MassiveCore / Factions -->
@@ -654,6 +637,12 @@
 			<id>nexus</id>
 			<name>Lumine Releases</name>
 			<url>https://mvn.lumine.io/repository/maven-public/</url>
+		</repository>
+		
+		<!-- Minigames Repo -->
+		<repository>
+    		<id>mineauz-repo</id>
+		    <url>https://repo.mineauz.com/releases/</url>
 		</repository>
 
 	</repositories>
