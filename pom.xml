@@ -15,7 +15,7 @@
 		<groupId>one.lindegaard</groupId>
 		<artifactId>Main</artifactId>
 		<version>0.1.6-SNAPSHOT</version>
-		<relativePath>../Main/pom.xml</relativePath>
+		<!--<relativePath>../Main/pom.xml</relativePath> -->
 	</parent>
 
 	<properties>
@@ -42,7 +42,7 @@
 		<crackshot.version>0.98.5</crackshot.version>
 		<WeaponMechanics.version>1.11.10</WeaponMechanics.version>
 		<PvpArena.version>1.3</PvpArena.version>
-		<TARDISWeepingAngels.version>2.4</TARDISWeepingAngels.version>
+		<TARDISWeepingAngels.version>4.1.1</TARDISWeepingAngels.version>
 		<ConquestiaMobs.version>3.3.3</ConquestiaMobs.version>
 		<LorinthsRpgMobs.version>1.6.8</LorinthsRpgMobs.version>
 		<LevelledMobs.version>3.4.1</LevelledMobs.version>
@@ -576,7 +576,7 @@
 
 		<!-- Towny -->
 		<dependency>
-			<groupId>Towny</groupId>
+			<groupId>com.palmergames.bukkit.towny</groupId>
 			<artifactId>Towny</artifactId>
 			<version>${towny.version}</version>
 		</dependency>
