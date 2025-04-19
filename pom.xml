@@ -453,7 +453,7 @@
 		
 		<!-- Minigames -->
 		<dependency>
-			<groupId>au.com.mineauz</groupId>
+			<groupId>au.com.mineauz.minigames</groupId>
 			<artifactId>Minigames</artifactId>
 			<version>${minigames.version}</version>
 			<exclusions>
