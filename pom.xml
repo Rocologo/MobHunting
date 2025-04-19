@@ -20,9 +20,10 @@
 	<properties>
 		<bagofgold.version>4.2.1-SNAPSHOT</bagofgold.version>
 
-		<minigameslib.version>1.14.15-20170123</minigameslib.version>
+		<minigameslib.version>1.14.16</minigameslib.version>
+		<minigames.version>	1.11.0</minigames.version>
 		<mypet.version>3.12-SNAPSHOT</mypet.version>
-		<mcmmohorses.version>4.3.55</mcmmohorses.version>
+		<mcmmohorses.version>4.3.57</mcmmohorses.version>
 		<PreciousStones.version>10.7.2</PreciousStones.version>
 		<libsdisguises.version>10.0.28</libsdisguises.version>
 		<battleArena.version>3.9.16.4</battleArena.version>
@@ -33,7 +34,7 @@
 		<factionsuuid.version>1.6.9.5-U0.3.0</factionsuuid.version>
 
 		<iDisguise.version>5.6.1</iDisguise.version>
-		<vanishnopacket.version>3.22</vanishnopacket.version>
+		<vanishnopacket.version>3.20</vanishnopacket.version>
 		<mcmmo160version>1.6.0</mcmmo160version>
 		<mcmmo210.version>2.1.211</mcmmo210.version>
 		<disguisecraft.version>5.1</disguisecraft.version>
@@ -323,7 +324,7 @@
 
 		<!-- McMMOHorses -->
 		<dependency>
-			<groupId>com.blueskullgames.horserpg.HorseRPG</groupId>
+			<groupId>com.blueskullgames.horserpg</groupId>
 			<artifactId>mcMMOHorse</artifactId>
 			<version>${mcmmohorses.version}</version>
 		</dependency>
@@ -448,6 +449,23 @@
 			<groupId>com.comze_instancelabs.minigamesapi.MinigamesAPI</groupId>
 			<artifactId>MinigamesLib</artifactId>
 			<version>${minigameslib.version}</version>
+		</dependency>
+		
+		<!-- Minigames -->
+		<dependency>
+			<groupId>au.com.mineauz</groupId>
+			<artifactId>Minigames</artifactId>
+			<version>${minigames.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.bukkit</groupId>
+					<artifactId>bukkit</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.bukkit</groupId>
+					<artifactId>craftbukkit</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- VanishNoPacket -->
