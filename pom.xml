@@ -4,7 +4,7 @@
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
 	<!-- <version>8.5.5</version>  -->
-	<version>8.5.5-SNAPSHOT</version>
+	<version>8.5.6-SNAPSHOT</version>
 	<!-- <version>8.1.9-SNAPSHOT-B${build.number}</version> -->
 	<name>MobHunting</name>
 	<url>https://www.spigotmc.org/resources/mobhunting.3582/</url>
@@ -18,7 +18,7 @@
 	</parent>
 
 	<properties>
-		<bagofgold.version>4.2.1-SNAPSHOT</bagofgold.version>
+		<bagofgold.version>4.5.7-SNAPSHOT</bagofgold.version>
 
 		<minigameslib.version>1.14.16</minigameslib.version>
 		<minigames.version>	1.11.0</minigames.version>
@@ -27,8 +27,8 @@
 		<PreciousStones.version>10.7.2</PreciousStones.version>
 		<libsdisguises.version>10.0.28</libsdisguises.version>
 		<battleArena.version>3.9.16.4</battleArena.version>
-		<custommobs.version>4.16</custommobs.version>
-		<mobarena.version>0.97.1</mobarena.version>
+		<custommobs.version>4.17</custommobs.version>
+		<mobarena.version>0.104.2</mobarena.version>
 		<massivecore.version>2.14.0</massivecore.version>
 		<factions.version>2.14.0</factions.version>
 		<factionsuuid.version>1.6.9.5-U0.3.0</factionsuuid.version>
@@ -39,7 +39,7 @@
 		<mcmmo210.version>2.1.211</mcmmo210.version>
 		<disguisecraft.version>5.1</disguisecraft.version>
 		<crackshot.version>0.98.5</crackshot.version>
-		<WeaponMechanics.version>1.11.10</WeaponMechanics.version>
+		<WeaponMechanics.version>4.0.6</WeaponMechanics.version>
 		<PvpArena.version>2.0.0</PvpArena.version>
 		<TARDISWeepingAngels.version>4.1.1</TARDISWeepingAngels.version>
 		<ConquestiaMobs.version>3.3.3</ConquestiaMobs.version>
@@ -50,7 +50,7 @@
 		<SmartGiants.version>2.5.0</SmartGiants.version>
 		<Herobrine.version>2.1.1</Herobrine.version>
 		<towny.version>0.91.4.2</towny.version>
-		<residence.version>4.7.0.1</residence.version>
+		<residence.version>4.7.0.2</residence.version>
 		<MobStacker.version>2.0.0</MobStacker.version>
 		<mythicmobs2.version>2.6.0</mythicmobs2.version>
 		<mythicmobs4.version>4.12.0</mythicmobs4.version>
@@ -375,7 +375,7 @@
 
 		<!-- LevelledMobs -->
 		<dependency>
-			<groupId>com.github.lokka30</groupId>
+			<groupId>me.lokka30.levelledmobs</groupId>
 			<artifactId>LevelledMobs</artifactId>
 			<version>${LevelledMobs.version}</version>
 		</dependency>
@@ -477,7 +477,7 @@
 
 		<!-- MobStacker -->
 		<dependency>
-			<groupId>com.kiwifisher.mobstacker.MobStacker</groupId>
+			<groupId>com.kiwifisher.mobstacker</groupId>
 			<artifactId>MobStacker</artifactId>
 			<version>${MobStacker.version}</version>
 		</dependency>
@@ -518,15 +518,15 @@
 
 		<!-- MobArena -->
 		<dependency>
-			<groupId>com.garbagemule</groupId>
-			<artifactId>mobarena</artifactId>
+  			<groupId>com.garbagemule.MobArena</groupId>
+			<artifactId>MobArena</artifactId>
 			<version>${mobarena.version}</version>
 		</dependency>
 
 		<!-- Holograms -->
 		<dependency>
 			<groupId>com.sainttx.holograms</groupId>
-			<artifactId>holograms</artifactId>
+			<artifactId>HologramPlugin</artifactId>
 			<version>${holograms.version}</version>
 		</dependency>
 
@@ -580,14 +580,14 @@
 
 		<!-- Residence -->
 		<dependency>
-			<groupId>com.bekvon.bukkit.residence.ResidenceCommandListener</groupId>
-			<artifactId>Residence</artifactId>
+			<groupId>com.bekvon.bukkit.residence</groupId>
+			<artifactId>ResidenceCommandListener</artifactId>
 			<version>${residence.version}</version>
 		</dependency>
 
 		<!-- CrackShot -->
 		<dependency>
-			<groupId>CrackShot</groupId>
+			<groupId>com.shampaggon.crackshot</groupId>
 			<artifactId>CrackShot</artifactId>
 			<version>${crackshot.version}</version>
 		</dependency>
@@ -636,8 +636,10 @@
 		</repository> -->
 
 		<!-- Minigames / Addstar repo -->
-		<!-- <repository> <id>addstar-snapshot-repo</id> <url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/</url> 
-			</repository> -->
+		<repository> 
+		    <id>addstar-snapshot-repo</id> 
+		    <url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/</url> 
+		</repository>
 
 		<!-- md5 repository -->
 		<!-- mcMMO - old versions -->
@@ -645,10 +647,13 @@
 			<id>md5-repo</id>
 			<url>https://repo.md-5.net/content/repositories/public/</url>
 		</repository>
-		<repository>
-			<id>md_5-public</id>
-			<url>https://repo.md-5.net/content/groups/public/</url>
-		</repository>
+	    <repository>
+            <id>md5-snapshots</id>
+            <url>https://repo.md-5.net/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
 
 		<!-- MythicMobs Repo -->
 		<repository>
