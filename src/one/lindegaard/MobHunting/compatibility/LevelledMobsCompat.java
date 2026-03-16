@@ -6,8 +6,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
-import me.lokka30.levelledmobs.LevelInterface;
-import me.lokka30.levelledmobs.LevelledMobs;
+import me.stumper66.levelledmobs.LevelInterface;
+import me.stumper66.levelledmobs.LevelledMobs;
 import one.lindegaard.CustomItemsLib.compatibility.CompatPlugin;
 import one.lindegaard.MobHunting.MobHunting;
 
