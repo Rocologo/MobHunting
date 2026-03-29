@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -168,23 +169,25 @@ public class DataStoreManager {
 		mExit = true;
 		flush();
 		mTaskThread.setWriteOnlyMode(true);
-		int n = 0;
+		mStoreThread.interrupt();
 		try {
-			while (mTaskThread.getState() != Thread.State.WAITING && mTaskThread.getState() != Thread.State.TERMINATED
-					&& n < 40) {
-				Thread.sleep(500);
-				n++;
+			boolean drained = mTaskThread.waitForEmptyQueue(TimeUnit.SECONDS.toMillis(15));
+			if (!drained) {
+				Bukkit.getConsoleSender().sendMessage(MobHunting.PREFIX_WARNING
+						+ "MobHunting shutdown timeout while waiting for async queue. Forcing thread stop.");
 			}
-			if (mTaskThread.getState() == Thread.State.RUNNABLE) {
-				mTaskThread.interrupt();
+			mTaskThread.interrupt();
+			mTaskThread.join(TimeUnit.SECONDS.toMillis(3));
+			if (mTaskThread.isAlive()) {
+				Bukkit.getConsoleSender().sendMessage(MobHunting.PREFIX_WARNING
+						+ "MobHunting async task thread did not terminate cleanly. Continuing server shutdown.");
 			}
-			if (mTaskThread.getState() != Thread.State.WAITING) {
-				mTaskThread.waitForEmptyQueue();
+			mStoreThread.join(TimeUnit.SECONDS.toMillis(3));
+			} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			Bukkit.getConsoleSender().sendMessage(
+					MobHunting.PREFIX_WARNING + "MobHunting shutdown was interrupted while waiting for async threads.");
 			}
-
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -193,9 +196,13 @@ public class DataStoreManager {
 	public void waitForUpdates() {
 		flush();
 		try {
-			mTaskThread.waitForEmptyQueue();
+			boolean drained = mTaskThread.waitForEmptyQueue(TimeUnit.SECONDS.toMillis(30));
+			if (!drained) {
+				Bukkit.getConsoleSender().sendMessage(MobHunting.PREFIX_WARNING
+						+ "Timeout while waiting for MobHunting datastore updates to finish.");
+			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			Thread.currentThread().interrupt();
 		}
 	}
 
@@ -210,6 +217,7 @@ public class DataStoreManager {
 
 		public StoreThread(int interval) {
 			super("MH StoreThread");
+			setDaemon(true);
 			start();
 			mSaveInterval = interval;
 		}
@@ -280,21 +288,33 @@ public class DataStoreManager {
 			super("MH TaskThread");
 
 			mQueue = new LinkedBlockingQueue<Task>();
+			setDaemon(true);
 
 			start();
 		}
 
 		public void waitForEmptyQueue() throws InterruptedException {
-			if (mQueue.isEmpty())
-				return;
+			waitForEmptyQueue(TimeUnit.MINUTES.toMillis(5));
+		}
 
+		public boolean waitForEmptyQueue(long timeoutMillis) throws InterruptedException {
+			if (mQueue.isEmpty())
+				return true;
+
+			long deadline = System.currentTimeMillis() + Math.max(timeoutMillis, 1L);
 			synchronized (mSignal) {
 				plugin.getMessages().debug(
 						"waitForEmptyQueue: Waiting for %s+%s tasks to finish before closing connections.",
 						mQueue.size(), mWaiting.size());
-				while (!mQueue.isEmpty())
-					mSignal.wait();
+				while (!mQueue.isEmpty()) {
+					long remaining = deadline - System.currentTimeMillis();
+					if (remaining <= 0) {
+						return false;
+					}
+					mSignal.wait(Math.min(remaining, 1000L));
+				}
 			}
+			return true;
 		}
 
 		public void setWriteOnlyMode(boolean writes) {

@@ -15,24 +15,35 @@ public class TownyCompat {
 	// http://towny.palmergames.com/
 
 	public TownyCompat() {
+		supported = false;
 		if (!isEnabledInConfig()) {
 			Bukkit.getConsoleSender()
 					.sendMessage(MobHunting.PREFIX_WARNING + "Compatibility with Towny is disabled in config.yml");
-		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.Towny.getName());
+			return;
+		}
 
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("com.palmergames.bukkit.towny.object.TownyUniverse");
-				Bukkit.getConsoleSender().sendMessage(MobHunting.PREFIX + "Enabling compatibility with Towny ("
-						+ mPlugin.getDescription().getVersion() + ").");
+		mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.Towny.getName());
+		if (mPlugin == null) {
+			Bukkit.getConsoleSender()
+					.sendMessage(MobHunting.PREFIX_WARNING + "Towny plugin not found. Compatibility is disabled.");
+			return;
+		}
+
+		try {
+			Class.forName("com.palmergames.bukkit.towny.TownyAPI");
+			if (TownyHelper.initializeBridge()) {
+				Bukkit.getConsoleSender().sendMessage(
+						MobHunting.PREFIX + "Enabling compatibility with Towny (" + mPlugin.getDescription().getVersion() + ")");
 				supported = true;
-			} catch (ClassNotFoundException e) {
-				Bukkit.getConsoleSender()
-						.sendMessage(MobHunting.PREFIX_WARNING + "Your version of Towny ("
-								+ mPlugin.getDescription().getVersion()
-								+ ") is not complatible with this version of MobHunting, please upgrade.");
+			} else {
+				Bukkit.getConsoleSender().sendMessage(MobHunting.PREFIX_WARNING + "Your version of Towny ("
+						+ mPlugin.getDescription().getVersion()
+						+ ") is not compatible with this MobHunting Towny integration (Towny 0.102+ API expected).");
 			}
+		} catch (ClassNotFoundException e) {
+			Bukkit.getConsoleSender().sendMessage(MobHunting.PREFIX_WARNING + "Your version of Towny ("
+					+ mPlugin.getDescription().getVersion()
+					+ ") is not compatible with this MobHunting Towny integration (Towny 0.102+ API expected).");
 		}
 	}
 

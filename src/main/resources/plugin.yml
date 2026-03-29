@@ -6,7 +6,7 @@ dev-url: https://dev.bukkit.org/projects/mobhunting
 author: Rocologo
 depend: [CustomItemsLib]
 softdepend: [Vault, Reserve, Multiverse-Core, Essentials, BagOfGold, WorldEdit, WorldGuard, PreciousStones, HolographicDisplays, Holograms, CMI, CMILib, Factions, Towny, Residence, ProtocolLib, mcMMO, BossShop, MythicMobs, TARDISWeepingAngels, InfernalMobs, Boss, Citizens, Sentry, Sentinel, Minigames, MinigamesLib, MyPet, MobArena, PVPArena, BattleArena, LibsDisguises, DisguiseCraft, iDisguise, VanishNoPacket, BossBarAPI, BarAPI, ActionBar, TitleAPI, TitleManager, PlaceholderAPI, MobStacker, Gringotts, ActionBarAPI, ActionAnnouncer, CustomMobs, ConquestiaMobs, LevelledMobs, StackMob, MysteriousHalloween, SmartGiants, ExtraHardMode, CrackShot, WeaponMechanics]
-api-version: 1.13
+api-version: 1.21
 
 commands:
   mobhunt:

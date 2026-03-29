@@ -4,7 +4,7 @@
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
 	<!-- <version>8.5.5</version>  -->
-	<version>8.5.6-SNAPSHOT</version>
+	<version>8.5.7-rc2-JL.3</version>
 	<!-- <version>8.1.9-SNAPSHOT-B${build.number}</version> -->
 	<name>MobHunting</name>
 	<url>https://www.spigotmc.org/resources/mobhunting.3582/</url>
@@ -18,7 +18,8 @@
 	</parent>
 
 	<properties>
-		<bagofgold.version>4.5.6-SNAPSHOT</bagofgold.version>
+		<customitemslib.version>1.1.0</customitemslib.version>
+		<bagofgold.version>4.5.6</bagofgold.version>
 
 		<minigameslib.version>1.14.16</minigameslib.version>
 		<minigames.version>	1.11.0</minigames.version>

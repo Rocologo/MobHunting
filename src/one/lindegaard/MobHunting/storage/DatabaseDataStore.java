@@ -1267,7 +1267,17 @@ public abstract class DatabaseDataStore implements IDataStore {
 			try {
 				openPreparedStatements(mConnection, PreparedConnectionType.SAVE_ACHIEVEMENTS);
 				for (AchievementStore achievement : achievements) {
-					int playerId = Core.getDataStoreManager().getPlayerId(achievement.player);
+					int playerId;
+					try {
+						playerId = Core.getDataStoreManager().getPlayerId(achievement.player);
+					} catch (UserNotFoundException e) {
+						String playerName = achievement.player != null ? achievement.player.getName() : "null";
+						String playerUuid = achievement.player != null ? String.valueOf(achievement.player.getUniqueId())
+								: "null";
+						Bukkit.getConsoleSender().sendMessage(MobHunting.PREFIX_WARNING
+								+ "Skipping Achievement save for missing player " + playerName + " (" + playerUuid + ")");
+						continue;
+					}
 					mSaveAchievement.setInt(1, playerId);
 					mSaveAchievement.setString(2, achievement.id);
 					mSaveAchievement.setDate(3, new Date(System.currentTimeMillis()));
@@ -1278,7 +1288,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mSaveAchievement.close();
 				mConnection.commit();
 				mConnection.close();
-			} catch (SQLException | UserNotFoundException e) {
+			} catch (SQLException e) {
 				rollback(mConnection);
 				mConnection.close();
 				throw new DataStoreException(e);

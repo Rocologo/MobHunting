@@ -542,6 +542,16 @@ public class RewardManager {
 			return 0;
 
 		} else {
+			// 1.21+ compatibility aliases for entities not exposed as dedicated sections yet.
+			if (isEntityType(mob, "ARMADILLO"))
+				return getPrice(mob, plugin.getConfigManager().turtleMoney);
+			else if (isEntityType(mob, "BOGGED"))
+				return getPrice(mob, plugin.getConfigManager().strayMoney);
+			else if (isEntityType(mob, "BREEZE"))
+				return getPrice(mob, plugin.getConfigManager().vexMoney);
+			else if (isEntityType(mob, "CREAKING"))
+				return getPrice(mob, plugin.getConfigManager().wardenMoney);
+
 			if (Servers.isMC119OrNewer())
 				if (mob instanceof Allay)
 					return getPrice(mob, plugin.getConfigManager().allayMoney);
@@ -856,6 +866,10 @@ public class RewardManager {
 		}
 	}
 
+	private boolean isEntityType(Entity mob, String entityType) {
+		return mob != null && mob.getType() != null && mob.getType().name().equals(entityType);
+	}
+
 	/**
 	 * Get the command to be run when the player kills a Mob.
 	 * 
@@ -930,6 +944,15 @@ public class RewardManager {
 			return plugin.getConfigManager().wolfCommands;
 
 		} else {
+			if (isEntityType(mob, "ARMADILLO"))
+				return plugin.getConfigManager().turtleCommands;
+			else if (isEntityType(mob, "BOGGED"))
+				return plugin.getConfigManager().strayCommands;
+			else if (isEntityType(mob, "BREEZE"))
+				return plugin.getConfigManager().vexCommands;
+			else if (isEntityType(mob, "CREAKING"))
+				return plugin.getConfigManager().wardenCommands;
+
 			if (Servers.isMC119OrNewer())
 				if (mob instanceof Allay)
 					return plugin.getConfigManager().allayCommands;
@@ -1258,6 +1281,15 @@ public class RewardManager {
 			return plugin.getConfigManager().wolfMessage;
 
 		} else {
+			if (isEntityType(mob, "ARMADILLO"))
+				return plugin.getConfigManager().turtleMessage;
+			else if (isEntityType(mob, "BOGGED"))
+				return plugin.getConfigManager().strayMessage;
+			else if (isEntityType(mob, "BREEZE"))
+				return plugin.getConfigManager().vexMessage;
+			else if (isEntityType(mob, "CREAKING"))
+				return plugin.getConfigManager().wardenMessage;
+
 			if (Servers.isMC119OrNewer())
 				if (mob instanceof Allay)
 					return plugin.getConfigManager().allayMessage;
@@ -1577,6 +1609,15 @@ public class RewardManager {
 			return plugin.getConfigManager().wolfCmdRunChance;
 
 		} else {
+			if (isEntityType(mob, "ARMADILLO"))
+				return plugin.getConfigManager().turtleMoneyChance;
+			else if (isEntityType(mob, "BOGGED"))
+				return plugin.getConfigManager().strayMoneyChance;
+			else if (isEntityType(mob, "BREEZE"))
+				return plugin.getConfigManager().vexMoneyChance;
+			else if (isEntityType(mob, "CREAKING"))
+				return plugin.getConfigManager().wardenMoneyChance;
+
 			if (Servers.isMC119OrNewer())
 				if (mob instanceof Allay)
 					return plugin.getConfigManager().allayMoneyChance;
@@ -1901,6 +1942,15 @@ public class RewardManager {
 			return plugin.getConfigManager().wolfMcMMOSkillRewardChance;
 
 		} else {
+			if (isEntityType(mob, "ARMADILLO"))
+				return plugin.getConfigManager().turtleMcMMOSkillRewardChance;
+			else if (isEntityType(mob, "BOGGED"))
+				return plugin.getConfigManager().strayMcMMOSkillRewardChance;
+			else if (isEntityType(mob, "BREEZE"))
+				return plugin.getConfigManager().vexMcMMOSkillRewardChance;
+			else if (isEntityType(mob, "CREAKING"))
+				return plugin.getConfigManager().wardenMcMMOSkillRewardChance;
+
 			if (Servers.isMC119OrNewer())
 				if (mob instanceof Allay)
 					return plugin.getConfigManager().allayMcMMOSkillRewardChance;
@@ -2249,6 +2299,15 @@ public class RewardManager {
 			return getMcMMOXP(mob, plugin.getConfigManager().wolfMcMMOSkillRewardAmount);
 
 		} else {
+			if (isEntityType(mob, "ARMADILLO"))
+				return getMcMMOXP(mob, plugin.getConfigManager().turtleMcMMOSkillRewardAmount);
+			else if (isEntityType(mob, "BOGGED"))
+				return getMcMMOXP(mob, plugin.getConfigManager().strayMcMMOSkillRewardAmount);
+			else if (isEntityType(mob, "BREEZE"))
+				return getMcMMOXP(mob, plugin.getConfigManager().vexMcMMOSkillRewardAmount);
+			else if (isEntityType(mob, "CREAKING"))
+				return getMcMMOXP(mob, plugin.getConfigManager().wardenMcMMOSkillRewardAmount);
+
 			if (Servers.isMC119OrNewer())
 				if (mob instanceof Allay)
 					return getMcMMOXP(mob, plugin.getConfigManager().allayMcMMOSkillRewardAmount);
@@ -2568,6 +2627,15 @@ public class RewardManager {
 			return plugin.getConfigManager().wolfEnabled;
 
 		} else {
+			if (isEntityType(mob, "ARMADILLO"))
+				return plugin.getConfigManager().turtleEnabled;
+			else if (isEntityType(mob, "BOGGED"))
+				return plugin.getConfigManager().strayEnabled;
+			else if (isEntityType(mob, "BREEZE"))
+				return plugin.getConfigManager().vexEnabled;
+			else if (isEntityType(mob, "CREAKING"))
+				return plugin.getConfigManager().wardenEnabled;
+
 			if (Servers.isMC119OrNewer())
 				if (mob instanceof Allay)
 					return plugin.getConfigManager().allayEnabled;
@@ -2898,6 +2966,15 @@ public class RewardManager {
 			return plugin.getConfigManager().wolfHeadDropHead;
 
 		} else {
+			if (isEntityType(mob, "ARMADILLO"))
+				return plugin.getConfigManager().turtleHeadDropHead;
+			else if (isEntityType(mob, "BOGGED"))
+				return plugin.getConfigManager().strayHeadDropHead;
+			else if (isEntityType(mob, "BREEZE"))
+				return plugin.getConfigManager().vexHeadDropHead;
+			else if (isEntityType(mob, "CREAKING"))
+				return plugin.getConfigManager().wardenHeadDropHead;
+
 			if (Servers.isMC119OrNewer())
 				if (mob instanceof Allay)
 					return plugin.getConfigManager().allayHeadDropHead;
@@ -3230,6 +3307,15 @@ public class RewardManager {
 			return plugin.getConfigManager().wolfHeadDropChance;
 
 		} else {
+			if (isEntityType(mob, "ARMADILLO"))
+				return plugin.getConfigManager().turtleHeadDropChance;
+			else if (isEntityType(mob, "BOGGED"))
+				return plugin.getConfigManager().strayHeadDropChance;
+			else if (isEntityType(mob, "BREEZE"))
+				return plugin.getConfigManager().vexHeadDropChance;
+			else if (isEntityType(mob, "CREAKING"))
+				return plugin.getConfigManager().wardenHeadDropChance;
+
 			if (Servers.isMC119OrNewer())
 				if (mob instanceof Allay)
 					return plugin.getConfigManager().allayHeadDropChance;
@@ -3561,6 +3647,15 @@ public class RewardManager {
 			return plugin.getConfigManager().wolfHeadMessage;
 
 		} else {
+			if (isEntityType(mob, "ARMADILLO"))
+				return plugin.getConfigManager().turtleHeadMessage;
+			else if (isEntityType(mob, "BOGGED"))
+				return plugin.getConfigManager().strayHeadMessage;
+			else if (isEntityType(mob, "BREEZE"))
+				return plugin.getConfigManager().vexHeadMessage;
+			else if (isEntityType(mob, "CREAKING"))
+				return plugin.getConfigManager().wardenHeadMessage;
+
 			if (Servers.isMC119OrNewer())
 				if (mob instanceof Allay)
 					return plugin.getConfigManager().allayHeadMessage;
@@ -3893,6 +3988,15 @@ public class RewardManager {
 			return getPrice(mob, plugin.getConfigManager().wolfHeadPrize);
 
 		} else {
+			if (isEntityType(mob, "ARMADILLO"))
+				return getPrice(mob, plugin.getConfigManager().turtleHeadPrize);
+			else if (isEntityType(mob, "BOGGED"))
+				return getPrice(mob, plugin.getConfigManager().strayHeadPrize);
+			else if (isEntityType(mob, "BREEZE"))
+				return getPrice(mob, plugin.getConfigManager().vexHeadPrize);
+			else if (isEntityType(mob, "CREAKING"))
+				return getPrice(mob, plugin.getConfigManager().wardenHeadPrize);
+
 			if (Servers.isMC119OrNewer())
 				if (mob instanceof Allay)
 					return getPrice(mob, plugin.getConfigManager().allayHeadPrize);

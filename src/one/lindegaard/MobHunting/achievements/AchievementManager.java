@@ -401,9 +401,9 @@ public class AchievementManager implements Listener {
 				return;
 			}
 
-		// TODO: maybe Advancements API does not work on Paper?
+		// Guard against servers where advancement manager is intentionally unavailable.
 		if (Servers.isSpigotServer() && !plugin.getConfigManager().disableMobHuntingAdvancements
-				&& Servers.isMC112OrNewer())
+				&& Servers.isMC112OrNewer() && plugin.getAdvancementManager() != null)
 			plugin.getAdvancementManager().grantAdvancement(player, achievement);
 
 		PlayerStorage storage = mStorage.get(player.getUniqueId());
@@ -661,7 +661,7 @@ public class AchievementManager implements Listener {
 
 						// Advancements is not supported on older servers and on PaperSpigot.
 						if (!plugin.getConfigManager().disableMobHuntingAdvancements && Servers.isMC113OrNewer()
-								&& !Servers.isPaperServer())
+								&& !Servers.isPaperServer() && plugin.getAdvancementManager() != null)
 							plugin.getAdvancementManager().updatePlayerAdvancements(player);
 
 					}

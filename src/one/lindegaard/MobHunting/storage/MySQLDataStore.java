@@ -274,7 +274,16 @@ public class MySQLDataStore extends DatabaseDataStore {
 				String column2 = "total_cash";
 				int amount = stat.getAmount();
 				double cash = Tools.round(stat.getCash());
-				int player_id = Core.getDataStoreManager().getPlayerId(stat.getPlayer());
+				int player_id;
+				try {
+					player_id = Core.getDataStoreManager().getPlayerId(stat.getPlayer());
+				} catch (UserNotFoundException e) {
+					String playerName = stat.getPlayer() != null ? stat.getPlayer().getName() : "null";
+					String playerUuid = stat.getPlayer() != null ? String.valueOf(stat.getPlayer().getUniqueId()) : "null";
+					Bukkit.getConsoleSender().sendMessage(MobHunting.PREFIX_WARNING
+							+ "Skipping PlayerStats save for missing player " + playerName + " (" + playerUuid + ")");
+					continue;
+				}
 				statement.executeUpdate(String.format(Locale.US,
 						"INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s, %5$s)"
 								+ " VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d,%6$f)"
@@ -288,9 +297,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 		} catch (SQLException e) {
 			rollback(mConnection);
 			throw new DataStoreException(e);
-		} catch (UserNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
